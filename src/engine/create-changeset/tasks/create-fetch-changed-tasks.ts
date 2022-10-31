@@ -34,7 +34,7 @@ type GetEntryPatchParams = {
 
 async function getEntriesPatches({context, source, target, entryIds}: GetEntryPatchParams): Promise<ChangedResult[]> {
   const {client: {cda}} = context
-  const query = {'sys.id[in]': entryIds.join(',')}
+  const query = {'sys.id[in]': entryIds.join(','), locale: '*'}
 
   const sourceEntries = await cda.entries.getMany({environment: source, query}).then(response => response.items)
   const targetEntries = await cda.entries.getMany({environment: target, query}).then(response => response.items)

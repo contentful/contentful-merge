@@ -32,6 +32,7 @@ export type ChangedResult = {
 export interface CreateChangesetContext extends BaseContext {
   source: EnvironmentData,
   target: EnvironmentData,
+  inline: boolean,
   ids: {
     added: Array<string>,
     removed: Array<string>,

@@ -6,7 +6,7 @@ import {createFetchChangedTasks} from './tasks/create-fetch-changed-tasks'
 import {CreateChangesetContext} from './types'
 
 export const createChangeset = (context: CreateChangesetContext) => {
-  const tasks = new Listr<CreateChangesetContext>(
+  return new Listr<CreateChangesetContext>(
     [
       {
         title: 'Fetch environment entities',
@@ -18,13 +18,11 @@ export const createChangeset = (context: CreateChangesetContext) => {
       },
       createComputeIdsTask(),
       createFetchChangedTasks(),
-      createFetchAddedEntitiesTask(),
+      createFetchAddedEntitiesTask(context.inline),
     ],
     {
       ctx: context,
-      rendererOptions: {showTimer: true},
+      rendererOptions: {showTimer: true, collapse: false},
     },
   )
-
-  return tasks
 }

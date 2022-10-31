@@ -29,8 +29,6 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`ccccli hello PERSON`](#ccccli-hello-person)
-* [`ccccli hello world`](#ccccli-hello-world)
 * [`ccccli help [COMMAND]`](#ccccli-help-command)
 * [`ccccli plugins`](#ccccli-plugins)
 * [`ccccli plugins:install PLUGIN...`](#ccccli-pluginsinstall-plugin)
@@ -41,46 +39,6 @@ USAGE
 * [`ccccli plugins:uninstall PLUGIN...`](#ccccli-pluginsuninstall-plugin-1)
 * [`ccccli plugins:uninstall PLUGIN...`](#ccccli-pluginsuninstall-plugin-2)
 * [`ccccli plugins update`](#ccccli-plugins-update)
-
-## `ccccli hello PERSON`
-
-Say hello
-
-```
-USAGE
-  $ ccccli hello [PERSON] -f <value>
-
-ARGUMENTS
-  PERSON  Person to say hello to
-
-FLAGS
-  -f, --from=<value>  (required) Who is saying hello
-
-DESCRIPTION
-  Say hello
-
-EXAMPLES
-  $ oex hello friend --from oclif
-  hello friend from oclif! (./src/commands/hello/index.ts)
-```
-
-_See code: [dist/commands/hello/index.ts](https://github.com/marcolink/ccccli/blob/v0.0.0/dist/commands/hello/index.ts)_
-
-## `ccccli hello world`
-
-Say hello world
-
-```
-USAGE
-  $ ccccli hello world
-
-DESCRIPTION
-  Say hello world
-
-EXAMPLES
-  $ ccccli hello world
-  hello world! (./src/commands/hello/world.ts)
-```
 
 ## `ccccli help [COMMAND]`
 

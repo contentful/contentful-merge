@@ -44,7 +44,7 @@ const execute = async ({context, environmentId, scope, task}: ExecuteParams) => 
 
 export function createEntitiesTask(scope: EnvironmentScope, environmentId: string): ListrTask {
   return {
-    title: `${scope} environment (${environmentId}) with limit ${LIMIT}`,
+    title: `${scope} environment "${environmentId}" with (${LIMIT} entities/request)`,
     task: async (context: CreateChangesetContext, task) => {
       return execute({context, task, scope, environmentId})
     },

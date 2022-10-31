@@ -1,8 +1,8 @@
+import {ListrTask} from 'listr2'
 import {CreateChangesetContext} from '../types'
 
-export const createComputeIdsTask = () => {
+export const createComputeIdsTask = ():ListrTask => {
   return {
-    title: 'Compute Ids list',
     task: async (context: CreateChangesetContext) => {
       const {source, target} = context
 
