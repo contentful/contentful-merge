@@ -1,4 +1,7 @@
+import {createClient} from '../client'
+
 export interface BaseContext {
+  client: ReturnType<typeof createClient>
   accessToken: string,
   spaceId: string,
   sourceEnvironmentId: string,

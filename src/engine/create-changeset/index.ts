@@ -1,7 +1,7 @@
 import {Listr} from 'listr2'
-import {createComputeIdsTask} from './tasks/createComputeIdsTask'
-import {createEntitiesTask} from './tasks/createEntitiesTask'
-import {createFetchChangedTasks} from './tasks/createFetchChangedTasks'
+import {createComputeIdsTask} from './tasks/create-compute-ids-task'
+import {createEntitiesTask} from './tasks/create-entities-task'
+import {createFetchChangedTasks} from './tasks/create-fetch-changed-tasks'
 import {CreateChangesetContext} from './types'
 
 export const createChangeset = (context: CreateChangesetContext) => {
@@ -13,13 +13,14 @@ export const createChangeset = (context: CreateChangesetContext) => {
           task.newListr([
             createEntitiesTask('source', ctx.sourceEnvironmentId),
             createEntitiesTask('target', ctx.targetEnvironmentId),
-          ], {concurrent: false}),
+          ], {concurrent: true}),
       },
       createComputeIdsTask(),
       createFetchChangedTasks(),
     ],
     {
       ctx: context,
+      rendererOptions: {showTimer: true},
     },
   )
 

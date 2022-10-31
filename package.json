@@ -17,12 +17,14 @@
     "/oclif.manifest.json"
   ],
   "dependencies": {
+    "axios": "^0.27.2",
     "@contentful/jsondiffpatch": "^1.2.0",
     "@oclif/core": "^1.19.1",
     "@oclif/plugin-help": "^5",
     "@oclif/plugin-plugins": "^2.1.4",
     "contentful": "^10.0.0-beta-v10.8",
     "contentful-collection": "^0.0.4",
+    "contentful-sdk-core": "^7.0.4",
     "listr2": "^5.0.5",
     "lodash": "^4.17.21"
   },

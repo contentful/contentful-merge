@@ -1,7 +1,7 @@
 import * as jsondiffpatch from '@contentful/jsondiffpatch'
 import {Delta, Patch} from '@contentful/jsondiffpatch'
-import {createClient} from 'contentful'
 import {ListrTask} from 'listr2'
+import {BaseContext} from '../types'
 import type {CreateChangesetContext} from '../types'
 
 const format: (delta: Delta | undefined) => Patch = jsondiffpatch.formatters.jsonpatch.format
@@ -23,29 +23,27 @@ const entryDiff = jsondiffpatch.create({
   },
 })
 
-async function getEntryPatch(space: string, source: string, target: string, entry: string, accessToken: string): Promise<any> {
-  const SourceCDAClient = createClient({
-    accessToken,
-    space,
-    environment: source,
-  })
-  const TargetCDAClient = createClient({
-    accessToken,
-    space,
-    environment: target,
-  })
+type GetEntryPatchParams = {
+  context: BaseContext,
+  source: string,
+  target: string,
+  entry: string,
+}
 
-  const sourceEntry = await SourceCDAClient.getEntry(entry)
-  const targetEntry = await TargetCDAClient.getEntry(entry)
+async function getEntryPatch({context, source, target, entry}: GetEntryPatchParams): Promise<any> {
+  const {client} = context
+
+  const sourceEntry = await client.entries.get({environment: source, entryId: entry})
+  const targetEntry = await client.entries.get({environment: target, entryId: entry})
 
   return format(entryDiff.diff(sourceEntry, targetEntry))
 }
 
-export const createFetchChangedTasks = ():ListrTask => {
+export const createFetchChangedTasks = (): ListrTask => {
   return {
     title: 'Fetch full payload for changed entities',
     task: async (context: CreateChangesetContext, task) => {
-      const {ids, sourceEnvironmentId, changed, targetEnvironmentId, accessToken, spaceId} = context
+      const {ids, sourceEnvironmentId, changed, targetEnvironmentId} = context
 
       task.title = `Fetch full payload for ${changed.length} changed entities`
 
@@ -56,7 +54,12 @@ export const createFetchChangedTasks = ():ListrTask => {
           task.output = `create patch for entity ${changedElement.sys.id}`
 
           // eslint-disable-next-line no-await-in-loop
-          const patch = await getEntryPatch(spaceId, sourceEnvironmentId, targetEnvironmentId, changedElement.sys.id, accessToken)
+          const patch = await getEntryPatch({
+            context,
+            source: sourceEnvironmentId,
+            target: targetEnvironmentId,
+            entry: changedElement.sys.id,
+          })
           patches.push({
             entity: createLinkObject(changedElement.sys.id),
             patch,

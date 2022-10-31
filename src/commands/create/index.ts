@@ -1,5 +1,7 @@
 import {Command, Flags} from '@oclif/core'
+import {createClient} from '../../engine/client'
 import {createChangeset} from '../../engine/create-changeset'
+import {CreateChangesetContext} from '../../engine/create-changeset/types'
 
 export default class Create extends Command {
   static description = 'Create Entries Changeset'
@@ -20,7 +22,13 @@ export default class Create extends Command {
   async run(): Promise<void> {
     const {flags} = await this.parse(Create)
 
-    const result = await createChangeset({
+    const client = createClient({
+      accessToken: flags.token,
+      space: flags.space,
+    })
+
+    const context: CreateChangesetContext = {
+      client,
       accessToken: flags.token,
       spaceId: flags.space,
       sourceEnvironmentId: flags.source,
@@ -33,8 +41,17 @@ export default class Create extends Command {
         removed: [],
       },
       changed: [],
-    }).run()
+    }
 
-    console.log(JSON.stringify(result.changeset, null, 2))
+    const result = await createChangeset(context).run()
+
+    const printable = {
+      requests: result.requestCount,
+      changed: result.changeset.changed.length,
+      removed: result.changeset.removed.length,
+      added: result.changeset.added.length,
+    }
+
+    console.log(JSON.stringify(printable, null, 2))
   }
 }
