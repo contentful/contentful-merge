@@ -1,17 +1,19 @@
 import * as jsondiffpatch from '@contentful/jsondiffpatch'
 import {Delta, Patch} from '@contentful/jsondiffpatch'
+import {EntryLink} from 'contentful'
 import {ListrTask} from 'listr2'
-import {BaseContext} from '../types'
+import {chunk} from 'lodash'
+import {BaseContext, ChangedResult} from '../types'
 import type {CreateChangesetContext} from '../types'
+
+const BATCH_SIZE = 100
 
 const format: (delta: Delta | undefined) => Patch = jsondiffpatch.formatters.jsonpatch.format
 
-const createLinkObject = (id: string) => ({
-  sys: {
-    type: 'Link',
-    linkType: 'Entry',
-    id,
-  },
+const createLinkObject = (id: string): EntryLink => ({
+  type: 'Link',
+  linkType: 'Entry',
+  id,
 })
 
 const entryDiff = jsondiffpatch.create({
@@ -27,49 +29,62 @@ type GetEntryPatchParams = {
   context: BaseContext,
   source: string,
   target: string,
-  entry: string,
+  entryIds: string[],
 }
 
-async function getEntryPatch({context, source, target, entry}: GetEntryPatchParams): Promise<any> {
-  const {client} = context
+async function getEntriesPatches({context, source, target, entryIds}: GetEntryPatchParams): Promise<ChangedResult[]> {
+  const {client: {cda}} = context
+  const query = {'sys.id[in]': entryIds.join(',')}
 
-  context.requestCount++
-  const sourceEntry = await client.entries.get({environment: source, entryId: entry})
-  context.requestCount++
-  const targetEntry = await client.entries.get({environment: target, entryId: entry})
+  const sourceEntries = await cda.entries.getMany({environment: source, query}).then(response => response.items)
+  const targetEntries = await cda.entries.getMany({environment: target, query}).then(response => response.items)
 
-  return format(entryDiff.diff(sourceEntry, targetEntry))
+  const patches: ChangedResult[] = []
+
+  for (const entryId of entryIds) {
+    const sourceEntry = sourceEntries.find(entry => entry.sys.id === entryId)
+    const targetEntry = targetEntries.find(entry => entry.sys.id === entryId)
+
+    if (sourceEntry && targetEntry) {
+      patches.push(
+        {
+          entity: createLinkObject(entryId),
+          patch: format(entryDiff.diff(sourceEntry, targetEntry)),
+        },
+      )
+    }
+  }
+
+  return patches
 }
 
 export const createFetchChangedTasks = (): ListrTask => {
   return {
     title: 'Fetch full payload for changed entities',
     task: async (context: CreateChangesetContext, task) => {
-      const {ids, sourceEnvironmentId, changed, targetEnvironmentId} = context
+      const {ids, sourceEnvironmentId, changed, targetEnvironmentId, statistics} = context
 
       task.title = `Fetch full payload for ${changed.length} changed entities`
 
-      const patches = []
+      const patches: any[] = []
 
-      // TODO: execute in parallel
-      for (const changedElement of changed) {
-        try {
-          task.output = `create patch for entity ${changedElement.sys.id}`
+      const idChunks = chunk(changed.map(c => c.sys.id), BATCH_SIZE)
 
-          // eslint-disable-next-line no-await-in-loop
-          const patch = await getEntryPatch({
-            context,
-            source: sourceEnvironmentId,
-            target: targetEnvironmentId,
-            entry: changedElement.sys.id,
-          })
-          patches.push({
-            entity: createLinkObject(changedElement.sys.id),
-            patch,
-          })
-        } catch {
-          console.warn('no entry found for ' + changedElement.sys.id)
-        }
+      let iterator = 0
+
+      for (const chunk of idChunks) {
+        task.output = `Fetching ${BATCH_SIZE} entities ${++iterator * BATCH_SIZE}/${changed.length}`
+        // eslint-disable-next-line no-await-in-loop
+        const changedObjects = await getEntriesPatches({
+          context,
+          source: sourceEnvironmentId,
+          target: targetEnvironmentId,
+          entryIds: chunk,
+        })
+
+        const withChange = changedObjects.filter(o => o.patch.length > 0)
+        statistics.nonChanged += changedObjects.length - withChange.length
+        patches.push(...withChange)
       }
 
       context.changeset = {

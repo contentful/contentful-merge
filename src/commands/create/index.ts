@@ -2,6 +2,7 @@ import {Command, Flags} from '@oclif/core'
 import {createClient} from '../../engine/client'
 import {createChangeset} from '../../engine/create-changeset'
 import {CreateChangesetContext} from '../../engine/create-changeset/types'
+import * as fs from 'node:fs/promises'
 
 export default class Create extends Command {
   static description = 'Create Entries Changeset'
@@ -33,7 +34,6 @@ export default class Create extends Command {
       spaceId: flags.space,
       sourceEnvironmentId: flags.source,
       targetEnvironmentId: flags.target,
-      requestCount: 0,
       source: {comparables: [], ids: []},
       target: {comparables: [], ids: []},
       ids: {
@@ -41,6 +41,9 @@ export default class Create extends Command {
         removed: [],
       },
       changed: [],
+      statistics: {
+        nonChanged: 0,
+      },
     }
 
     const result = await createChangeset(context).run()
@@ -48,7 +51,10 @@ export default class Create extends Command {
     const printable = {
       // 'changed-patches': result.changed,
       numbers: {
-        'http-requests': result.requestCount,
+        'http-requests': client.requestCounts(),
+        'source-entities': result.source.ids.length,
+        'target-entities': result.target.ids.length,
+        statistics: result.statistics,
         changed: result.changeset.changed.length,
         removed: result.changeset.removed.length,
         added: result.changeset.added.length,
@@ -56,5 +62,6 @@ export default class Create extends Command {
     }
 
     console.log(JSON.stringify(printable, null, 2))
+    await fs.writeFile('./changeset.json', JSON.stringify(result.changeset, null, 2))
   }
 }

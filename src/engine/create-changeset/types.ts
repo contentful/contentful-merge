@@ -1,3 +1,5 @@
+import {Patch} from '@contentful/jsondiffpatch'
+import {EntryLink} from 'contentful'
 import {createClient} from '../client'
 
 export interface BaseContext {
@@ -6,7 +8,6 @@ export interface BaseContext {
   spaceId: string,
   sourceEnvironmentId: string,
   targetEnvironmentId: string,
-  requestCount: number,
 }
 
 export interface Comparable {
@@ -23,6 +24,11 @@ export interface EnvironmentData {
 
 export type EnvironmentScope = 'source' | 'target'
 
+export type ChangedResult = {
+  entity: EntryLink
+  patch: Patch
+}
+
 export interface CreateChangesetContext extends BaseContext {
   source: EnvironmentData,
   target: EnvironmentData,
@@ -32,5 +38,8 @@ export interface CreateChangesetContext extends BaseContext {
   }
   changed: Array<Comparable>,
   changeset?: any,
+  statistics: {
+    nonChanged: number
+  }
 }
 

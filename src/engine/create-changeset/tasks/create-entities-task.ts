@@ -13,9 +13,9 @@ type ExecuteParams = {
 }
 
 const execute = async ({context, environmentId, scope, task}: ExecuteParams) => {
-  const {client} = context
+  const {client: {cda}} = context
 
-  const {total} = await client.entries.getMany({environment: environmentId, query: {limit: 0}})
+  const {total} = await cda.entries.getMany({environment: environmentId, query: {limit: 0}})
 
   const promises = []
   let requestsDone = 0
@@ -24,27 +24,17 @@ const execute = async ({context, environmentId, scope, task}: ExecuteParams) => 
 
   for (let i = 0; i < iterations; i++) {
     promises.push(Promise.resolve().then(async () => {
-      const response = await client.entries.getMany({
+      const response = await cda.entries.getMany({
         environment: environmentId,
         query: {select: ['sys.id', 'sys.updatedAt'], limit: LIMIT, skip: LIMIT * i},
       })
       requestsDone++
-      context.requestCount++
       task.output = `fetching ${requestsDone * LIMIT}/${total} entities`
       result.push(...response.items)
     }))
   }
 
   await Promise.all(promises)
-
-  /*
-  const result = await getContentfulCollection(query => {
-    requestsDone++
-    context.requestCount++
-    task.output = `fetching ${requestsDone * LIMIT}/${total} entities`
-    return client.entries.getMany({environment: environmentId, query})
-  }, {select: ['sys.id', 'sys.updatedAt'], limit: LIMIT})
-   */
 
   context[scope].comparables = result
   context[scope].ids = result.map(item => item.sys.id)
