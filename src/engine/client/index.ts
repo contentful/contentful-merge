@@ -20,8 +20,8 @@ type EntriesQuery = {
   select?: Array<string>
 }
 
-type GetEntriesParams = ParamEnvironment &  { query?: EntriesQuery & PageAbleParam }
-type GetEntryParams = ParamEnvironment &  { entryId:string, query?: EntriesQuery }
+type GetEntriesParams = ParamEnvironment & { query?: EntriesQuery & PageAbleParam }
+type GetEntryParams = ParamEnvironment & { entryId: string, query?: EntriesQuery }
 
 const cleanQuery = (query?: Record<string, any>) => pickBy(query, v => v !== undefined)
 

@@ -46,10 +46,13 @@ export default class Create extends Command {
     const result = await createChangeset(context).run()
 
     const printable = {
-      requests: result.requestCount,
-      changed: result.changeset.changed.length,
-      removed: result.changeset.removed.length,
-      added: result.changeset.added.length,
+      // 'changed-patches': result.changed,
+      numbers: {
+        'http-requests': result.requestCount,
+        changed: result.changeset.changed.length,
+        removed: result.changeset.removed.length,
+        added: result.changeset.added.length,
+      },
     }
 
     console.log(JSON.stringify(printable, null, 2))

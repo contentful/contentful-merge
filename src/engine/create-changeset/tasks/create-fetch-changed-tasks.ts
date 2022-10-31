@@ -33,7 +33,9 @@ type GetEntryPatchParams = {
 async function getEntryPatch({context, source, target, entry}: GetEntryPatchParams): Promise<any> {
   const {client} = context
 
+  context.requestCount++
   const sourceEntry = await client.entries.get({environment: source, entryId: entry})
+  context.requestCount++
   const targetEntry = await client.entries.get({environment: target, entryId: entry})
 
   return format(entryDiff.diff(sourceEntry, targetEntry))
@@ -49,6 +51,7 @@ export const createFetchChangedTasks = (): ListrTask => {
 
       const patches = []
 
+      // TODO: execute in parallel
       for (const changedElement of changed) {
         try {
           task.output = `create patch for entity ${changedElement.sys.id}`
