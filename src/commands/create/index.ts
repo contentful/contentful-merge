@@ -1,4 +1,5 @@
 import {Command, Flags} from '@oclif/core'
+import chalk from 'chalk'
 import {createClient} from '../../engine/client'
 import {createChangeset} from '../../engine/create-changeset'
 import {CreateChangesetContext} from '../../engine/create-changeset/types'
@@ -47,20 +48,29 @@ export default class Create extends Command {
       },
     }
 
+    console.log(chalk.underline.bold(`\nStart changeset creation for ${chalk(flags.source)} => ${chalk(flags.target)} 🎬`))
+
+    const startTime = performance.now()
     const result = await createChangeset(context).run()
+    const endTime = performance.now()
 
-    const printable = {
-      numbers: {
-        statistics: {...result.statistics, 'http-requests': client.requestCounts()},
-        'source-entities': result.source.ids.length,
-        'target-entities': result.target.ids.length,
-        changed: result.changeset.changed.length,
-        removed: result.changeset.removed.length,
-        added: result.changeset.added.length,
-      },
-    }
+    const duration = ((endTime - startTime) / 1000).toFixed(1)
 
-    console.log(JSON.stringify(printable, null, 2))
+    const formatNumber = chalk.yellow.bold
+
+    let output = '\n'
+    output += chalk.underline.bold('Changeset successfully created 🎉')
+    output += '\nCreated a new changeset for 2 environments '
+    output += `with ${formatNumber(result.source.ids.length)} source `
+    output += `entities and ${formatNumber(result.target.ids.length)} target entities. `
+    output += `\nThe resulting changeset has ${formatNumber(result.changeset.removed.length)} removed, `
+    output += `${formatNumber(result.changeset.added.length)} added and `
+    output += `${formatNumber(result.changeset.changed.length)} changed entries.`
+    output += `\n${formatNumber(result.statistics.nonChanged)} entities were detected with a different ${chalk.gray('sys.changedAt')} date, but were identical.`
+    output += `\nOverall ${formatNumber(client.requestCounts().cda)} CDA and `
+    output += `${formatNumber(client.requestCounts().cma)} CMA request were fired within ${formatNumber(duration)} seconds.`
+    console.log(output)
+
     await fs.writeFile('./changeset.json', JSON.stringify(result.changeset, null, 2))
   }
 }

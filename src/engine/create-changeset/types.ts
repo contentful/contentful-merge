@@ -1,5 +1,4 @@
 import {Patch} from '@contentful/jsondiffpatch'
-import {EntryLink} from 'contentful'
 import {createClient} from '../client'
 
 export interface BaseContext {
@@ -23,6 +22,12 @@ export interface EnvironmentData {
 }
 
 export type EnvironmentScope = 'source' | 'target'
+
+export interface EntryLink {
+    type: 'Link',
+    linkType: 'Entry',
+    id: string
+}
 
 export type ChangedResult = {
   entity: EntryLink

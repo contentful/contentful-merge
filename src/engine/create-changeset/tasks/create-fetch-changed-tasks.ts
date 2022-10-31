@@ -1,9 +1,8 @@
 import * as jsondiffpatch from '@contentful/jsondiffpatch'
 import {Delta, Patch} from '@contentful/jsondiffpatch'
-import {EntryLink} from 'contentful'
 import {ListrTask} from 'listr2'
 import {chunk} from 'lodash'
-import {BaseContext, ChangedResult} from '../types'
+import {BaseContext, ChangedResult, EntryLink} from '../types'
 import type {CreateChangesetContext} from '../types'
 
 const BATCH_SIZE = 100
