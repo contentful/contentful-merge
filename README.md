@@ -17,6 +17,9 @@ Content Changeset Creation CLI (POC)
 - Flexible output for `added` entries (`Link` to source entry or full entry payload)
 - Batches all requests
 
+![](recording.gif)
+> no worries, that token is revoked!
+
 # Statistics
 
 Identical environments
