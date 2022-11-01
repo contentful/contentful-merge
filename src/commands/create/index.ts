@@ -56,6 +56,8 @@ export default class Create extends Command {
 
     const duration = ((endTime - startTime) / 1000).toFixed(1)
 
+    const usedMemory = process.memoryUsage().heapUsed / 1024 / 1024
+
     const formatNumber = chalk.yellow.bold
 
     let output = '\n'
@@ -69,6 +71,7 @@ export default class Create extends Command {
     output += `\n${formatNumber(result.statistics.nonChanged)} entities were detected with a different ${chalk.gray('sys.changedAt')} date, but were identical.`
     output += `\nOverall ${formatNumber(client.requestCounts().cda)} CDA and `
     output += `${formatNumber(client.requestCounts().cma)} CMA request were fired within ${formatNumber(duration)} seconds.`
+    output += `\nThe process used approximately ${formatNumber(usedMemory.toFixed(2))} MB memory.`
     console.log(output)
 
     await fs.writeFile('./changeset.json', JSON.stringify(result.changeset, null, 2))
