@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "oclif example Hello World CLI",
   "author": "Marco Link @marcolink",
+  "private": true,
   "bin": {
     "ccccli": "./bin/run"
   },
