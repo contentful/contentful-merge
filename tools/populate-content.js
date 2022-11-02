@@ -45,7 +45,7 @@ Neque volutpat ac tincidunt vitae semper quis. Urna duis convallis convallis tel
 
 
 const run = async () => {
-  for (let i = 0; i < 500; i++) {
+  for (let i = 0; i < 10000; i++) {
     console.log(i)
     await createAndPublishPage({
       index: i, content, title: 'Content Index '  + i,

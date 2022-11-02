@@ -1,7 +1,7 @@
 const contentful = require('contentful-management')
 
 const SPACE = 'lnsjpb79eisl'
-const ENVIRONMENT = 'test'
+const ENVIRONMENT = 'master'
 const CONTENT_TYPE = 'content'
 
 const client = contentful.createClient({
@@ -20,7 +20,7 @@ const createAndPublishPage = async ({title, content, index}) => {
     fields: {
       title: {"en-US": title},
       content: {"en-US": content},
-      index: {"en-US": index}
+      // index: {"en-US": index}
     },
   })
 
