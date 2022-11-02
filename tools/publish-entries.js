@@ -1,8 +1,8 @@
 const contentful = require('contentful-management')
 const {chunk} = require('lodash')
 
-const SPACE = '96t1bbcqaoy8'
-const ENVIRONMENT = 'master'
+const SPACE = 'lnsjpb79eisl'
+const ENVIRONMENT = 'test'
 
 const MAX_ENTRIES = 50000
 const LIMIT = 100

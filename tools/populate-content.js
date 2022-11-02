@@ -1,7 +1,8 @@
 const contentful = require('contentful-management')
+const ora = require('ora')
 
 const SPACE = 'lnsjpb79eisl'
-const ENVIRONMENT = 'test'
+const ENVIRONMENT = 'test-clone'
 const CONTENT_TYPE = 'content'
 
 const client = contentful.createClient({
@@ -9,7 +10,9 @@ const client = contentful.createClient({
   space: SPACE,
 }, {type: 'plain'})
 
-const createAndPublishPage = async ({title, content, index}) => {
+const spinner = ora(`creating content on ${SPACE}:${ENVIRONMENT}`).start();
+
+const createAndPublishPage = async ({title, content}) => {
   const params = {
     environmentId: ENVIRONMENT,
     spaceId: SPACE,
@@ -43,14 +46,15 @@ Varius vel pharetra vel turpis nunc eget lorem dolor sed. Ultricies leo integer 
 Neque volutpat ac tincidunt vitae semper quis. Urna duis convallis convallis tellus. Velit laoreet id donec ultrices. Nullam eget felis eget nunc lobortis mattis aliquam faucibus purus. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec. Tristique risus nec feugiat in fermentum posuere urna nec. Volutpat odio facilisis mauris sit amet. Ac felis donec et odio pellentesque diam volutpat. Pharetra convallis posuere morbi leo urna molestie at. Senectus et netus et malesuada fames ac turpis egestas sed. Fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. In eu mi bibendum neque egestas congue quisque egestas diam.
 `
 
-
 const run = async () => {
   for (let i = 0; i < 10000; i++) {
-    console.log(i)
-    await createAndPublishPage({
-      index: i, content, title: 'Content Index '  + i,
-    })
+    const title = 'Content Index '  + i
+    spinner.text = `Create entry ${title}`
+    await Promise.all([1,2,3,4,5].map(index =>  createAndPublishPage({
+      content, title: title + index,
+    })))
   }
+  spinner.stopAndPersist()
 }
 
 run()

@@ -7,6 +7,7 @@ export interface BaseContext {
   spaceId: string,
   sourceEnvironmentId: string,
   targetEnvironmentId: string,
+  limit: number,
 }
 
 export interface Comparable {

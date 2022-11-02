@@ -5,8 +5,6 @@ import {chunk} from 'lodash'
 import {BaseContext, ChangedResult, EntryLink} from '../types'
 import type {CreateChangesetContext} from '../types'
 
-const BATCH_SIZE = 200
-
 const format: (delta: Delta | undefined) => Patch = diffFormatters.jsonpatch.format
 
 const createLinkObject = (id: string): EntryLink => ({
@@ -61,18 +59,18 @@ export const createFetchChangedTasks = (): ListrTask => {
   return {
     title: 'Fetch full payload for changed entities',
     task: async (context: CreateChangesetContext, task) => {
-      const {ids, sourceEnvironmentId, changed, targetEnvironmentId, statistics} = context
+      const {ids, sourceEnvironmentId, changed, targetEnvironmentId, statistics, limit} = context
 
       task.title = `Fetch full payload for ${changed.length} changed entities`
 
       const patches: any[] = []
 
-      const idChunks = chunk(changed.map(c => c.sys.id), BATCH_SIZE)
+      const idChunks = chunk(changed.map(c => c.sys.id), limit)
 
       let iterator = 0
 
       for (const chunk of idChunks) {
-        task.output = `Fetching ${BATCH_SIZE} entities ${++iterator * BATCH_SIZE}/${changed.length}`
+        task.output = `Fetching ${limit} entities ${++iterator * limit}/${changed.length}`
         // eslint-disable-next-line no-await-in-loop
         const changedObjects = await getEntriesPatches({
           context,

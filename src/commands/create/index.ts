@@ -19,6 +19,7 @@ export default class Create extends Command {
     space: Flags.string({description: 'space id', required: true}),
     token: Flags.string({description: 'cda token', required: true}),
     inline: Flags.boolean({description: 'inline added entity payload', required: false}),
+    limit: Flags.integer({description: 'Limit parameter for collection endpoints', required: false, default: 200}),
   }
 
   async run(): Promise<void> {
@@ -31,6 +32,7 @@ export default class Create extends Command {
 
     const context: CreateChangesetContext = {
       client,
+      limit: flags.limit,
       accessToken: flags.token,
       spaceId: flags.space,
       sourceEnvironmentId: flags.source,
