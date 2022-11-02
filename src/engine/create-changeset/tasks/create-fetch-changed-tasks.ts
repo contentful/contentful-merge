@@ -5,7 +5,7 @@ import {chunk} from 'lodash'
 import {BaseContext, ChangedResult, EntryLink} from '../types'
 import type {CreateChangesetContext} from '../types'
 
-const BATCH_SIZE = 100
+const BATCH_SIZE = 200
 
 const format: (delta: Delta | undefined) => Patch = jsondiffpatch.formatters.jsonpatch.format
 

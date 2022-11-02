@@ -3,7 +3,7 @@ import {ListrTask} from 'listr2'
 import {chunk, pick} from 'lodash'
 import {CreateChangesetContext} from '../types'
 
-const BATCH_SIZE = 100
+const BATCH_SIZE = 200
 
 function cleanEntity(entry: Entry<any>): any {
   return {...entry, sys: pick(entry.sys, ['id', 'type', 'revision', 'contentType', 'locale'])}

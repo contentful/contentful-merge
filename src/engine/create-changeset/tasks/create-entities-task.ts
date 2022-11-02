@@ -3,7 +3,7 @@ import type {ListrTaskWrapper} from 'listr2'
 import {ListrTask} from 'listr2'
 import {CreateChangesetContext, EnvironmentScope} from '../types'
 
-const LIMIT = 100
+const LIMIT = 1000
 
 type ExecuteParams = {
   context: CreateChangesetContext,
