@@ -65,6 +65,8 @@ Overall 66 CDA and 0 CMA request were fired within 10.0 seconds.
 
 # Table of contents
 <!-- toc -->
+* [Statistics](#statistics)
+* [Table of contents](#table-of-contents)
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
@@ -84,16 +86,34 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`ccccli create`](#ccccli-create)
 * [`ccccli help [COMMAND]`](#ccccli-help-command)
-* [`ccccli plugins`](#ccccli-plugins)
-* [`ccccli plugins:install PLUGIN...`](#ccccli-pluginsinstall-plugin)
-* [`ccccli plugins:inspect PLUGIN...`](#ccccli-pluginsinspect-plugin)
-* [`ccccli plugins:install PLUGIN...`](#ccccli-pluginsinstall-plugin-1)
-* [`ccccli plugins:link PLUGIN`](#ccccli-pluginslink-plugin)
-* [`ccccli plugins:uninstall PLUGIN...`](#ccccli-pluginsuninstall-plugin)
-* [`ccccli plugins:uninstall PLUGIN...`](#ccccli-pluginsuninstall-plugin-1)
-* [`ccccli plugins:uninstall PLUGIN...`](#ccccli-pluginsuninstall-plugin-2)
-* [`ccccli plugins update`](#ccccli-plugins-update)
+
+## `ccccli create`
+
+Create Entries Changeset
+
+```
+USAGE
+  $ ccccli create --source <value> --target <value> --space <value> --token <value> [--inline]
+
+FLAGS
+  --inline          inline added entity payload
+  --source=<value>  (required) source environment id
+  --space=<value>   (required) space id
+  --target=<value>  (required) target environment id
+  --token=<value>   (required) cda token
+
+DESCRIPTION
+  Create Entries Changeset
+
+EXAMPLES
+  ./bin/dev create --space "<space-id>" --source "master>" --target "staging" --token "<cda-token>"
+
+  $ ccccli create --space "<space-id>" --source "master" --target "staging" --token "<cda-token>"
+```
+
+_See code: [dist/commands/create/index.ts](https://github.com/marcolink/ccccli/blob/v0.0.0/dist/commands/create/index.ts)_
 
 ## `ccccli help [COMMAND]`
 
@@ -114,234 +134,4 @@ DESCRIPTION
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.15/src/commands/help.ts)_
-
-## `ccccli plugins`
-
-List installed plugins.
-
-```
-USAGE
-  $ ccccli plugins [--core]
-
-FLAGS
-  --core  Show core plugins.
-
-DESCRIPTION
-  List installed plugins.
-
-EXAMPLES
-  $ ccccli plugins
-```
-
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.1.4/src/commands/plugins/index.ts)_
-
-## `ccccli plugins:install PLUGIN...`
-
-Installs a plugin into the CLI.
-
-```
-USAGE
-  $ ccccli plugins:install PLUGIN...
-
-ARGUMENTS
-  PLUGIN  Plugin to install.
-
-FLAGS
-  -f, --force    Run yarn install with force flag.
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-DESCRIPTION
-  Installs a plugin into the CLI.
-  Can be installed from npm or a git url.
-
-  Installation of a user-installed plugin will override a core plugin.
-
-  e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command
-  will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in
-  the CLI without the need to patch and update the whole CLI.
-
-
-ALIASES
-  $ ccccli plugins add
-
-EXAMPLES
-  $ ccccli plugins:install myplugin 
-
-  $ ccccli plugins:install https://github.com/someuser/someplugin
-
-  $ ccccli plugins:install someuser/someplugin
-```
-
-## `ccccli plugins:inspect PLUGIN...`
-
-Displays installation properties of a plugin.
-
-```
-USAGE
-  $ ccccli plugins:inspect PLUGIN...
-
-ARGUMENTS
-  PLUGIN  [default: .] Plugin to inspect.
-
-FLAGS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-DESCRIPTION
-  Displays installation properties of a plugin.
-
-EXAMPLES
-  $ ccccli plugins:inspect myplugin
-```
-
-## `ccccli plugins:install PLUGIN...`
-
-Installs a plugin into the CLI.
-
-```
-USAGE
-  $ ccccli plugins:install PLUGIN...
-
-ARGUMENTS
-  PLUGIN  Plugin to install.
-
-FLAGS
-  -f, --force    Run yarn install with force flag.
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-DESCRIPTION
-  Installs a plugin into the CLI.
-  Can be installed from npm or a git url.
-
-  Installation of a user-installed plugin will override a core plugin.
-
-  e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command
-  will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in
-  the CLI without the need to patch and update the whole CLI.
-
-
-ALIASES
-  $ ccccli plugins add
-
-EXAMPLES
-  $ ccccli plugins:install myplugin 
-
-  $ ccccli plugins:install https://github.com/someuser/someplugin
-
-  $ ccccli plugins:install someuser/someplugin
-```
-
-## `ccccli plugins:link PLUGIN`
-
-Links a plugin into the CLI for development.
-
-```
-USAGE
-  $ ccccli plugins:link PLUGIN
-
-ARGUMENTS
-  PATH  [default: .] path to plugin
-
-FLAGS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-DESCRIPTION
-  Links a plugin into the CLI for development.
-  Installation of a linked plugin will override a user-installed or core plugin.
-
-  e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello'
-  command will override the user-installed or core plugin implementation. This is useful for development work.
-
-
-EXAMPLES
-  $ ccccli plugins:link myplugin
-```
-
-## `ccccli plugins:uninstall PLUGIN...`
-
-Removes a plugin from the CLI.
-
-```
-USAGE
-  $ ccccli plugins:uninstall PLUGIN...
-
-ARGUMENTS
-  PLUGIN  plugin to uninstall
-
-FLAGS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-DESCRIPTION
-  Removes a plugin from the CLI.
-
-ALIASES
-  $ ccccli plugins unlink
-  $ ccccli plugins remove
-```
-
-## `ccccli plugins:uninstall PLUGIN...`
-
-Removes a plugin from the CLI.
-
-```
-USAGE
-  $ ccccli plugins:uninstall PLUGIN...
-
-ARGUMENTS
-  PLUGIN  plugin to uninstall
-
-FLAGS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-DESCRIPTION
-  Removes a plugin from the CLI.
-
-ALIASES
-  $ ccccli plugins unlink
-  $ ccccli plugins remove
-```
-
-## `ccccli plugins:uninstall PLUGIN...`
-
-Removes a plugin from the CLI.
-
-```
-USAGE
-  $ ccccli plugins:uninstall PLUGIN...
-
-ARGUMENTS
-  PLUGIN  plugin to uninstall
-
-FLAGS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-DESCRIPTION
-  Removes a plugin from the CLI.
-
-ALIASES
-  $ ccccli plugins unlink
-  $ ccccli plugins remove
-```
-
-## `ccccli plugins update`
-
-Update installed plugins.
-
-```
-USAGE
-  $ ccccli plugins update [-h] [-v]
-
-FLAGS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-DESCRIPTION
-  Update installed plugins.
-```
 <!-- commandsstop -->

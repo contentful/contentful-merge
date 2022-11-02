@@ -1,4 +1,4 @@
-import * as jsondiffpatch from '@contentful/jsondiffpatch'
+import {formatters as diffFormatters, create as createDiffer} from '@contentful/jsondiffpatch'
 import {Delta, Patch} from '@contentful/jsondiffpatch'
 import {ListrTask} from 'listr2'
 import {chunk} from 'lodash'
@@ -7,7 +7,7 @@ import type {CreateChangesetContext} from '../types'
 
 const BATCH_SIZE = 200
 
-const format: (delta: Delta | undefined) => Patch = jsondiffpatch.formatters.jsonpatch.format
+const format: (delta: Delta | undefined) => Patch = diffFormatters.jsonpatch.format
 
 const createLinkObject = (id: string): EntryLink => ({
   type: 'Link',
@@ -15,7 +15,7 @@ const createLinkObject = (id: string): EntryLink => ({
   id,
 })
 
-const entryDiff = jsondiffpatch.create({
+const entryDiff = createDiffer({
   propertyFilter: function (name: string) {
     return !['sys'].includes(name)
   },
