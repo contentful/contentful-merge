@@ -1,22 +1,12 @@
 import {create as createDiffer, Delta, formatters as diffFormatters, Patch} from '@contentful/jsondiffpatch'
 import {ListrTask} from 'listr2'
 import {chunk} from 'lodash'
-import {BaseChangeSetItem, ChangedChangeSetItem, ChangeSetChangeType, ChangesetEntityLink} from '../../types'
+import {ChangedChangeSetItem} from '../../types'
+import {createLinkObject} from '../../utils/create-link-object'
 import type {CreateChangesetContext} from '../types'
 import {BaseContext} from '../types'
 
 const format: (delta: Delta | undefined) => Patch = diffFormatters.jsonpatch.format
-
-const createLinkObject = <T extends ChangeSetChangeType>(id: string, changeType: T): ChangesetEntityLink & BaseChangeSetItem<T> => ({
-  changeType,
-  entity: {
-    sys: {
-      type: 'Link',
-      linkType: 'Entry',
-      id,
-    },
-  },
-})
 
 const entryDiff = createDiffer({
   propertyFilter: function (name: string) {
@@ -98,13 +88,7 @@ export const createFetchChangedTasks = (): ListrTask => {
         ...ids.removed.map(item => createLinkObject(item, 'deleted')),
         ...ids.added.map(item => createLinkObject(item, 'added')),
       )
-      /*
-        = {
-        removed: ids.removed.map(item => createLinkObject(item)),
-        added: ids.added.map(item => createLinkObject(item)),
-        changed: patches,
-      }
-         */
+
       return Promise.resolve(context)
     },
   }
