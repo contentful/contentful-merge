@@ -1,16 +1,21 @@
-import {formatters as diffFormatters, create as createDiffer} from '@contentful/jsondiffpatch'
-import {Delta, Patch} from '@contentful/jsondiffpatch'
+import {create as createDiffer, Delta, formatters as diffFormatters, Patch} from '@contentful/jsondiffpatch'
 import {ListrTask} from 'listr2'
 import {chunk} from 'lodash'
-import {BaseContext, ChangedResult, EntryLink} from '../types'
+import {BaseChangeSetItem, ChangedChangeSetItem, ChangeSetChangeType, ChangesetEntityLink} from '../../types'
 import type {CreateChangesetContext} from '../types'
+import {BaseContext} from '../types'
 
 const format: (delta: Delta | undefined) => Patch = diffFormatters.jsonpatch.format
 
-const createLinkObject = (id: string): EntryLink => ({
-  type: 'Link',
-  linkType: 'Entry',
-  id,
+const createLinkObject = <T extends ChangeSetChangeType>(id: string, changeType: T): ChangesetEntityLink & BaseChangeSetItem<T> => ({
+  changeType,
+  entity: {
+    sys: {
+      type: 'Link',
+      linkType: 'Entry',
+      id,
+    },
+  },
 })
 
 const entryDiff = createDiffer({
@@ -29,37 +34,42 @@ type GetEntryPatchParams = {
   entryIds: string[],
 }
 
-async function getEntriesPatches({context, source, target, entryIds}: GetEntryPatchParams): Promise<ChangedResult[]> {
+async function getEntriesPatches({
+  context,
+  source,
+  target,
+  entryIds,
+}: GetEntryPatchParams): Promise<ChangedChangeSetItem[]> {
   const {client: {cda}} = context
   const query = {'sys.id[in]': entryIds.join(','), locale: '*'}
 
   const sourceEntries = await cda.entries.getMany({environment: source, query}).then(response => response.items)
   const targetEntries = await cda.entries.getMany({environment: target, query}).then(response => response.items)
 
-  const patches: ChangedResult[] = []
+  const result: ChangedChangeSetItem[] = []
 
   for (const entryId of entryIds) {
     const sourceEntry = sourceEntries.find(entry => entry.sys.id === entryId)
     const targetEntry = targetEntries.find(entry => entry.sys.id === entryId)
 
     if (sourceEntry && targetEntry) {
-      patches.push(
+      result.push(
         {
-          entity: createLinkObject(entryId),
+          ...createLinkObject(entryId, 'changed'),
           patch: format(entryDiff.diff(sourceEntry, targetEntry)),
         },
       )
     }
   }
 
-  return patches
+  return result
 }
 
 export const createFetchChangedTasks = (): ListrTask => {
   return {
     title: 'Fetch full payload for changed entities',
     task: async (context: CreateChangesetContext, task) => {
-      const {ids, sourceEnvironmentId, changed, targetEnvironmentId, statistics, limit} = context
+      const {ids, sourceEnvironmentId, changed, targetEnvironmentId, statistics, limit, changeSet} = context
 
       task.title = `Fetch full payload for ${changed.length} changed entities`
 
@@ -84,11 +94,17 @@ export const createFetchChangedTasks = (): ListrTask => {
         patches.push(...withChange)
       }
 
-      context.changeset = {
+      changeSet.items.push(
+        ...ids.removed.map(item => createLinkObject(item, 'deleted')),
+        ...ids.added.map(item => createLinkObject(item, 'added')),
+      )
+      /*
+        = {
         removed: ids.removed.map(item => createLinkObject(item)),
         added: ids.added.map(item => createLinkObject(item)),
         changed: patches,
       }
+         */
       return Promise.resolve(context)
     },
   }

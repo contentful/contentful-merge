@@ -2,7 +2,7 @@ const contentful = require('contentful-management')
 const ora = require('ora')
 
 const SPACE = 'lnsjpb79eisl'
-const ENVIRONMENT = 'master'
+const ENVIRONMENT = 'test-clone'
 const CONTENT_TYPE = 'content'
 
 const client = contentful.createClient({

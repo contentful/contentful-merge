@@ -1,6 +1,7 @@
-import {Patch} from '@contentful/jsondiffpatch'
 import {createClient} from '../client'
+import {ChangeSet} from '../types'
 
+// TODO: move to ../types.ts
 export interface BaseContext {
   client: ReturnType<typeof createClient>
   accessToken: string,
@@ -24,17 +25,6 @@ export interface EnvironmentData {
 
 export type EnvironmentScope = 'source' | 'target'
 
-export interface EntryLink {
-    type: 'Link',
-    linkType: 'Entry',
-    id: string
-}
-
-export type ChangedResult = {
-  entity: EntryLink
-  patch: Patch
-}
-
 export interface CreateChangesetContext extends BaseContext {
   source: EnvironmentData,
   target: EnvironmentData,
@@ -44,7 +34,7 @@ export interface CreateChangesetContext extends BaseContext {
     removed: Array<string>,
   }
   changed: Array<Comparable>,
-  changeset?: any,
+  changeSet: ChangeSet,
   statistics: {
     nonChanged: number
   }

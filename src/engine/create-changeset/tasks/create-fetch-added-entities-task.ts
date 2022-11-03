@@ -12,13 +12,11 @@ export function createFetchAddedEntitiesTask(shouldExecute: boolean): ListrTask 
     title: 'Fetch full payload for added entities',
     skip: !shouldExecute,
     task: async (context: CreateChangesetContext, task) => {
-      const {client, ids: {added}, sourceEnvironmentId, changeset, limit} = context
+      const {client, ids: {added}, sourceEnvironmentId, changeSet, limit} = context
       task.title = `Fetch full payload for ${added.length} added entities`
 
       const idChunks = chunk(added, limit)
       let iterator = 0
-
-      changeset.added = []
 
       for (const chunk of idChunks) {
         task.output = `Fetching ${limit} entities ${++iterator * limit}/${added.length}`
@@ -28,7 +26,7 @@ export function createFetchAddedEntitiesTask(shouldExecute: boolean): ListrTask 
           environment: sourceEnvironmentId,
           query,
         }).then(response => response.items)
-        changeset.added.push(...entries.map(entry => cleanEntity(entry)))
+        changeSet.items.push(...entries.map(entry => cleanEntity(entry)))
       }
     },
   }
