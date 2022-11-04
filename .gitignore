@@ -11,3 +11,4 @@ oclif.manifest.json
 .idea
 changeset.json
 .env
+.commands

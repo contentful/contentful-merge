@@ -5,7 +5,7 @@ import {createFetchAddedEntitiesTask} from './tasks/create-fetch-added-entities-
 import {createFetchChangedTasks} from './tasks/create-fetch-changed-tasks'
 import {CreateChangesetContext} from './types'
 
-export const createChangesetTask = (context: CreateChangesetContext) => {
+export const createChangesetTask = (context: CreateChangesetContext): Listr => {
   return new Listr<CreateChangesetContext>(
     [
       {

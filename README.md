@@ -62,6 +62,10 @@ The resulting changeset has 1 removed, 0 added and 199 changed entries.
 Overall 66 CDA and 0 CMA request were fired within 10.0 seconds.
 ```
 
+### Next steps
+- [ ] use worker thread to compute ids
+- [ ] more entities (`Asset`, `EditorInterface`, `ContentType`)
+- [ ] Apply ChangeSet to target environment, following the right order.
 
 # Table of contents
 <!-- toc -->

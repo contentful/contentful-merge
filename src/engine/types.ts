@@ -1,7 +1,7 @@
 import {Patch} from '@contentful/jsondiffpatch'
 
 export type ChangeSetChangeType = 'deleted' | 'added' | 'changed'
-type ChangeSetItemType = 'Entry' | 'Asset' | 'ContentType'
+type ChangeSetItemType = 'Entry' | 'Asset' | 'ContentType' | 'EditorInterface'
 
 export interface EntityLink {
   type: 'Link',
@@ -22,7 +22,9 @@ export type ChangesetEntityLink = {
 export type DeletedChangeSetItem = BaseChangeSetItem<'deleted'> & ChangesetEntityLink
 
 // TODO: alternative version for inline payloads
-export type AddedChangeSetItem = BaseChangeSetItem<'added'> & ChangesetEntityLink
+export type AddedChangeSetItem = BaseChangeSetItem<'added'> & ChangesetEntityLink & {
+  data?: any
+}
 
 export type ChangedChangeSetItem = BaseChangeSetItem<'changed'> & ChangesetEntityLink & {
   patch: Patch

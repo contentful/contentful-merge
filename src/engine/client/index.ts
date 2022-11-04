@@ -1,10 +1,11 @@
 import axios from 'axios'
+import {EntryProps} from 'contentful-management'
 import {createHttpClient} from 'contentful-sdk-core'
 import {Entry, EntryCollection} from 'contentful'
 import {pickBy} from 'lodash'
 
 type CreateClientParams = {
-  space: string, accessToken: string
+  space: string, cdaToken: string, cmaToken: string
 }
 
 type PageAbleParam = {
@@ -25,24 +26,24 @@ type GetEntryParams = ParamEnvironment & { entryId: string, query?: EntriesQuery
 
 const cleanQuery = (query?: Record<string, any>) => pickBy(query, v => v !== undefined)
 
-export const createClient = ({space, accessToken}: CreateClientParams) => {
+export const createClient = ({space, cdaToken, cmaToken}: CreateClientParams) => {
   const cdaClient = createHttpClient(axios, {
-    accessToken,
+    accessToken: cdaToken,
     space,
     throttle: 'auto',
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${cdaToken}`,
       'Content-Type': 'application/vnd.contentful.delivery.v1+json',
     },
     baseURL: `https://cdn.contentful.com/spaces/${space}/environments/`,
   })
 
   const cmaClient = createHttpClient(axios, {
-    accessToken,
+    accessToken: cmaToken,
     space,
     throttle: 'auto',
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${cmaToken}`,
       'Content-Type': 'application/vnd.contentful.management.v1+json',
     },
     baseURL: `https://api.contentful.com/spaces/${space}/environments/`,
@@ -70,7 +71,7 @@ export const createClient = ({space, accessToken}: CreateClientParams) => {
           const result = await cmaClient.get(`${environment}/entries/${entryId}`, {
             params: {...cleanQuery(query)},
           })
-          return result.data as Entry<any>
+          return result.data as EntryProps<any>
         },
       },
     },

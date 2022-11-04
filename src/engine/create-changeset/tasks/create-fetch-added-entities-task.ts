@@ -20,13 +20,19 @@ export function createFetchAddedEntitiesTask(shouldExecute: boolean): ListrTask 
 
       for (const chunk of idChunks) {
         task.output = `Fetching ${limit} entities ${++iterator * limit}/${added.length}`
-        const query = {'sys.id[in]': chunk.join(','), locale: '*'}
+        const query = {'sys.id[in]': chunk.join(','), locale: '*', limit}
         // eslint-disable-next-line no-await-in-loop
         const entries = await client.cda.entries.getMany({
           environment: sourceEnvironmentId,
           query,
         }).then(response => response.items)
-        changeSet.items.push(...entries.map(entry => cleanEntity(entry)))
+
+        for (const entry of entries) {
+          const item = changeSet.items.find(item => item.entity.sys.id === entry.sys.id)
+          if (item && item.changeType === 'added') {
+            item.data = cleanEntity(entry)
+          }
+        }
       }
     },
   }

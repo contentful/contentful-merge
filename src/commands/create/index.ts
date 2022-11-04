@@ -19,7 +19,8 @@ export default class Create extends Command {
     source: Flags.string({description: 'source environment id', required: true}),
     target: Flags.string({description: 'target environment id', required: true}),
     space: Flags.string({description: 'space id', required: true}),
-    token: Flags.string({description: 'cda token', required: true}),
+    cmaToken: Flags.string({description: 'cma token', required: false, env: 'CMA_TOKEN'}),
+    cdaToken: Flags.string({description: 'cda token', required: false, env: 'CDA_TOKEN'}),
     inline: Flags.boolean({description: 'inline added entity payload', required: false}),
     limit: Flags.integer({description: 'Limit parameter for collection endpoints', required: false, default: 200}),
   }
@@ -28,7 +29,8 @@ export default class Create extends Command {
     const {flags} = await this.parse(Create)
 
     const client = createClient({
-      accessToken: flags.token,
+      cdaToken: flags.cdaToken!,
+      cmaToken: flags.cmaToken!,
       space: flags.space,
     })
 
