@@ -1,4 +1,6 @@
 import {Patch} from '@contentful/jsondiffpatch'
+import {createClient} from './client'
+import {ILogger} from './logger/types'
 
 export type ChangeSetChangeType = 'deleted' | 'added' | 'changed'
 type ChangeSetItemType = 'Entry' | 'Asset' | 'ContentType' | 'EditorInterface'
@@ -21,7 +23,6 @@ export type ChangesetEntityLink = {
 
 export type DeletedChangeSetItem = BaseChangeSetItem<'deleted'> & ChangesetEntityLink
 
-// TODO: alternative version for inline payloads
 export type AddedChangeSetItem = BaseChangeSetItem<'added'> & ChangesetEntityLink & {
   data?: any
 }
@@ -54,4 +55,11 @@ export type ChangeSet = {
     }
   },
   items: Array<ChangeSetItem>
+}
+export interface BaseContext {
+  client: ReturnType<typeof createClient>
+  logger: ILogger,
+  accessToken: string,
+  spaceId: string,
+  limit: number,
 }

@@ -1,6 +1,7 @@
 import {Entry} from 'contentful'
 import {ListrTask} from 'listr2'
 import {chunk, pick} from 'lodash'
+import {LogLevel} from '../../logger/types'
 import {CreateChangesetContext} from '../types'
 
 function cleanEntity(entry: Entry<any>): any {
@@ -12,7 +13,9 @@ export function createFetchAddedEntitiesTask(shouldExecute: boolean): ListrTask 
     title: 'Fetch full payload for added entities',
     skip: !shouldExecute,
     task: async (context: CreateChangesetContext, task) => {
-      const {client, ids: {added}, sourceEnvironmentId, changeSet, limit} = context
+      const {client, ids: {added}, sourceEnvironmentId, changeSet, limit, logger} = context
+      logger.log(LogLevel.INFO,  'Start createFetchAddedEntitiesTask')
+
       task.title = `Fetch full payload for ${added.length} added entities`
 
       const idChunks = chunk(added, limit)

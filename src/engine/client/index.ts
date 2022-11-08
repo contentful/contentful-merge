@@ -1,11 +1,13 @@
 import axios from 'axios'
+import {Entry, EntryCollection} from 'contentful'
 import {EntryProps} from 'contentful-management'
 import {createHttpClient} from 'contentful-sdk-core'
-import {Entry, EntryCollection} from 'contentful'
 import {pickBy} from 'lodash'
+import {ClientLogHandler} from '../logger/types'
 
 type CreateClientParams = {
-  space: string, cdaToken: string, cmaToken: string
+  space: string, cdaToken: string, cmaToken: string,
+  logHandler: ClientLogHandler,
 }
 
 type PageAbleParam = {
@@ -23,10 +25,11 @@ type EntriesQuery = {
 
 type GetEntriesParams = ParamEnvironment & { query?: EntriesQuery & PageAbleParam & Record<string, any> }
 type GetEntryParams = ParamEnvironment & { entryId: string, query?: EntriesQuery }
+type DeleteEntryParams = ParamEnvironment & { entryId: string }
 
 const cleanQuery = (query?: Record<string, any>) => pickBy(query, v => v !== undefined)
 
-export const createClient = ({space, cdaToken, cmaToken}: CreateClientParams) => {
+export const createClient = ({space, cdaToken, cmaToken, logHandler}: CreateClientParams) => {
   const cdaClient = createHttpClient(axios, {
     accessToken: cdaToken,
     space,
@@ -36,6 +39,7 @@ export const createClient = ({space, cdaToken, cmaToken}: CreateClientParams) =>
       'Content-Type': 'application/vnd.contentful.delivery.v1+json',
     },
     baseURL: `https://cdn.contentful.com/spaces/${space}/environments/`,
+    logHandler: (level, data) => logHandler(level, data),
   })
 
   const cmaClient = createHttpClient(axios, {
@@ -47,6 +51,7 @@ export const createClient = ({space, cdaToken, cmaToken}: CreateClientParams) =>
       'Content-Type': 'application/vnd.contentful.management.v1+json',
     },
     baseURL: `https://api.contentful.com/spaces/${space}/environments/`,
+    logHandler: (level, data) => logHandler(level, data),
   })
 
   const count = {
@@ -72,6 +77,15 @@ export const createClient = ({space, cdaToken, cmaToken}: CreateClientParams) =>
             params: {...cleanQuery(query)},
           })
           return result.data as EntryProps<any>
+        },
+        unpublish: async ({environment, entryId}: DeleteEntryParams) => {
+          count.cma++
+          const result = await cmaClient.delete(`${environment}/entries/${entryId}/published`)
+          return result.data as EntryProps<any>
+        },
+        delete: async ({environment, entryId}: DeleteEntryParams) => {
+          count.cma++
+          await cmaClient.delete(`${environment}/entries/${entryId}`)
         },
       },
     },

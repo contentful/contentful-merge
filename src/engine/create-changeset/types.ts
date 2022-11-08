@@ -1,15 +1,4 @@
-import {createClient} from '../client'
-import {ChangeSet} from '../types'
-
-// TODO: move to ../types.ts
-export interface BaseContext {
-  client: ReturnType<typeof createClient>
-  accessToken: string,
-  spaceId: string,
-  sourceEnvironmentId: string,
-  targetEnvironmentId: string,
-  limit: number,
-}
+import {BaseContext, ChangeSet} from '../types'
 
 export interface Comparable {
   sys: {
@@ -26,6 +15,8 @@ export interface EnvironmentData {
 export type EnvironmentScope = 'source' | 'target'
 
 export interface CreateChangesetContext extends BaseContext {
+  sourceEnvironmentId: string,
+  targetEnvironmentId: string,
   source: EnvironmentData,
   target: EnvironmentData,
   inline: boolean,

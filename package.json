@@ -5,7 +5,8 @@
   "author": "Marco Link @marcolink",
   "private": true,
   "bin": {
-    "ccccli": "./bin/run"
+    "ccccli": "./bin/run",
+    "ccccli-dev": "./bin/dev"
   },
   "homepage": "https://github.com/marcolink/ccccli",
   "license": "MIT",

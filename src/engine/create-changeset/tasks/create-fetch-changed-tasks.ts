@@ -1,10 +1,10 @@
 import {create as createDiffer, Delta, formatters as diffFormatters, Patch} from '@contentful/jsondiffpatch'
 import {ListrTask} from 'listr2'
 import {chunk} from 'lodash'
-import {ChangedChangeSetItem} from '../../types'
+import {LogLevel} from '../../logger/types'
+import {BaseContext, ChangedChangeSetItem} from '../../types'
 import {createLinkObject} from '../../utils/create-link-object'
 import type {CreateChangesetContext} from '../types'
-import {BaseContext} from '../types'
 
 const format: (delta: Delta | undefined) => Patch = diffFormatters.jsonpatch.format
 
@@ -59,8 +59,8 @@ export const createFetchChangedTasks = (): ListrTask => {
   return {
     title: 'Fetch full payload for changed entities',
     task: async (context: CreateChangesetContext, task) => {
-      const {ids, sourceEnvironmentId, changed, targetEnvironmentId, statistics, limit, changeSet} = context
-
+      const {ids, sourceEnvironmentId, changed, targetEnvironmentId, statistics, limit, changeSet, logger} = context
+      logger.log(LogLevel.INFO, 'Start createFetchAddedEntitiesTask')
       task.title = `Fetch full payload for ${changed.length} changed entities`
 
       const patches: any[] = []

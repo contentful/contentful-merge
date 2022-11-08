@@ -1,6 +1,7 @@
 import {Entry} from 'contentful'
 import type {ListrTaskWrapper} from 'listr2'
 import {ListrTask} from 'listr2'
+import {LogLevel} from '../../logger/types'
 import {CreateChangesetContext, EnvironmentScope} from '../types'
 
 const LIMIT = 1000
@@ -46,6 +47,7 @@ export function createEntitiesTask(scope: EnvironmentScope, environmentId: strin
   return {
     title: `${scope} environment "${environmentId}" with (${LIMIT} entities/request)`,
     task: async (context: CreateChangesetContext, task) => {
+      context.logger.log(LogLevel.INFO, 'Start createEntitiesTask')
       return execute({context, task, scope, environmentId})
     },
   }
