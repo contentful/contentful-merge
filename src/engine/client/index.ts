@@ -37,7 +37,7 @@ export const createClient = ({space, cdaToken, cmaToken, logHandler}: CreateClie
   const cdaClient = createHttpClient(axios, {
     accessToken: cdaToken,
     space,
-    throttle: 'auto',
+    throttle: 30,
     headers: {
       Authorization: `Bearer ${cdaToken}`,
       'Content-Type': 'application/vnd.contentful.delivery.v1+json',

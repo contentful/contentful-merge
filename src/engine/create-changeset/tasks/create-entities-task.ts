@@ -1,6 +1,7 @@
 import {Entry} from 'contentful'
 import type {ListrTaskWrapper} from 'listr2'
 import {ListrTask} from 'listr2'
+import pLimit from 'p-limit'
 import {LogLevel} from '../../logger/types'
 import {CreateChangesetContext, EnvironmentScope} from '../types'
 
@@ -23,8 +24,10 @@ const execute = async ({context, environmentId, scope, task}: ExecuteParams) => 
   const result: Entry<any>[] = []
   const iterations = Math.ceil(total / LIMIT)
 
+  const limiter = pLimit(7)
+
   for (let i = 0; i < iterations; i++) {
-    promises.push(Promise.resolve().then(async () => {
+    promises.push(limiter(async () => {
       const response = await cda.entries.getMany({
         environment: environmentId,
         query: {select: ['sys.id', 'sys.updatedAt', 'sys.revision'], limit: LIMIT, skip: LIMIT * i},
@@ -32,7 +35,8 @@ const execute = async ({context, environmentId, scope, task}: ExecuteParams) => 
       requestsDone++
       task.output = `fetching ${requestsDone * LIMIT}/${total} entities`
       result.push(...response.items)
-    }))
+    },
+    ))
   }
 
   await Promise.all(promises)

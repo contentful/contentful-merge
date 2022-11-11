@@ -62,6 +62,7 @@ export const createFetchChangedTasks = (): ListrTask => {
       const {ids, sourceEnvironmentId, changed, targetEnvironmentId, statistics, limit, changeSet} = context
       task.title = `Fetch full payload for ${changed.length} changed entities`
 
+      // TODO: use pLimit
       const idChunks = chunk(changed.map(c => c.sys.id), limit)
 
       let iterator = 0

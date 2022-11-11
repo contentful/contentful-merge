@@ -1,4 +1,6 @@
 import {Listr} from 'listr2'
+import {createCallbackTask} from '../callback-task'
+import {ClientPerformanceObserver} from '../client/client-performance-observer'
 import {createComputeIdsTask} from './tasks/create-compute-ids-task'
 import {createEntitiesTask} from './tasks/create-entities-task'
 import {createFetchAddedEntitiesTask} from './tasks/create-fetch-added-entities-task'
@@ -9,16 +11,22 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
   return new Listr<CreateChangesetContext>(
     [
       {
-        title: 'Fetch environment entities',
-        task: (ctx, task): Listr =>
-          task.newListr([
+        title: 'Create Changeset',
+        task: (ctx, task): Listr => {
+          const performanceObserver = new ClientPerformanceObserver(ctx.client)
+          performanceObserver.start(payload => {
+            task.title = `Create Changeset (CMA: ${payload.cma}, CDA: ${payload.cda})`
+          })
+          return task.newListr([
             createEntitiesTask('source', ctx.sourceEnvironmentId),
             createEntitiesTask('target', ctx.targetEnvironmentId),
-          ], {concurrent: true}),
+            createComputeIdsTask(),
+            createFetchChangedTasks(),
+            createFetchAddedEntitiesTask(context.inline),
+            createCallbackTask(() => performanceObserver.stop()),
+          ], {concurrent: false})
+        },
       },
-      createComputeIdsTask(),
-      createFetchChangedTasks(),
-      createFetchAddedEntitiesTask(context.inline),
     ],
     {
       ctx: context,

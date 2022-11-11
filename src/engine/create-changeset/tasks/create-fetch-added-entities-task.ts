@@ -18,6 +18,7 @@ export function createFetchAddedEntitiesTask(shouldExecute: boolean): ListrTask 
 
       task.title = `Fetch full payload for ${added.length} added entities`
 
+      // TODO: use pLimit
       const idChunks = chunk(added, limit)
       let iterator = 0
 

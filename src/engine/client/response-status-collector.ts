@@ -1,8 +1,10 @@
 export class ResponseStatusCollector {
   private data: Map<string, any[]>
+  private count: number
 
   constructor() {
     this.data = new Map<string, any[]>()
+    this.count = 0
   }
 
   add(status: string, value: any) {
@@ -11,6 +13,7 @@ export class ResponseStatusCollector {
     }
 
     this.data.get(status)?.push(value)
+    this.count++
   }
 
   get codes() {
@@ -18,11 +21,7 @@ export class ResponseStatusCollector {
   }
 
   get errorsLength() {
-    // eslint-disable-next-line unicorn/no-array-reduce
-    return [...this.data.keys()].reduce((previousValue:number, key:string) => {
-      previousValue += this.data.get(key)?.length || 0
-      return previousValue
-    }, 0)
+    return this.count
   }
 
   toString() {

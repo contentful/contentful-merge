@@ -8,6 +8,7 @@ import {createTransformHandler} from '../../engine/logger/create-transform-handl
 import {MemoryLogger} from '../../engine/logger/memory-logger'
 import {writeLog} from '../../engine/logger/write-log'
 import {createChangeset} from '../../engine/utils/create-changeset'
+import {OutputFormatter} from '../../engine/utils/output-formatter'
 
 export default class Apply extends Command {
   static description = 'Apply Changeset'
@@ -64,20 +65,19 @@ export default class Apply extends Command {
 
     const duration = ((endTime - startTime) / 1000).toFixed(1)
     const usedMemory = process.memoryUsage().heapUsed / 1024 / 1024
-    const formatNumber = chalk.yellow.bold
 
     const logFilePath = await writeLog(result.logger)
     let output = '\n'
     output += chalk.underline.bold('Changeset successfully applied 🎉')
-    output += `\nApplied a changeset with ${formatNumber(context.changeSet.items.length)} changes to ${flags.environment}`
-    output += `\nOverall ${formatNumber(client.requestCounts().cda)} CDA and `
-    output += `${formatNumber(client.requestCounts().cma)} CMA request were fired within ${formatNumber(duration)} seconds.`
-    output += `\nThe process used approximately ${formatNumber(usedMemory.toFixed(2))} MB memory.`
+    output += `\nApplied a changeset with ${OutputFormatter.formatNumber(context.changeSet.items.length)} changes to ${flags.environment}`
+    output += `\nOverall ${OutputFormatter.formatNumber(client.requestCounts().cda)} CDA and `
+    output += `${OutputFormatter.formatNumber(client.requestCounts().cma)} CMA request were fired within ${OutputFormatter.formatNumber(duration)} seconds.`
+    output += `\nThe process used approximately ${OutputFormatter.formatNumber(usedMemory.toFixed(2))} MB memory.`
     output += '\n'
     output += `\n📖 ${logFilePath}`
 
     console.log(output)
 
-    console.log(responseCollector.toString())
+    // console.log(responseCollector.toString())
   }
 }
