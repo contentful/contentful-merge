@@ -30,7 +30,7 @@ export default class Apply extends Command {
   async run(): Promise<void> {
     const {flags, args} = await this.parse(Apply)
 
-    const logger = new MemoryLogger('info')
+    const logger = new MemoryLogger('apply-changeset')
     const logHandler = createTransformHandler(logger)
 
     const client = createClient({
@@ -61,21 +61,15 @@ export default class Apply extends Command {
     const usedMemory = process.memoryUsage().heapUsed / 1024 / 1024
     const formatNumber = chalk.yellow.bold
 
-    await writeLog(result.logger)
-    /*
+    const logFilePath = await writeLog(result.logger)
     let output = '\n'
-    output += chalk.underline.bold('Changeset successfully created 🎉')
-    output += '\nCreated a new changeset for 2 environments '
-    output += `with ${formatNumber(result.source.ids.length)} source `
-    output += `entities and ${formatNumber(result.target.ids.length)} target entities. `
-    output += `\nThe resulting changeset has ${formatNumber(changeSetItemsCount(result.changeSet, 'deleted'))} removed, `
-    output += `${formatNumber(changeSetItemsCount(result.changeSet, 'added'))} added and `
-    output += `${formatNumber(changeSetItemsCount(result.changeSet, 'changed'))} changed entries.`
-    output += `\n${formatNumber(result.statistics.nonChanged)} entities were detected with a different ${chalk.gray('sys.changedAt')} date, but were identical.`
+    output += chalk.underline.bold('Changeset successfully applied 🎉')
+    output += `\nApplied a changeset with ${formatNumber(context.changeSet.items.length)} changes to ${flags.environment}`
     output += `\nOverall ${formatNumber(client.requestCounts().cda)} CDA and `
     output += `${formatNumber(client.requestCounts().cma)} CMA request were fired within ${formatNumber(duration)} seconds.`
     output += `\nThe process used approximately ${formatNumber(usedMemory.toFixed(2))} MB memory.`
+    output += '\n'
+    output += `\n📖 ${logFilePath}`
     console.log(output)
-     */
   }
 }

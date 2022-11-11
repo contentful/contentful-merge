@@ -18,10 +18,6 @@ export const createRemoveEntitiesTask = (): ListrTask => {
       for (const id of ids) {
         task.output = `deleting entity ${++counter}/${entityCount}`
 
-        if (counter > 2) {
-          return
-        }
-
         try {
           // eslint-disable-next-line no-await-in-loop
           const serverEntity = await client.cma.entries.get({entryId: id, environment: environmentId})
@@ -44,7 +40,7 @@ export const createRemoveEntitiesTask = (): ListrTask => {
           logger.log(LogLevel.INFO, `entry ${id} successfully deleted`)
         } catch (error: any) {
           task.output = error.toString()
-          logger.log(LogLevel.ERROR, error)
+          logger.log(LogLevel.ERROR, `createRemoveEntitiesTask ${error}`)
         }
       }
     },

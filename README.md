@@ -63,9 +63,15 @@ Overall 66 CDA and 0 CMA request were fired within 10.0 seconds.
 ```
 
 ### Next steps
-- [ ] use worker thread to compute ids
-- [ ] more entities (`Asset`, `EditorInterface`, `ContentType`)
-- [ ] Apply ChangeSet to target environment, following the right order.
+- General
+  - [ ] more entities (`Asset`, `EditorInterface`, `ContentType`)
+  - [ ] more logging
+- Create
+  - [ ] use worker thread to compute ids
+- Apply
+  - [ ] Gracefully fail when change not applicable
+  - [x] General result message
+  - [ ] Apply ChangeSet to target environment, following the right order.
 
 # Table of contents
 <!-- toc -->

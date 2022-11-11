@@ -27,7 +27,7 @@ const execute = async ({context, environmentId, scope, task}: ExecuteParams) => 
     promises.push(Promise.resolve().then(async () => {
       const response = await cda.entries.getMany({
         environment: environmentId,
-        query: {select: ['sys.id', 'sys.updatedAt'], limit: LIMIT, skip: LIMIT * i},
+        query: {select: ['sys.id', 'sys.updatedAt', 'sys.revision'], limit: LIMIT, skip: LIMIT * i},
       })
       requestsDone++
       task.output = `fetching ${requestsDone * LIMIT}/${total} entities`

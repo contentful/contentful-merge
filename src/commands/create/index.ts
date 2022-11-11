@@ -1,5 +1,6 @@
 import {Command, Flags} from '@oclif/core'
 import chalk from 'chalk'
+import path from 'node:path'
 import {createClient} from '../../engine/client'
 import {createChangesetTask} from '../../engine/create-changeset'
 import {CreateChangesetContext} from '../../engine/create-changeset/types'
@@ -24,15 +25,14 @@ export default class Create extends Command {
     space: Flags.string({description: 'space id', required: true}),
     cmaToken: Flags.string({description: 'cma token', required: false, env: 'CMA_TOKEN'}),
     cdaToken: Flags.string({description: 'cda token', required: false, env: 'CDA_TOKEN'}),
-    inline: Flags.boolean({description: 'inline added entity payload', required: false}),
+    light: Flags.boolean({description: 'only creates link object for added entities', required: false}),
     limit: Flags.integer({description: 'Limit parameter for collection endpoints', required: false, default: 200}),
   }
 
   async run(): Promise<void> {
     const {flags} = await this.parse(Create)
 
-    const logger = new MemoryLogger('info')
-
+    const logger = new MemoryLogger('create-changeset')
     const logHandler = createTransformHandler(logger)
 
     const client = createClient({
@@ -50,7 +50,7 @@ export default class Create extends Command {
       spaceId: flags.space,
       sourceEnvironmentId: flags.source,
       targetEnvironmentId: flags.target,
-      inline: flags.inline,
+      inline: !flags.light,
       source: {comparables: [], ids: []},
       target: {comparables: [], ids: []},
       ids: {
@@ -76,6 +76,11 @@ export default class Create extends Command {
 
     const formatNumber = chalk.yellow.bold
 
+    // const changesetFilePath = path.join(process.cwd(), `changeset-${new Date().toISOString()}-${flags.source}_${flags.target}.json`)
+    const changesetFilePath = path.join(process.cwd(), 'changeset.json')
+    await fs.writeFile(changesetFilePath, JSON.stringify(result.changeSet, null, 2))
+    const logFilePath = await writeLog(result.logger)
+
     let output = '\n'
     output += chalk.underline.bold('Changeset successfully created 🎉')
     output += '\nCreated a new changeset for 2 environments '
@@ -84,13 +89,14 @@ export default class Create extends Command {
     output += `\nThe resulting changeset has ${formatNumber(changeSetItemsCount(result.changeSet, 'deleted'))} removed, `
     output += `${formatNumber(changeSetItemsCount(result.changeSet, 'added'))} added and `
     output += `${formatNumber(changeSetItemsCount(result.changeSet, 'changed'))} changed entries.`
-    output += `\n${formatNumber(result.statistics.nonChanged)} entities were detected with a different ${chalk.gray('sys.changedAt')} date, but were identical.`
+    output += `\n${formatNumber(result.statistics.nonChanged)} entities were detected with a different ${chalk.gray('sys.updatedAt')} date, but were identical.`
     output += `\nOverall ${formatNumber(client.requestCounts().cda)} CDA and `
     output += `${formatNumber(client.requestCounts().cma)} CMA request were fired within ${formatNumber(duration)} seconds.`
     output += `\nThe process used approximately ${formatNumber(usedMemory.toFixed(2))} MB memory.`
-    console.log(output)
+    output += '\n'
+    output += `\n💾 ${changesetFilePath}`
+    output += `\n📖 ${logFilePath}`
 
-    await fs.writeFile('./changeset.json', JSON.stringify(result.changeSet, null, 2))
-    await writeLog(result.logger)
+    console.log(output)
   }
 }

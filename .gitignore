@@ -1,5 +1,6 @@
 *-debug.log
 *-error.log
+*.log
 /.nyc_output
 /dist
 /lib
@@ -10,5 +11,6 @@ node_modules
 oclif.manifest.json
 .idea
 changeset.json
+changeset-*.json
 .env
 .commands

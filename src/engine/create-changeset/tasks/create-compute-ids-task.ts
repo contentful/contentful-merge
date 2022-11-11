@@ -2,7 +2,7 @@ import {ListrTask} from 'listr2'
 import {LogLevel} from '../../logger/types'
 import {CreateChangesetContext} from '../types'
 
-export const createComputeIdsTask = ():ListrTask => {
+export const createComputeIdsTask = (): ListrTask => {
   return {
     task: async (context: CreateChangesetContext) => {
       const {source, target, logger} = context
@@ -10,13 +10,10 @@ export const createComputeIdsTask = ():ListrTask => {
 
       const added = new Set(source.ids.filter(item => !target.ids.includes(item)))
       const removed = new Set(target.ids.filter(item => !source.ids.includes(item)))
-      const changed = target.comparables.filter(item => {
-        const {id, updatedAt} = item.sys
-        if (added.has(id) || removed.has(id)) {
-          return false
-        }
 
-        return updatedAt !== source.comparables.find(value => value.sys.id === id)?.sys.updatedAt
+      const changed = target.comparables.filter(targetComparable => {
+        const sourceComparable = source.comparables.find(value => value.sys.id === targetComparable.sys.id)
+        return targetComparable.sys.updatedAt !== sourceComparable?.sys.updatedAt
       })
 
       context.ids = {added: [...added], removed: [...removed]}

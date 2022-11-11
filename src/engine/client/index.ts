@@ -26,6 +26,9 @@ type EntriesQuery = {
 type GetEntriesParams = ParamEnvironment & { query?: EntriesQuery & PageAbleParam & Record<string, any> }
 type GetEntryParams = ParamEnvironment & { entryId: string, query?: EntriesQuery }
 type DeleteEntryParams = ParamEnvironment & { entryId: string }
+type CreateEntryParams = ParamEnvironment & { entryId: string, contentType: string, entry: Omit<EntryProps, 'sys'> }
+type UpdateEntryParams = ParamEnvironment & { entryId: string, contentType: string, entry: EntryProps }
+type PublishEntryParams = ParamEnvironment & { entryId: string, entry: EntryProps }
 
 const cleanQuery = (query?: Record<string, any>) => pickBy(query, v => v !== undefined)
 
@@ -39,7 +42,7 @@ export const createClient = ({space, cdaToken, cmaToken, logHandler}: CreateClie
       'Content-Type': 'application/vnd.contentful.delivery.v1+json',
     },
     baseURL: `https://cdn.contentful.com/spaces/${space}/environments/`,
-    logHandler: (level, data) => logHandler(level, data),
+    logHandler: (level, data) => logHandler(level, `CDA ${data}`),
   })
 
   const cmaClient = createHttpClient(axios, {
@@ -51,7 +54,7 @@ export const createClient = ({space, cdaToken, cmaToken, logHandler}: CreateClie
       'Content-Type': 'application/vnd.contentful.management.v1+json',
     },
     baseURL: `https://api.contentful.com/spaces/${space}/environments/`,
-    logHandler: (level, data) => logHandler(level, data),
+    logHandler: (level, data) => logHandler(level, `CMA ${data}`),
   })
 
   const count = {
@@ -86,6 +89,32 @@ export const createClient = ({space, cdaToken, cmaToken, logHandler}: CreateClie
         delete: async ({environment, entryId}: DeleteEntryParams) => {
           count.cma++
           await cmaClient.delete(`${environment}/entries/${entryId}`)
+        },
+        create: async ({environment, entry, entryId, contentType}: CreateEntryParams) => {
+          count.cma++
+          const result = await cmaClient.put(`${environment}/entries/${entryId}`, entry, {
+            headers: {
+              'X-Contentful-Content-Type': contentType,
+            },
+          })
+          return result.data as EntryProps<any>
+        },
+        update: async ({environment, entry, entryId}: UpdateEntryParams) => {
+          count.cma++
+          const result = await cmaClient.put(`${environment}/entries/${entryId}`, entry, {
+            headers: {
+              'X-Contentful-Version': entry.sys.version,
+            },
+          })
+          return result.data as EntryProps<any>
+        },
+        publish: async ({environment, entry, entryId}: PublishEntryParams) => {
+          count.cma++
+          await cmaClient.put(`${environment}/entries/${entryId}/published`, entry, {
+            headers: {
+              'X-Contentful-Version': entry.sys.version,
+            },
+          })
         },
       },
     },

@@ -1,7 +1,6 @@
 import {create as createDiffer, Delta, formatters as diffFormatters, Patch} from '@contentful/jsondiffpatch'
 import {ListrTask} from 'listr2'
 import {chunk} from 'lodash'
-import {LogLevel} from '../../logger/types'
 import {BaseContext, ChangedChangeSetItem} from '../../types'
 import {createLinkObject} from '../../utils/create-link-object'
 import type {CreateChangesetContext} from '../types'
@@ -43,10 +42,11 @@ async function getEntriesPatches({
     const targetEntry = targetEntries.find(entry => entry.sys.id === entryId)
 
     if (sourceEntry && targetEntry) {
+      const patch = format(entryDiff.diff(sourceEntry, targetEntry))
       result.push(
         {
           ...createLinkObject(entryId, 'changed'),
-          patch: format(entryDiff.diff(sourceEntry, targetEntry)),
+          patch,
         },
       )
     }
@@ -59,11 +59,8 @@ export const createFetchChangedTasks = (): ListrTask => {
   return {
     title: 'Fetch full payload for changed entities',
     task: async (context: CreateChangesetContext, task) => {
-      const {ids, sourceEnvironmentId, changed, targetEnvironmentId, statistics, limit, changeSet, logger} = context
-      logger.log(LogLevel.INFO, 'Start createFetchAddedEntitiesTask')
+      const {ids, sourceEnvironmentId, changed, targetEnvironmentId, statistics, limit, changeSet} = context
       task.title = `Fetch full payload for ${changed.length} changed entities`
-
-      const patches: any[] = []
 
       const idChunks = chunk(changed.map(c => c.sys.id), limit)
 
@@ -81,7 +78,7 @@ export const createFetchChangedTasks = (): ListrTask => {
 
         const withChange = changedObjects.filter(o => o.patch.length > 0)
         statistics.nonChanged += changedObjects.length - withChange.length
-        patches.push(...withChange)
+        changeSet.items.push(...withChange)
       }
 
       changeSet.items.push(
