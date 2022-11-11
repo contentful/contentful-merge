@@ -1,47 +1,31 @@
-import {EntryProps} from 'contentful-management'
 import {ListrTask} from 'listr2'
-import {omit} from 'lodash'
+import {chunk} from 'lodash'
 import {LogLevel} from '../../logger/types'
 import {AddedChangeSetItem} from '../../types'
+import {createEntity} from '../actions/create-entity'
 import {ApplyChangesetContext} from '../types'
 
 export const createAddEntitiesTask = (): ListrTask => {
   return {
     title: 'Add entities',
     task: async (context: ApplyChangesetContext, task) => {
-      const {client, changeSet, environmentId, logger} = context
+      const {client, changeSet, environmentId, logger, limit, responseCollector} = context
       logger.log(LogLevel.INFO, 'Start createAddEntitiesTask')
       const entries = changeSet.items.filter(item => item.changeType === 'added') as AddedChangeSetItem[]
       const entityCount = entries.length
 
       task.title = `Add ${entityCount} entities`
 
-      let counter = 0
+      const entriesChunks = chunk(entries, limit)
 
-      for (const entry of entries) {
-        task.output = `adding entity ${++counter}/${entityCount}`
+      let count = 0
 
-        try {
-          // eslint-disable-next-line no-await-in-loop
-          const createdEntry = await client.cma.entries.create({
-            environment: environmentId,
-            entryId: entry.entity.sys.id,
-            entry: omit(entry.data as EntryProps, ['sys']),
-            contentType: (entry.data as EntryProps).sys.contentType.sys.id,
-          })
-
-          // eslint-disable-next-line no-await-in-loop
-          await client.cma.entries.publish({
-            environment: environmentId,
-            entryId: createdEntry.sys.id,
-            entry: createdEntry,
-          })
-
-          logger.log(LogLevel.INFO, `entry ${entry.entity.sys.id} successfully published`)
-        } catch (error: any) {
-          task.output = error.toString()
-          logger.log(LogLevel.ERROR, `createAddEntitiesTask ${error}`)
-        }
+      for (const entriesChunk of entriesChunks) {
+        // eslint-disable-next-line no-await-in-loop
+        await Promise.all(entriesChunk.map(async item => {
+          await createEntity({client, environmentId, logger, item, responseCollector, task})
+          task.title = `Added ${++count}/${entityCount} entities (failed: ${responseCollector.errorsLength})`
+        }))
       }
     },
   }

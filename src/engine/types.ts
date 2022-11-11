@@ -1,5 +1,7 @@
 import {Patch} from '@contentful/jsondiffpatch'
+import {ListrTask, ListrTaskWrapper} from 'listr2'
 import {createClient} from './client'
+import {ResponseStatusCollector} from './client/response-status-collector'
 import {ILogger} from './logger/types'
 
 export type ChangeSetChangeType = 'deleted' | 'added' | 'changed'
@@ -62,4 +64,12 @@ export interface BaseContext {
   accessToken: string,
   spaceId: string,
   limit: number,
+}
+
+export type BaseActionParams = {
+  client: BaseContext['client']
+  environmentId: string,
+  logger: ILogger,
+  responseCollector: ResponseStatusCollector,
+  task:ListrTaskWrapper<any, any>
 }

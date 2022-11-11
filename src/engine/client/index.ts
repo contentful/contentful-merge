@@ -4,6 +4,7 @@ import {EntryProps} from 'contentful-management'
 import {createHttpClient} from 'contentful-sdk-core'
 import {pickBy} from 'lodash'
 import {ClientLogHandler} from '../logger/types'
+import {stripSys} from '../utils/strip-sys'
 
 type CreateClientParams = {
   space: string, cdaToken: string, cmaToken: string,
@@ -92,7 +93,7 @@ export const createClient = ({space, cdaToken, cmaToken, logHandler}: CreateClie
         },
         create: async ({environment, entry, entryId, contentType}: CreateEntryParams) => {
           count.cma++
-          const result = await cmaClient.put(`${environment}/entries/${entryId}`, entry, {
+          const result = await cmaClient.put(`${environment}/entries/${entryId}`, stripSys(entry), {
             headers: {
               'X-Contentful-Content-Type': contentType,
             },
@@ -110,7 +111,7 @@ export const createClient = ({space, cdaToken, cmaToken, logHandler}: CreateClie
         },
         publish: async ({environment, entry, entryId}: PublishEntryParams) => {
           count.cma++
-          await cmaClient.put(`${environment}/entries/${entryId}/published`, entry, {
+          return cmaClient.put(`${environment}/entries/${entryId}/published`, entry, {
             headers: {
               'X-Contentful-Version': entry.sys.version,
             },

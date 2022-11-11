@@ -1,47 +1,31 @@
 import {ListrTask} from 'listr2'
+import {chunk} from 'lodash'
 import {LogLevel} from '../../logger/types'
+import {deleteEntity} from '../actions/delete-entity'
+import {updateEntity} from '../actions/update-entity'
 import {ApplyChangesetContext} from '../types'
 
 export const createRemoveEntitiesTask = (): ListrTask => {
   return {
     title: 'Delete entities',
     task: async (context: ApplyChangesetContext, task) => {
-      const {client, changeSet, environmentId, logger} = context
+      const {client, changeSet, environmentId, logger, limit, responseCollector} = context
       logger.log(LogLevel.INFO, 'Start createRemoveEntitiesTask')
       const ids = changeSet.items.filter(item => item.changeType === 'deleted').map(item => item.entity.sys.id)
       const entityCount = ids.length
 
       task.title = `Delete ${entityCount} entities`
 
-      let counter = 0
+      let count = 0
 
-      for (const id of ids) {
-        task.output = `deleting entity ${++counter}/${entityCount}`
+      const entriesChunks = chunk(ids, limit)
 
-        try {
-          // eslint-disable-next-line no-await-in-loop
-          const serverEntity = await client.cma.entries.get({entryId: id, environment: environmentId})
-          if (!serverEntity) {
-            continue
-          }
-
-          // eslint-disable-next-line no-await-in-loop
-          await client.cma.entries.unpublish({
-            environment: environmentId,
-            entryId: id,
-          })
-
-          // eslint-disable-next-line no-await-in-loop
-          await client.cma.entries.delete({
-            environment: environmentId,
-            entryId: id,
-          })
-
-          logger.log(LogLevel.INFO, `entry ${id} successfully deleted`)
-        } catch (error: any) {
-          task.output = error.toString()
-          logger.log(LogLevel.ERROR, `createRemoveEntitiesTask ${error}`)
-        }
+      for (const entriesChunk of entriesChunks) {
+        // eslint-disable-next-line no-await-in-loop
+        await Promise.all(entriesChunk.map(async id => {
+          await deleteEntity({client, environmentId, logger, id, responseCollector, task})
+          task.title = `Deleted ${++count}/${entityCount} entities (failed: ${responseCollector.errorsLength})`
+        }))
       }
     },
   }

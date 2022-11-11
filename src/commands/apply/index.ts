@@ -3,6 +3,7 @@ import chalk from 'chalk'
 import {applyChangesetTask} from '../../engine/apply-changeset'
 import {ApplyChangesetContext} from '../../engine/apply-changeset/types'
 import {createClient} from '../../engine/client'
+import {ResponseStatusCollector} from '../../engine/client/response-status-collector'
 import {createTransformHandler} from '../../engine/logger/create-transform-handler'
 import {MemoryLogger} from '../../engine/logger/memory-logger'
 import {writeLog} from '../../engine/logger/write-log'
@@ -25,6 +26,7 @@ export default class Apply extends Command {
     environment: Flags.string({description: 'source environment id', required: true}),
     cmaToken: Flags.string({description: 'cma token', required: false, env: 'CMA_TOKEN'}),
     cdaToken: Flags.string({description: 'cda token', required: false, env: 'CDA_TOKEN'}),
+    limit: Flags.integer({description: 'Limit parameter for collection endpoints', required: false, default: 200}),
   }
 
   async run(): Promise<void> {
@@ -40,9 +42,12 @@ export default class Apply extends Command {
       logHandler,
     })
 
+    const responseCollector = new ResponseStatusCollector()
+
     const context: ApplyChangesetContext = {
       logger,
       client,
+      responseCollector,
       limit: flags.limit,
       accessToken: flags.token,
       spaceId: flags.space,
@@ -70,6 +75,9 @@ export default class Apply extends Command {
     output += `\nThe process used approximately ${formatNumber(usedMemory.toFixed(2))} MB memory.`
     output += '\n'
     output += `\n📖 ${logFilePath}`
+
     console.log(output)
+
+    console.log(responseCollector.toString())
   }
 }
