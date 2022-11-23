@@ -13,7 +13,12 @@ export const createComputeIdsTask = (): ListrTask => {
 
       const changed = target.comparables.filter(targetComparable => {
         const sourceComparable = source.comparables.find(value => value.sys.id === targetComparable.sys.id)
-        return targetComparable.sys.updatedAt !== sourceComparable?.sys.updatedAt
+
+        if (sourceComparable) {
+          return targetComparable.sys.updatedAt !== sourceComparable?.sys.updatedAt
+        }
+
+        return false
       })
 
       context.ids = {added: [...added], removed: [...removed]}

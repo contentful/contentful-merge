@@ -4,7 +4,6 @@ export interface Comparable {
   sys: {
     id: string,
     updatedAt: string
-    revision?: number
   }
 }
 

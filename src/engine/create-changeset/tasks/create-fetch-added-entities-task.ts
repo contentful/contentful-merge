@@ -5,7 +5,7 @@ import {LogLevel} from '../../logger/types'
 import {CreateChangesetContext} from '../types'
 
 function cleanEntity(entry: Entry<any>): any {
-  return {...entry, sys: pick(entry.sys, ['id', 'type', 'revision', 'contentType', 'locale'])}
+  return {...entry, sys: pick(entry.sys, ['id', 'type', 'contentType', 'locale'])}
 }
 
 export function createFetchAddedEntitiesTask(shouldExecute: boolean): ListrTask {
