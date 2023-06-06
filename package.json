@@ -2,7 +2,7 @@
   "name": "ccccli",
   "version": "0.0.0",
   "description": "oclif example Hello World CLI",
-  "author": "Marco Link @marcolink",
+  "author": "Contentful <opensource@contentful.com>",
   "private": true,
   "bin": {
     "ccccli": "./bin/run",
