@@ -145,3 +145,8 @@ DESCRIPTION
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.15/src/commands/help.ts)_
 <!-- commandsstop -->
+
+## FAQ / Gotchas
+**My environments differ, yet the CLI responds with a 404, what could be wrong?**
+
+Make sure your CDA (Content Delivery API) tokens have access to both environments, otherwise the CDA may respond with a 404.

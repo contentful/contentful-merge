@@ -14,6 +14,12 @@ npm install
 ```
 
 ## Testing
+### Run all tests
 ```bash
 npm test
+```
+
+### Just run the integration tests
+```bash
+npm test:integration
 ```

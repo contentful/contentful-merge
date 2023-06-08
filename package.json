@@ -33,12 +33,13 @@
     "p-limit": "^3.1.0"
   },
   "devDependencies": {
+    "@contentful/integration-test-utils": "^2.0.1",
     "@oclif/test": "^2.2.4",
     "@types/chai": "^4",
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.11.68",
     "chai": "^4",
-    "contentful-management": "^10.35.4",
+    "contentful-management": "^10.36.0",
     "eslint": "^7.32.0",
     "eslint-config-oclif": "^4",
     "eslint-config-oclif-typescript": "^1.0.3",
@@ -71,7 +72,8 @@
     "postpack": "shx rm -f oclif.manifest.json",
     "posttest": "npm run lint",
     "prepack": "npm run build && oclif manifest && oclif readme",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "npm run test:integration",
+    "test:integration": "mocha --forbid-only \"tests/integration/**/*.test.ts\"",
     "version": "oclif readme && git add README.md"
   },
   "engines": {
