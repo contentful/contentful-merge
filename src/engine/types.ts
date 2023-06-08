@@ -1,3 +1,4 @@
+import {Patch} from '@contentful/jsondiffpatch'
 import {ListrTaskWrapper} from 'listr2'
 import {createClient} from './client'
 import {ResponseStatusCollector} from './client/response-status-collector'
@@ -31,7 +32,7 @@ export type AddedChangeSetItem = BaseChangeSetItem<'added'> & ChangesetEntityLin
 }
 
 export type ChangedChangeSetItem = BaseChangeSetItem<'changed'> & ChangesetEntityLink & {
-  patch: any
+  patch: Patch
 }
 
 export type ChangeSetItem = DeletedChangeSetItem | AddedChangeSetItem | ChangedChangeSetItem
