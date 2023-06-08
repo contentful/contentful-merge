@@ -5,14 +5,17 @@ const SPACE = 'lnsjpb79eisl'
 const ENVIRONMENT = 'test-clone'
 const CONTENT_TYPE = 'content'
 
-const client = contentful.createClient({
-  accessToken: process.env.CMA_TOKEN,
-  space: SPACE,
-}, {type: 'plain'})
+const client = contentful.createClient(
+  {
+    accessToken: process.env.CMA_TOKEN,
+    space: SPACE,
+  },
+  { type: 'plain' }
+)
 
-const spinner = ora(`creating content on ${SPACE}:${ENVIRONMENT}`).start();
+const spinner = ora(`creating content on ${SPACE}:${ENVIRONMENT}`).start()
 
-const createAndPublishPage = async ({title, content}) => {
+const createAndPublishPage = async ({ title, content }) => {
   const params = {
     environmentId: ENVIRONMENT,
     spaceId: SPACE,
@@ -21,18 +24,20 @@ const createAndPublishPage = async ({title, content}) => {
 
   const entry = await client.entry.create(params, {
     fields: {
-      title: {"en-US": title},
-      content: {"en-US": content},
+      title: { 'en-US': title },
+      content: { 'en-US': content },
     },
   })
 
-  await client.entry.publish({
-    spaceId: SPACE,
-    environmentId: ENVIRONMENT,
-    entryId: entry.sys.id
-  }, entry)
+  await client.entry.publish(
+    {
+      spaceId: SPACE,
+      environmentId: ENVIRONMENT,
+      entryId: entry.sys.id,
+    },
+    entry
+  )
 }
-
 
 const content = `
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nec feugiat in fermentum posuere urna nec tincidunt praesent semper. Sed faucibus turpis in eu mi bibendum neque egestas. Iaculis nunc sed augue lacus viverra vitae congue eu consequat. Pellentesque pulvinar pellentesque habitant morbi. Adipiscing at in tellus integer feugiat. Elementum curabitur vitae nunc sed. Turpis egestas integer eget aliquet nibh praesent. Justo laoreet sit amet cursus sit amet dictum sit amet. Sed adipiscing diam donec adipiscing tristique risus. Urna molestie at elementum eu facilisis. Consequat interdum varius sit amet mattis. Eu nisl nunc mi ipsum faucibus vitae aliquet nec. Lacus sed turpis tincidunt id aliquet. Cras adipiscing enim eu turpis egestas pretium aenean. Ultrices dui sapien eget mi proin sed libero. Consectetur purus ut faucibus pulvinar elementum integer. Aliquam nulla facilisi cras fermentum odio eu feugiat pretium nibh. Cursus euismod quis viverra nibh. Eget nulla facilisi etiam dignissim diam quis enim lobortis.
@@ -48,11 +53,16 @@ Neque volutpat ac tincidunt vitae semper quis. Urna duis convallis convallis tel
 
 const run = async () => {
   for (let i = 0; i < 10000; i++) {
-    const title = 'Content Index '  + i
+    const title = 'Content Index ' + i
     spinner.text = `Create entry ${title}`
-    await Promise.all([1,2,3,4,5].map(index =>  createAndPublishPage({
-      content, title: title + index,
-    })))
+    await Promise.all(
+      [1, 2, 3, 4, 5].map((index) =>
+        createAndPublishPage({
+          content,
+          title: title + index,
+        })
+      )
+    )
   }
   spinner.stopAndPersist()
 }

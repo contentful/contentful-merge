@@ -1,4 +1,4 @@
-import {ClientLogHandler, ILogger, LogLevel} from './types'
+import { ClientLogHandler, ILogger, LogLevel } from './types'
 
 export const createTransformHandler = (logger: ILogger): ClientLogHandler => {
   return (level: string, message?: Error | string | undefined) => {

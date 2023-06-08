@@ -1,5 +1,5 @@
-import {LogLevel} from '../../logger/types'
-import {BaseActionParams} from '../../types'
+import { LogLevel } from '../../logger/types'
+import { BaseActionParams } from '../../types'
 
 type CreateEntityParams = BaseActionParams & {
   id: string

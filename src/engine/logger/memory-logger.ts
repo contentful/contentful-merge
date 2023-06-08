@@ -1,4 +1,4 @@
-import {ILogger, LogEntry, LogLevel} from './types'
+import { ILogger, LogEntry, LogLevel } from './types'
 
 export class MemoryLogger implements ILogger {
   protected data: LogEntry[]
@@ -20,7 +20,9 @@ export class MemoryLogger implements ILogger {
   }
 
   public toString(): string {
-    return this.data.map(item => `${new Date(item.time).toISOString()}\t${item.level.toUpperCase()}\t${item.msg}`).join('\n')
+    return this.data
+      .map((item) => `${new Date(item.time).toISOString()}\t${item.level.toUpperCase()}\t${item.msg}`)
+      .join('\n')
   }
 
   public toJSONString(): string {

@@ -1,4 +1,4 @@
-import {ChangeSet} from '../types'
+import { ChangeSet } from '../types'
 
 export const createChangeset = (source: string, target: string): ChangeSet => ({
   sys: {
