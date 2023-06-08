@@ -1,9 +1,10 @@
 import { ClientAPI, CreateApiKeyProps, Environment, MetaLinkProps, Space, createClient } from 'contentful-management'
-import * as testUtils from '@contentful/integration-test-utils'
 import { Config, expect, test } from '@oclif/test'
 import fs from 'fs'
 import fancy from './register-plugins'
 import CreateCommand from '../../../../src/commands/create'
+import { TestContext, createSpace, createEnvironment} from './bootstrap'
+import * as testUtils from '@contentful/integration-test-utils'
 
 const organizationId = process.env.ORG_ID!
 if (!organizationId) {
@@ -16,59 +17,11 @@ if (!cmaToken) {
 
 const targetEnvironmentId = 'master'
 
-// TODO move these functions out of the test
-const createCdaToken = async (space: Space, environmentIds: string[]): Promise<string> => {
-  const apiKeyData: CreateApiKeyProps = {
-    name: 'CCCCLI CDA Token',
-    environments: environmentIds.map((envId) => ({
-      sys: {
-        type: 'Link',
-        linkType: 'Environment',
-        id: envId,
-      },
-    })),
-  }
-  const apiKey = await space.createApiKey(apiKeyData)
-  const cdaToken = apiKey.accessToken
-
-  return cdaToken
-}
-
-const setupContentful = async (client: ClientAPI): Promise<Space> => {
-  const testSpace = await testUtils.createTestSpace({
-    client,
-    organizationId,
-    repo: 'CLI',
-    language: 'JS',
-    testSuiteName: 'CCCCLI Int Tests',
-  })
-
-  return testSpace
-}
-
-type TestContext = {
-  sourceEnvironment: Environment
-  cdaToken: string
-  spaceId: string
-}
-
-const setupEnvironment = async (testSpace: Space): Promise<TestContext> => {
-  const sourceEnvironment = await testUtils.createTestEnvironment(testSpace, 'whatever-it-gets-ignored-anyway') // TODO not sure why, but an ID gets generated.
-
-  return {
-    sourceEnvironment,
-    cdaToken: await createCdaToken(testSpace, [targetEnvironmentId, sourceEnvironment.sys.id]),
-    spaceId: testSpace.sys.id,
-  }
-}
-
 let testContext: TestContext
 before(async () => {
   const client = createClient({ accessToken: cmaToken })
-  const testSpace = await setupContentful(client)
-  const context = await setupEnvironment(testSpace)
-
-  testContext = context
+  const testSpace = await createSpace(client, organizationId)
+  testContext = await createEnvironment(testSpace, targetEnvironmentId)
 })
 
 after(() =>
