@@ -6,4 +6,17 @@ on:
 
 jobs:
   unit-tests:
-    uses: oclif/github-workflows/.github/workflows/unitTest.yml@main
+    strategy:
+      matrix:
+        os: ["ubuntu-latest", "windows-latest"]
+        node_version: [lts/-1, lts/*, latest]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm test
