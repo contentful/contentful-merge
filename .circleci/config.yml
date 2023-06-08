@@ -1,0 +1,22 @@
+version: 2.1
+orbs:
+  vault: contentful/vault@1
+  node: circleci/node@5.1.0
+
+
+jobs:
+  unit:
+    docker:
+      - image: cimg/node:lts
+    steps:
+      - checkout
+      - node/install:
+          node-version: '18.15'
+      - node/install-packages
+      - run: npm test
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - unit
