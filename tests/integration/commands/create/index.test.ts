@@ -89,7 +89,6 @@ before(async () => {
   const client = createClient({ accessToken: cmaToken })
   const testSpace = await setupContentful(client)
   const context = await setupEnvironment(testSpace)
-  await new Promise((r) => setTimeout(r, 1000)) // HACK sometimes 401 for CDA token
 
   testContext = context
 })
@@ -107,11 +106,11 @@ describe('create - happy path', () => {
     .add('data', async () => {
       const deleteTestData = await setupTestData(testContext.sourceEnvironment)
 
-      await new Promise((r) => setTimeout(r, 1000)) // HACK sometimes data doesn't exist immediately from CDA
-
       return { deleteTestData }
     })
     .do(async () => {
+      await new Promise((r) => setTimeout(r, 3000)) // HACK give it some time to let the api settle..
+
       // TODO - this could be a 'plugin'
       const cmd = new CreateCommand(
         [
@@ -143,9 +142,38 @@ describe('create - happy path', () => {
       expect(fs.existsSync('./changeset.json')).to.be.true
     })
 
-  // it('should not create a changeset when environments are the same')
+  // fancy
+  //   .stdout()
+  //   .do(async () => {
+  //     await new Promise((r) => setTimeout(r, 3000)) // HACK give it some time to let the api settle..
+
+  //     // TODO - this could be a 'plugin'
+  //     const cmd = new CreateCommand(
+  //       [
+  //         '--space',
+  //         testContext.spaceId,
+  //         '--source',
+  //         testContext.sourceEnvironment.sys.id,
+  //         '--target',
+  //         targetEnvironmentId,
+  //         '--cmaToken',
+  //         cmaToken,
+  //         '--cdaToken',
+  //         testContext.cdaToken,
+  //       ],
+  //       {} as unknown as Config // Runtime variables, but not required for tests.
+  //     )
+  //     await cmd.run()
+  //   })
+  //   .it('should not create a changeset when environments are the same', (ctx) => {
+  //     expect(ctx.stdout).to.contain('Changeset successfully created 🎉')
+  //     expect(ctx.stdout).to.contain(
+  //       'Created a new changeset for 2 environments with 0 source entities and 0 target entities.'
+  //     )
+  //     expect(ctx.stdout).to.contain('The resulting changeset has 0 removed, 0 added and 0 changed entries.')
+  //     expect(fs.existsSync('./changeset.json')).to.be.true
+  //   })
 })
-// })
 
 // describe('create - unhappy path', () => {
 //   it('should error when invalid arguments provided'); // space, source, target, cmaToken, cdaToken
