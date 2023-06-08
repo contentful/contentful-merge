@@ -1,16 +1,16 @@
-import {ListrTask} from 'listr2'
+import { ListrTask } from 'listr2'
 import pLimit from 'p-limit'
-import {LogLevel} from '../../logger/types'
-import {deleteEntity} from '../actions/delete-entity'
-import {ApplyChangesetContext} from '../types'
+import { LogLevel } from '../../logger/types'
+import { deleteEntity } from '../actions/delete-entity'
+import { ApplyChangesetContext } from '../types'
 
 export const createRemoveEntitiesTask = (): ListrTask => {
   return {
     title: 'Delete entities',
     task: async (context: ApplyChangesetContext, task) => {
-      const {client, changeSet, environmentId, logger, responseCollector} = context
+      const { client, changeSet, environmentId, logger, responseCollector } = context
       logger.log(LogLevel.INFO, 'Start createRemoveEntitiesTask')
-      const ids = changeSet.items.filter(item => item.changeType === 'deleted').map(item => item.entity.sys.id)
+      const ids = changeSet.items.filter((item) => item.changeType === 'deleted').map((item) => item.entity.sys.id)
       const entityCount = ids.length
 
       task.title = `Delete ${entityCount} entities`
@@ -19,12 +19,13 @@ export const createRemoveEntitiesTask = (): ListrTask => {
 
       const limiter = pLimit(10)
 
-      await Promise.all(ids.map(async id => {
-        return limiter(async () => {
-          await deleteEntity({client, environmentId, logger, id, responseCollector, task})
-          task.title = `Deleted ${++count}/${entityCount} entities (failed: ${responseCollector.errorsLength})`
+      await Promise.all(
+        ids.map(async (id) => {
+          return limiter(async () => {
+            await deleteEntity({ client, environmentId, logger, id, responseCollector, task })
+            task.title = `Deleted ${++count}/${entityCount} entities (failed: ${responseCollector.errorsLength})`
+          })
         })
-      }),
       )
     },
   }

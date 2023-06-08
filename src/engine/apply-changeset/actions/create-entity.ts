@@ -1,7 +1,7 @@
-import {EntryProps} from 'contentful-management'
-import {omit} from 'lodash'
-import {LogLevel} from '../../logger/types'
-import {AddedChangeSetItem, BaseActionParams} from '../../types'
+import { EntryProps } from 'contentful-management'
+import { omit } from 'lodash'
+import { LogLevel } from '../../logger/types'
+import { AddedChangeSetItem, BaseActionParams } from '../../types'
 
 type CreateEntityParams = BaseActionParams & {
   item: AddedChangeSetItem
