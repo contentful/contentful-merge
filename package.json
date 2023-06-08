@@ -84,7 +84,7 @@
     "prettier-fix": "prettier --config ./.prettierrc --write \"{**/*.js,**/*.ts,**/*.json}\"",
     "prepack": "npm run build && oclif manifest && oclif readme",
     "test": "npm run test:integration",
-    "test:integration": "mocha --forbid-only \"tests/integration/**/*.test.ts\"",
+    "test-integration": "mocha --forbid-only \"tests/integration/**/*.test.ts\"",
     "prepare": "husky install",
     "version": "oclif readme && git add README.md"
   },
