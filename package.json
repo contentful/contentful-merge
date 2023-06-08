@@ -33,6 +33,8 @@
     "p-limit": "^3.1.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.6.5",
+    "@commitlint/config-conventional": "^17.6.5",
     "@oclif/test": "^2.2.4",
     "@types/chai": "^4",
     "@types/mocha": "^9.0.0",
@@ -42,6 +44,8 @@
     "contentful-management": "^10.35.4",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^8.8.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.2",
     "mocha": "^9",
     "oclif": "^3",
     "ora": "^5.4.1",
@@ -69,13 +73,16 @@
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
     "check-types": "tsc",
+    "commitlint": "commitlint",
     "lint": "eslint src --ext '.ts,.js'",
     "lint-fix": "eslint src --ext '.ts,.js' --fix",
+    "lint-staged": "lint-staged",
     "postpack": "shx rm -f oclif.manifest.json",
     "posttest": "npm run lint",
     "prettier": "prettier --config ./.prettierrc --check \"{**/*.js,**/*.ts,**/*.json}\"",
     "prettier-fix": "prettier --config ./.prettierrc --write \"{**/*.js,**/*.ts,**/*.json}\"",
     "prepack": "npm run build && oclif manifest && oclif readme",
+    "prepare": "husky install",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif readme && git add README.md"
   },
