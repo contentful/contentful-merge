@@ -1,10 +1,12 @@
-import {create as createDiffer, Delta, formatters as diffFormatters, Patch} from '@contentful/jsondiffpatch'
+import {create as createDiffer, Delta, formatters as diffFormatters} from 'jsondiffpatch'
 import {ListrTask} from 'listr2'
 import {chunk} from 'lodash'
 import {BaseContext, ChangedChangeSetItem} from '../../types'
 import {createLinkObject} from '../../utils/create-link-object'
 import type {CreateChangesetContext} from '../types'
+type Patch = unknown
 
+// @ts-ignore jsondiffpatch does not have proper types
 const format: (delta: Delta | undefined) => Patch = diffFormatters.jsonpatch.format
 
 const entryDiff = createDiffer({
