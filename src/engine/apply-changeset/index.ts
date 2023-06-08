@@ -32,7 +32,7 @@ export const applyChangesetTask = (context: ApplyChangesetContext): Listr => {
     ],
     {
       ctx: context,
-      rendererOptions: { showTimer: true, collapse: false, showErrorMessage: true },
+      rendererOptions: { showErrorMessage: true },
     }
   )
 }

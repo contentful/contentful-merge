@@ -23,14 +23,14 @@
     "@oclif/core": "^2.8.5",
     "@oclif/plugin-plugins": "^3.1.2",
     "axios": "^0.27.2",
-    "chalk": "^5.2.0",
+    "chalk": "^4.1.2",
     "contentful": "^9.2.9",
     "contentful-collection": "^0.0.4",
     "contentful-sdk-core": "^7.1.0",
     "fast-json-patch": "^3.1.1",
     "listr2": "^6.6.0",
     "lodash": "^4.17.21",
-    "p-limit": "^4.0.0"
+    "p-limit": "^3.1.0"
   },
   "devDependencies": {
     "@contentful/integration-test-utils": "^2.0.1",
