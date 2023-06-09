@@ -35,6 +35,7 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
       ctx: context,
       rendererOptions: {
         timer: PRESET_TIMER,
+        collapseSubtasks: false,
       },
     }
   )
