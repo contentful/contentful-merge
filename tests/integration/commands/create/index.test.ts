@@ -22,7 +22,7 @@ const targetEnvId = "master";
 let sourceEnvId = "";
 let spaceId = "";
 
-const setup = async (client: ClientAPI): Promise<Environment> => {
+const setupContentful = async (client: ClientAPI): Promise<Environment> => {
   const testSpace = await testUtils.createTestSpace({
     client,
     organizationId,
@@ -36,35 +36,38 @@ const setup = async (client: ClientAPI): Promise<Environment> => {
     'whatever-it-gets-ignored-anyway'
     );
 
-  // store generated ids
+  // store generated ids - TODO make this cleaner
   spaceId = testSpace.sys.id;
   sourceEnvId = testEnvironment.sys.id;
 
   return testEnvironment;
 }
 
+const setupTestData = async (env: Environment) => {
+  const contentType = await env.createContentType({
+    name: 'TestType',
+    fields: [
+      { id: 'title', name: 'Title', type: 'Text', required: true, localized: false },
+      { id: 'description', name: 'Description', type: 'Text', required: true, localized: false }
+    ]
+  });
+
+  await contentType.publish();
+
+  const entry = await env.createEntry(contentType.sys.id, {
+    fields: {
+      title: { 'en-US': 'Hello from CCCCLI' },
+      description: { 'en-US': "Lovely weather isn't it?" }
+    },
+  });
+  entry.publish();
+}
+
 describe("create - happy path", () => {
   before(async () => {
     const client = createClient({ accessToken: cmaToken });
-    const testEnvironment = await setup(client);
-
-    const contentType = await testEnvironment.createContentType({
-      name: 'TestType',
-      fields: [
-        { id: 'title', name: 'Title', type: 'Text', required: true, localized: false },
-        { id: 'description', name: 'Description', type: 'Text', required: true, localized: false }
-      ]
-    });
-
-    await contentType.publish();
-
-    const entry = await testEnvironment.createEntry(contentType.sys.id, {
-      fields: {
-        title: { 'en-US': 'Hello from CCCCLI' },
-        description: { 'en-US': "Lovely weather isn't it?" }
-      },
-    });
-    entry.publish();
+    const testEnvironment = await setupContentful(client);
+    await setupTestData(testEnvironment);
   });
 
   after(async () => {
@@ -73,8 +76,9 @@ describe("create - happy path", () => {
       dryRun: false,
     })
   });
-// TODO - something is hanging..
-  test
+
+  it('cmd', () => {
+    test
     .stdout()
     .command([
       "create",
@@ -93,6 +97,7 @@ describe("create - happy path", () => {
       expect(ctx.stdout).to.contain("Changeset successfully created 🎉");
     });
   // it('should not create a changeset when environments are the same')
+  })
 });
 
 // describe('create - unhappy path', () => {
