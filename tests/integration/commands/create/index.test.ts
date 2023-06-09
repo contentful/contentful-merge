@@ -1,58 +1,93 @@
-// import { createClient } from 'contentful-management'
-// import * as testUtils from '@contentful/integration-test-utils'
-import {expect, test} from '@oclif/test'
+// USAGE: ORG_ID=<org_id> CMA_TOKEN=<cma_token> CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN=<cma_token> CDA_TOKEN=<cda_token> npm run test:integration
+// TODO - CMA token specified twice due to enforced naming convention of '@contentful/integration-test-utils'
 
-// const client = createClient({
+import { ClientAPI, Environment, createClient } from "contentful-management";
+import * as testUtils from '@contentful/integration-test-utils'
+import { expect, test } from "@oclif/test";
 
-//   // This is the access token for this space. Normally you get the token in the Contentful web app
-//   accessToken: 'omited-for-now',
-// });
+const organizationId = process.env.ORG_ID!;
+if (!organizationId) {
+  throw new Error("Please provide an `ORG_ID`");
+}
+const cmaToken = process.env.CMA_TOKEN!;
+if (!cmaToken) {
+  throw new Error("Please provide an `CMA_TOKEN`");
+}
+const cdaToken = process.env.CDA_TOKEN!;
+if (!cdaToken) {
+  throw new Error("Please provide an `CDA_TOKEN`");
+}
 
-// const organizationId = 'omited-for-now';
+const targetEnvId = "master";
+let sourceEnvId = "hmm";
+let spaceId = "delta";
 
-// (async () => {
-//   // returns an empty space with space '%JS CMA Entry API';
-//   const testSpace = await testUtils.createTestSpace({
-//     client,
-//     organizationId,
-//     repo: 'CMA',
-//     language: 'JS',
-//     testSuiteName: 'Adrian\'s test',
-//   });
+const setup = async (client: ClientAPI): Promise<Environment> => {
+  const testSpace = await testUtils.createTestSpace({
+    client,
+    organizationId,
+    repo: 'CLI',
+    language: 'JS',
+    testSuiteName: "CCCCLI Int Tests",
+  });
 
-//   const testEnvironment = await testUtils.createTestEnvironment(testSpace, 'some-test-env-name');
+  const testEnvironment = await testUtils.createTestEnvironment(
+    testSpace,
+    sourceEnvId
+  );
+  sourceEnvId = testEnvironment.sys.id; // setting ID as it appears to be ignored and re-generated
 
-//   testUtils.cleanUpTestSpaces({});
-// })();
-// ➜  ccccli git:(main) ✗ ./bin/dev create --space "ghk9wpnx0smm" --source "master" --target "masterclone" --cmaToken "CFPAT-3wzDbd27BNYmRhCEFDrRtm_mOA5QQkKYTLn0jhGFDdA" --cdaToken "BDOgbJ484BSMYqcYmw7-qovWRo0K84u4NwvwwyoLfYQ"
+  return testEnvironment;
+}
 
-const space = 'omiomited-for-nowted'
-const source = 'master'
-const target = 'masterclone'
-const cmaToken = 'omited-for-now'
-const cdaToken = 'omited-for-now'
+describe("create - happy path", () => {
+  before(async () => {
+    const client = createClient({ accessToken: cmaToken });
+    const testEnvironment = await setup(client);
 
-describe('create - happy path', () => {
+    // const contentType = await testEnvironment.createContentType({
+    //   name: 'TestType',
+    //   fields: [
+    //     { id: 'title', name: 'Title', type: 'Text', required: true, localized: false },
+    //     { id: 'description', name: 'Description', type: 'Text', required: true, localized: false }
+    //   ]
+    // });
+
+    // const entry = await testEnvironment.createEntry(contentType.sys.id, {
+    //   fields: {
+    //     title: { 'en-US': 'Hello from CCCCLI' },
+    //     description: { 'en-US': "Lovely weather isn't it?" }
+    //   },
+    // });
+  });
+
+  after(async () => {
+    // await testUtils.cleanUpTestSpaces({
+    //   threshold: 0, // immediately
+    //   dryRun: false, // TODO remove me
+    // })
+  });
+// TODO - something is hanging..
   test
-  .stdout()
-  .command([
-    'create',
-    '--space',
-    space,
-    '--source',
-    source,
-    '--target',
-    target,
-    '--cmaToken',
-    cmaToken,
-    '--cdaToken',
-    cdaToken,
-  ])
-  .it('should create a changeset when environments differ', ctx => {
-    expect(ctx.stdout).to.contain('Changeset successfully created 🎉')
-  })
+    .stdout()
+    .command([
+      "create",
+      "--space",
+      spaceId,
+      "--source",
+      sourceEnvId,
+      "--target",
+      targetEnvId,
+      "--cmaToken",
+      cmaToken,
+      "--cdaToken",
+      cdaToken,
+    ])
+    .it("should create a changeset when environments differ", (ctx) => {
+      expect(ctx.stdout).to.contain("Changeset successfully created 🎉");
+    });
   // it('should not create a changeset when environments are the same')
-})
+});
 
 // describe('create - unhappy path', () => {
 //   it('should error when invalid arguments provided'); // space, source, target, cmaToken, cdaToken
