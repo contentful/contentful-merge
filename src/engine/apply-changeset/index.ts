@@ -1,4 +1,4 @@
-import { Listr } from 'listr2'
+import { Listr, PRESET_TIMER } from 'listr2'
 import { createCallbackTask } from '../callback-task'
 import { ClientPerformanceObserver } from '../client/client-performance-observer'
 import { createAddEntitiesTask } from './tasks/create-add-entities-task'
@@ -32,7 +32,11 @@ export const applyChangesetTask = (context: ApplyChangesetContext): Listr => {
     ],
     {
       ctx: context,
-      rendererOptions: { showTimer: true, collapse: false, showErrorMessage: true },
+      rendererOptions: {
+        timer: PRESET_TIMER,
+        collapseSubtasks: false,
+        showErrorMessage: true,
+      },
     }
   )
 }
