@@ -52,7 +52,7 @@ export default class Apply extends Command {
       spaceId: flags.space,
       environmentId: flags.environment,
       inputPath: args.input,
-      changeSet: createChangeset(flags.source, flags.target),
+      changeset: createChangeset(flags.source, flags.target),
     }
 
     console.log(chalk.underline.bold('\nStart applying changeset'))
@@ -67,7 +67,7 @@ export default class Apply extends Command {
     const logFilePath = await writeLog(result.logger)
     let output = '\n'
     output += chalk.underline.bold('Changeset successfully applied 🎉')
-    output += `\nApplied a changeset with ${OutputFormatter.formatNumber(context.changeSet.items.length)} changes to ${
+    output += `\nApplied a changeset with ${OutputFormatter.formatNumber(context.changeset.items.length)} changes to ${
       flags.environment
     }`
     output += `\nOverall ${OutputFormatter.formatNumber(client.requestCounts().cda)} CDA and `

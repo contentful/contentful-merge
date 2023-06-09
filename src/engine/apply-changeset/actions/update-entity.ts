@@ -1,9 +1,9 @@
 import jsonpatch from 'fast-json-patch'
 import { LogLevel } from '../../logger/types'
-import { BaseActionParams, ChangedChangeSetItem } from '../../types'
+import { BaseActionParams, ChangedChangesetItem } from '../../types'
 
 type UpdateEntityParams = BaseActionParams & {
-  item: ChangedChangeSetItem
+  item: ChangedChangesetItem
 }
 
 export const updateEntity = async ({

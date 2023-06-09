@@ -6,16 +6,16 @@ import { ILogger } from './logger/types'
 
 export type Client = ReturnType<typeof createClient>
 
-export type ChangeSetChangeType = 'deleted' | 'added' | 'changed'
-type ChangeSetItemType = 'Entry' | 'Asset' | 'ContentType' | 'EditorInterface'
+export type ChangesetChangeType = 'deleted' | 'added' | 'changed'
+type ChangesetItemType = 'Entry' | 'Asset' | 'ContentType' | 'EditorInterface'
 
 export interface EntityLink {
   type: 'Link'
-  linkType: ChangeSetItemType
+  linkType: ChangesetItemType
   id: string
 }
 
-export type BaseChangeSetItem<T extends ChangeSetChangeType> = {
+export type BaseChangesetItem<T extends ChangesetChangeType> = {
   changeType: T
 }
 
@@ -25,26 +25,26 @@ export type ChangesetEntityLink = {
   }
 }
 
-export type DeletedChangeSetItem = BaseChangeSetItem<'deleted'> & ChangesetEntityLink
+export type DeletedChangesetItem = BaseChangesetItem<'deleted'> & ChangesetEntityLink
 
-export type AddedChangeSetItem = BaseChangeSetItem<'added'> &
+export type AddedChangesetItem = BaseChangesetItem<'added'> &
   ChangesetEntityLink & {
     data?: any
   }
 
-export type ChangedChangeSetItem = BaseChangeSetItem<'changed'> &
+export type ChangedChangesetItem = BaseChangesetItem<'changed'> &
   ChangesetEntityLink & {
     patch: Patch
   }
 
-export type ChangeSetItem = DeletedChangeSetItem | AddedChangeSetItem | ChangedChangeSetItem
+export type ChangesetItem = DeletedChangesetItem | AddedChangesetItem | ChangedChangesetItem
 
-export type ChangeSet = {
+export type Changeset = {
   sys: {
-    type: 'ChangeSet'
+    type: 'Changeset'
     version: 1
     createdAt: string
-    entityType: ChangeSetItemType | 'Mixed'
+    entityType: ChangesetItemType | 'Mixed'
     source: {
       sys: {
         type: 'Link'
@@ -60,7 +60,7 @@ export type ChangeSet = {
       }
     }
   }
-  items: Array<ChangeSetItem>
+  items: Array<ChangesetItem>
 }
 
 export interface BaseContext {

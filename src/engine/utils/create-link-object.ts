@@ -1,9 +1,9 @@
-import { BaseChangeSetItem, ChangeSetChangeType, ChangesetEntityLink } from '../types'
+import { BaseChangesetItem, ChangesetChangeType, ChangesetEntityLink } from '../types'
 
-export const createLinkObject = <T extends ChangeSetChangeType>(
+export const createLinkObject = <T extends ChangesetChangeType>(
   id: string,
   changeType: T
-): ChangesetEntityLink & BaseChangeSetItem<T> => ({
+): ChangesetEntityLink & BaseChangesetItem<T> => ({
   changeType,
   entity: {
     sys: {

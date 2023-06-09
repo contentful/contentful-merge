@@ -1,4 +1,4 @@
-import { BaseContext, ChangeSet } from '../types'
+import { BaseContext, Changeset } from '../types'
 
 export interface Comparable {
   sys: {
@@ -25,7 +25,7 @@ export interface CreateChangesetContext extends BaseContext {
     removed: Array<string>
   }
   changed: Array<Comparable>
-  changeSet: ChangeSet
+  changeset: Changeset
   statistics: {
     nonChanged: number
   }
