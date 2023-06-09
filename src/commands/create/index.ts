@@ -8,7 +8,7 @@ import * as fs from 'node:fs/promises'
 import { createTransformHandler } from '../../engine/logger/create-transform-handler'
 import { MemoryLogger } from '../../engine/logger/memory-logger'
 import { writeLog } from '../../engine/logger/write-log'
-import { changeSetItemsCount } from '../../engine/utils/changeset-items-count'
+import { changesetItemsCount } from '../../engine/utils/changeset-items-count'
 import { createChangeset } from '../../engine/utils/create-changeset'
 
 export default class Create extends Command {
@@ -61,7 +61,7 @@ export default class Create extends Command {
       statistics: {
         nonChanged: 0,
       },
-      changeSet: createChangeset(flags.source, flags.target),
+      changeset: createChangeset(flags.source, flags.target),
     }
 
     console.log(
@@ -80,7 +80,7 @@ export default class Create extends Command {
 
     // const changesetFilePath = path.join(process.cwd(), `changeset-${new Date().toISOString()}-${flags.source}_${flags.target}.json`)
     const changesetFilePath = path.join(process.cwd(), 'changeset.json')
-    await fs.writeFile(changesetFilePath, JSON.stringify(result.changeSet, null, 2))
+    await fs.writeFile(changesetFilePath, JSON.stringify(result.changeset, null, 2))
     const logFilePath = await writeLog(result.logger)
 
     let output = '\n'
@@ -89,10 +89,10 @@ export default class Create extends Command {
     output += `with ${formatNumber(result.source.ids.length)} source `
     output += `entities and ${formatNumber(result.target.ids.length)} target entities. `
     output += `\nThe resulting changeset has ${formatNumber(
-      changeSetItemsCount(result.changeSet, 'deleted')
+      changesetItemsCount(result.changeset, 'deleted')
     )} removed, `
-    output += `${formatNumber(changeSetItemsCount(result.changeSet, 'added'))} added and `
-    output += `${formatNumber(changeSetItemsCount(result.changeSet, 'changed'))} changed entries.`
+    output += `${formatNumber(changesetItemsCount(result.changeset, 'added'))} added and `
+    output += `${formatNumber(changesetItemsCount(result.changeset, 'changed'))} changed entries.`
     output += `\n${formatNumber(result.statistics.nonChanged)} entities were detected with a different ${chalk.gray(
       'sys.updatedAt'
     )} date, but were identical.`

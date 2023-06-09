@@ -17,7 +17,7 @@ export function createFetchAddedEntitiesTask(shouldExecute: boolean): ListrTask 
         client,
         ids: { added },
         sourceEnvironmentId,
-        changeSet,
+        changeset,
         limit,
         logger,
       } = context
@@ -41,7 +41,7 @@ export function createFetchAddedEntitiesTask(shouldExecute: boolean): ListrTask 
           .then((response) => response.items)
 
         for (const entry of entries) {
-          const item = changeSet.items.find((item) => item.entity.sys.id === entry.sys.id)
+          const item = changeset.items.find((item) => item.entity.sys.id === entry.sys.id)
           if (item && item.changeType === 'added') {
             item.data = cleanEntity(entry)
           }

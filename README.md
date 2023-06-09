@@ -71,7 +71,7 @@ Overall 66 CDA and 0 CMA request were fired within 10.0 seconds.
 - Apply
   - [ ] Gracefully fail when change not applicable
   - [x] General result message
-  - [ ] Apply ChangeSet to target environment, following the right order.
+  - [ ] Apply Changeset to target environment, following the right order.
 
 # Table of contents
 <!-- toc -->
