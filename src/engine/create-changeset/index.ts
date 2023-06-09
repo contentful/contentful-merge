@@ -1,4 +1,4 @@
-import { Listr } from 'listr2'
+import { Listr, PRESET_TIMER } from 'listr2'
 import { createCallbackTask } from '../callback-task'
 import { ClientPerformanceObserver } from '../client/client-performance-observer'
 import { createComputeIdsTask } from './tasks/create-compute-ids-task'
@@ -33,7 +33,9 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
     ],
     {
       ctx: context,
-      rendererOptions: {},
+      rendererOptions: {
+        timer: PRESET_TIMER,
+      },
     }
   )
 }
