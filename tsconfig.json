@@ -3,7 +3,7 @@
     "esModuleInterop": true,
     "declaration": true,
     "importHelpers": true,
-    "module": "commonjs",
+    "module": "CommonJS",
     "outDir": "dist",
     "rootDir": "src",
     "strict": true,
