@@ -1,9 +1,9 @@
-// USAGE: ORG_ID=<org_id> CMA_TOKEN=<cma_token> CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN=<cma_token> CDA_TOKEN=<cda_token> npm run test:integration
 // TODO - CMA token specified twice due to enforced naming convention of '@contentful/integration-test-utils'
 
 import { ClientAPI, Environment, createClient } from "contentful-management";
 import * as testUtils from '@contentful/integration-test-utils'
 import { expect, test } from "@oclif/test";
+import fs from 'fs';
 
 const organizationId = process.env.ORG_ID!;
 if (!organizationId) {
@@ -95,7 +95,11 @@ describe("create - happy path", () => {
     ])
     .it("should create a changeset when environments differ", (ctx) => {
       expect(ctx.stdout).to.contain("Changeset successfully created 🎉");
+      expect(ctx.stdout).to.contain("Created a new changeset for 2 environments with 1 source entities and 0 target entities.");
+      expect(ctx.stdout).to.contain("The resulting changeset has 0 removed, 1 added and 0 changed entries.");
+      expect(fs.existsSync('manifest.json')).to.be.true;
     });
+
   // it('should not create a changeset when environments are the same')
   })
 });

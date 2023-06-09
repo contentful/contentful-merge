@@ -19,7 +19,7 @@ npm install
 npm test
 ```
 
-### Just run the integration tests
+### Run the integration tests
 ```bash
-npm test:integration
+ORG_ID=<org_id> CMA_TOKEN=<cma_token> CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN=<cma_token> CDA_TOKEN=<cda_token> npm run test:integration
 ```
