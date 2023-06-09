@@ -1,4 +1,4 @@
-import { Command, Flags } from '@oclif/core'
+import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import { applyChangesetTask } from '../../engine/apply-changeset'
 import { ApplyChangesetContext } from '../../engine/apply-changeset/types'
@@ -18,7 +18,9 @@ export default class Apply extends Command {
     'ccccli apply changeset.json --space "<space-id>" --environment "staging"',
   ]
 
-  static args = [{ name: 'input', required: false, default: 'changeset.json' }]
+  static args = {
+    input: Args.string({ required: false, default: 'changeset.json' }),
+  }
 
   static flags = {
     space: Flags.string({ description: 'space id', required: true }),
