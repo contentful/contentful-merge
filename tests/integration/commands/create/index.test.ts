@@ -19,8 +19,8 @@ if (!cdaToken) {
 }
 
 const targetEnvId = "master";
-let sourceEnvId = "hmm";
-let spaceId = "delta";
+let sourceEnvId = "";
+let spaceId = "";
 
 const setup = async (client: ClientAPI): Promise<Environment> => {
   const testSpace = await testUtils.createTestSpace({
@@ -33,9 +33,12 @@ const setup = async (client: ClientAPI): Promise<Environment> => {
 
   const testEnvironment = await testUtils.createTestEnvironment(
     testSpace,
-    sourceEnvId
-  );
-  sourceEnvId = testEnvironment.sys.id; // setting ID as it appears to be ignored and re-generated
+    'whatever-it-gets-ignored-anyway'
+    );
+
+  // store generated ids
+  spaceId = testSpace.sys.id;
+  sourceEnvId = testEnvironment.sys.id;
 
   return testEnvironment;
 }
@@ -45,27 +48,30 @@ describe("create - happy path", () => {
     const client = createClient({ accessToken: cmaToken });
     const testEnvironment = await setup(client);
 
-    // const contentType = await testEnvironment.createContentType({
-    //   name: 'TestType',
-    //   fields: [
-    //     { id: 'title', name: 'Title', type: 'Text', required: true, localized: false },
-    //     { id: 'description', name: 'Description', type: 'Text', required: true, localized: false }
-    //   ]
-    // });
+    const contentType = await testEnvironment.createContentType({
+      name: 'TestType',
+      fields: [
+        { id: 'title', name: 'Title', type: 'Text', required: true, localized: false },
+        { id: 'description', name: 'Description', type: 'Text', required: true, localized: false }
+      ]
+    });
 
-    // const entry = await testEnvironment.createEntry(contentType.sys.id, {
-    //   fields: {
-    //     title: { 'en-US': 'Hello from CCCCLI' },
-    //     description: { 'en-US': "Lovely weather isn't it?" }
-    //   },
-    // });
+    await contentType.publish();
+
+    const entry = await testEnvironment.createEntry(contentType.sys.id, {
+      fields: {
+        title: { 'en-US': 'Hello from CCCCLI' },
+        description: { 'en-US': "Lovely weather isn't it?" }
+      },
+    });
+    entry.publish();
   });
 
   after(async () => {
-    // await testUtils.cleanUpTestSpaces({
-    //   threshold: 0, // immediately
-    //   dryRun: false, // TODO remove me
-    // })
+    await testUtils.cleanUpTestSpaces({
+      threshold: 0,
+      dryRun: false,
+    })
   });
 // TODO - something is hanging..
   test
