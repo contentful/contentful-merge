@@ -1,6 +1,6 @@
 import jsonpatch from 'fast-json-patch'
-import {LogLevel} from '../../logger/types'
-import {BaseActionParams, ChangedChangeSetItem} from '../../types'
+import { LogLevel } from '../../logger/types'
+import { BaseActionParams, ChangedChangeSetItem } from '../../types'
 
 type UpdateEntityParams = BaseActionParams & {
   item: ChangedChangeSetItem
@@ -15,7 +15,7 @@ export const updateEntity = async ({
   task,
 }: UpdateEntityParams) => {
   try {
-    const serverEntity = await client.cma.entries.get({entryId: item.entity.sys.id, environment: environmentId})
+    const serverEntity = await client.cma.entries.get({ entryId: item.entity.sys.id, environment: environmentId })
     if (!serverEntity) {
       return Promise.resolve()
     }
