@@ -89,6 +89,7 @@ describe('create - happy path', () => {
       const testSpace = await setupContentful(client)
       const testContext = await setupEnvironment(testSpace)
       await setupTestData(testContext.sourceEnvironment)
+      await new Promise((r) => setTimeout(r, 5000)) // HACK / TODO - make this more intelligent. Sometimes 401 token, sometimes issues with entries.
 
       return testContext
     })
@@ -107,8 +108,8 @@ describe('create - happy path', () => {
           '--cdaToken',
           ctx.testContext.cdaToken,
         ],
-        {} as unknown as Config
-      ) // hacky.. not a fan
+        {} as unknown as Config // Runtime variables, but not required for tests.
+      )
       await cmd.run()
     })
     .finally(() => {
@@ -118,13 +119,12 @@ describe('create - happy path', () => {
       })
     })
     .it('should create a changeset when environments differ', (ctx) => {
-      // TODO - only passes intermittently, presumably because of the CDN.
       expect(ctx.stdout).to.contain('Changeset successfully created 🎉')
       expect(ctx.stdout).to.contain(
         'Created a new changeset for 2 environments with 1 source entities and 0 target entities.'
       )
       expect(ctx.stdout).to.contain('The resulting changeset has 0 removed, 1 added and 0 changed entries.')
-      expect(fs.existsSync('./manifest.json')).to.be.true
+      expect(fs.existsSync('./changeset.json')).to.be.true
     })
 
   // it('should not create a changeset when environments are the same')
