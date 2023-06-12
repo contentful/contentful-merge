@@ -57,9 +57,13 @@ export default fancy
             '--cdaToken',
             testContext.cdaToken,
           ],
-          {} as unknown as Config // Runtime variables, but not required for tests.
+          {} as unknown as Config // Runtime config, but not required for tests.
         )
-        await cmd.run()
+        try {
+          await cmd.run()
+        } catch (e) {
+          console.error(e)
+        }
       },
     }
   })

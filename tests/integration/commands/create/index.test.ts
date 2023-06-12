@@ -1,9 +1,8 @@
-import { createClient } from 'contentful-management'
 import { expect } from '@oclif/test'
+import { Space, createClient } from 'contentful-management'
 import fs from 'fs'
+import { TestContext, createEnvironment, createSpace } from './bootstrap'
 import fancy from './register-plugins'
-import { TestContext, createSpace, createEnvironment } from './bootstrap'
-import * as testUtils from '@contentful/integration-test-utils'
 
 const organizationId = process.env.ORG_ID!
 if (!organizationId) {
@@ -13,22 +12,24 @@ const cmaToken = process.env.CMA_TOKEN!
 if (!cmaToken) {
   throw new Error('Please provide an `CMA_TOKEN`')
 }
+// Workaround: Test utils depend on this env var, explicitly setting it here
+// instead of implicitly depending on it or requiring it to be set twice.
+process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN = cmaToken
 
 const targetEnvironmentId = 'master'
-
 let testContext: TestContext
+let testSpace: Space
 before(async () => {
   const client = createClient({ accessToken: cmaToken })
-  const testSpace = await createSpace(client, organizationId)
+  testSpace = await createSpace(client, organizationId)
   testContext = await createEnvironment(testSpace, targetEnvironmentId)
 })
 
-after(() =>
-  testUtils.cleanUpTestSpaces({
-    threshold: 0,
-    dryRun: false,
-  })
-)
+after(async () => {
+  if (testSpace) {
+    await testSpace.delete()
+  }
+})
 
 describe('create - happy path', () => {
   fancy
@@ -59,8 +60,3 @@ describe('create - happy path', () => {
       expect(fs.existsSync('./changeset.json')).to.be.true
     })
 })
-
-// describe('create - unhappy path', () => {
-//   it('should error when invalid arguments provided'); // space, source, target, cmaToken, cdaToken
-//   it('should error with 404 message when environment empty (or key has no access)');
-// });
