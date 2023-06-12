@@ -1,8 +1,8 @@
-import { ChangeSet } from '../types'
+import { Changeset } from '../types'
 
-export const createChangeset = (source: string, target: string): ChangeSet => ({
+export const createChangeset = (source: string, target: string): Changeset => ({
   sys: {
-    type: 'ChangeSet',
+    type: 'Changeset',
     entityType: 'Entry',
     createdAt: Date.now().toString(),
     version: 1,

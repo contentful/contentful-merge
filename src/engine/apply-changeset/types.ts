@@ -1,9 +1,9 @@
 import { ResponseStatusCollector } from '../client/response-status-collector'
-import { BaseContext, ChangeSet } from '../types'
+import { BaseContext, Changeset } from '../types'
 
 export interface ApplyChangesetContext extends BaseContext {
   environmentId: string
   inputPath: string
-  changeSet: ChangeSet
+  changeset: Changeset
   responseCollector: ResponseStatusCollector
 }

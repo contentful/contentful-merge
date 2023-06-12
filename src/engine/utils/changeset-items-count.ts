@@ -1,5 +1,5 @@
-import { ChangeSet, ChangeSetChangeType } from '../types'
+import { Changeset, ChangesetChangeType } from '../types'
 
-export const changeSetItemsCount = (changeSet: ChangeSet, changeType: ChangeSetChangeType): number => {
-  return changeSet.items.filter((item) => item.changeType === changeType).length
+export const changesetItemsCount = (changeset: Changeset, changeType: ChangesetChangeType): number => {
+  return changeset.items.filter((item) => item.changeType === changeType).length
 }

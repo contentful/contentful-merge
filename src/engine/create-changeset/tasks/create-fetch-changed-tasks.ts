@@ -1,7 +1,7 @@
 import { create as createDiffer, Delta, formatters as diffFormatters, Patch } from '@contentful/jsondiffpatch'
 import { ListrTask } from 'listr2'
 import { chunk } from 'lodash'
-import { BaseContext, ChangedChangeSetItem } from '../../types'
+import { BaseContext, ChangedChangesetItem } from '../../types'
 import { createLinkObject } from '../../utils/create-link-object'
 import type { CreateChangesetContext } from '../types'
 
@@ -28,7 +28,7 @@ async function getEntriesPatches({
   source,
   target,
   entryIds,
-}: GetEntryPatchParams): Promise<ChangedChangeSetItem[]> {
+}: GetEntryPatchParams): Promise<ChangedChangesetItem[]> {
   const {
     client: { cda },
   } = context
@@ -37,7 +37,7 @@ async function getEntriesPatches({
   const sourceEntries = await cda.entries.getMany({ environment: source, query }).then((response) => response.items)
   const targetEntries = await cda.entries.getMany({ environment: target, query }).then((response) => response.items)
 
-  const result: ChangedChangeSetItem[] = []
+  const result: ChangedChangesetItem[] = []
 
   for (const entryId of entryIds) {
     const sourceEntry = sourceEntries.find((entry) => entry.sys.id === entryId)
@@ -59,7 +59,7 @@ export const createFetchChangedTasks = (): ListrTask => {
   return {
     title: 'Fetch full payload for changed entities',
     task: async (context: CreateChangesetContext, task) => {
-      const { ids, sourceEnvironmentId, changed, targetEnvironmentId, statistics, limit, changeSet } = context
+      const { ids, sourceEnvironmentId, changed, targetEnvironmentId, statistics, limit, changeset } = context
       task.title = `Fetch full payload for ${changed.length} changed entities`
 
       // TODO: use pLimit
@@ -82,10 +82,10 @@ export const createFetchChangedTasks = (): ListrTask => {
 
         const withChange = changedObjects.filter((o) => o.patch.length > 0)
         statistics.nonChanged += changedObjects.length - withChange.length
-        changeSet.items.push(...withChange)
+        changeset.items.push(...withChange)
       }
 
-      changeSet.items.push(
+      changeset.items.push(
         ...ids.removed.map((item) => createLinkObject(item, 'deleted')),
         ...ids.added.map((item) => createLinkObject(item, 'added'))
       )
