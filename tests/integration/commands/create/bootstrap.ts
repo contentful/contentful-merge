@@ -1,5 +1,5 @@
-import { ClientAPI, Environment } from "contentful-management"
-import { CreateApiKeyProps, Space } from "contentful-management/types"
+import { ClientAPI, Environment } from 'contentful-management'
+import { CreateApiKeyProps, Space } from 'contentful-management/types'
 import * as testUtils from '@contentful/integration-test-utils'
 
 export type TestContext = {

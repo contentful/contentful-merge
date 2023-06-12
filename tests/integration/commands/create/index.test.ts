@@ -1,5 +1,5 @@
-import { ClientAPI, CreateApiKeyProps, Environment, MetaLinkProps, Space, createClient } from 'contentful-management'
-import { Config, expect, test } from '@oclif/test'
+import { createClient } from 'contentful-management'
+import { expect } from '@oclif/test'
 import fs from 'fs'
 import fancy from './register-plugins'
 import { TestContext, createSpace, createEnvironment } from './bootstrap'
