@@ -2,8 +2,7 @@ import { ClientAPI, CreateApiKeyProps, Environment, MetaLinkProps, Space, create
 import { Config, expect, test } from '@oclif/test'
 import fs from 'fs'
 import fancy from './register-plugins'
-import CreateCommand from '../../../../src/commands/create'
-import { TestContext, createSpace, createEnvironment} from './bootstrap'
+import { TestContext, createSpace, createEnvironment } from './bootstrap'
 import * as testUtils from '@contentful/integration-test-utils'
 
 const organizationId = process.env.ORG_ID!
@@ -35,27 +34,7 @@ describe('create - happy path', () => {
   fancy
     .stdout()
     .createTestData(() => testContext.sourceEnvironment)
-    .do(async () => {
-      await new Promise((r) => setTimeout(r, 3000)) // HACK give it some time to let the api settle..
-
-      // TODO - this could be a 'plugin'
-      const cmd = new CreateCommand(
-        [
-          '--space',
-          testContext.spaceId,
-          '--source',
-          testContext.sourceEnvironment.sys.id,
-          '--target',
-          targetEnvironmentId,
-          '--cmaToken',
-          cmaToken,
-          '--cdaToken',
-          testContext.cdaToken,
-        ],
-        {} as unknown as Config // Runtime variables, but not required for tests.
-      )
-      await cmd.run()
-    })
+    .runCreateCommand(() => testContext, targetEnvironmentId, cmaToken)
     .finally(async (ctx) => {
       await ctx.deleteTestData()
     })
@@ -70,25 +49,7 @@ describe('create - happy path', () => {
 
   fancy
     .stdout()
-    .do(async () => {
-      // TODO - this could be a 'plugin'
-      const cmd = new CreateCommand(
-        [
-          '--space',
-          testContext.spaceId,
-          '--source',
-          testContext.sourceEnvironment.sys.id,
-          '--target',
-          targetEnvironmentId,
-          '--cmaToken',
-          cmaToken,
-          '--cdaToken',
-          testContext.cdaToken,
-        ],
-        {} as unknown as Config // Runtime variables, but not required for tests.
-      )
-      await cmd.run()
-    })
+    .runCreateCommand(() => testContext, targetEnvironmentId, cmaToken)
     .it('should not create a changeset when environments are the same', (ctx) => {
       expect(ctx.stdout).to.contain('Changeset successfully created 🎉')
       expect(ctx.stdout).to.contain(

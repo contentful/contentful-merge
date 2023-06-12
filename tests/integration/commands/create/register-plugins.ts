@@ -1,5 +1,8 @@
 import { fancy } from 'fancy-test'
 import { Environment } from 'contentful-management/types'
+import CreateCommand from '../../../../src/commands/create'
+import { TestContext } from './bootstrap'
+import { Config } from '@oclif/core'
 
 const createTestData = async (env: Environment): Promise<() => Promise<unknown>> => {
   const contentType = await env.createContentType({
@@ -23,14 +26,40 @@ const createTestData = async (env: Environment): Promise<() => Promise<unknown>>
   return () => Promise.allSettled([entry.unpublish(), entry.delete(), contentType.unpublish(), contentType.delete()])
 }
 
-export default fancy.register('createTestData', (getSourceEnvironment) => {
-  return {
-    async run(ctx: { deleteTestData: () => Promise<unknown> }) {
-      const deleteTestData = await createTestData(getSourceEnvironment())
-      await new Promise((r) => setTimeout(r, 5000)) // HACK give it some time to let the api settle..
+export default fancy
+  .register('createTestData', (getSourceEnvironment: () => Environment) => {
+    return {
+      async run(ctx: { deleteTestData: () => Promise<unknown> }) {
+        const deleteTestData = await createTestData(getSourceEnvironment())
+        await new Promise((r) => setTimeout(r, 5000)) // HACK give it some time to let the api settle..
 
-      ctx.deleteTestData = deleteTestData
-      return { deleteTestData }
-    },
-  }
-})
+        ctx.deleteTestData = deleteTestData
+        return { deleteTestData }
+      },
+    }
+  })
+  .register('runCreateCommand', (getTestContext: () => TestContext, targetEnvironmentId: string, cmaToken: string) => {
+    return {
+      async run(ctx) {
+        await new Promise((r) => setTimeout(r, 3000)) // HACK give it some time to let the api settle..
+
+        const testContext = getTestContext()
+        const cmd = new CreateCommand(
+          [
+            '--space',
+            testContext.spaceId,
+            '--source',
+            testContext.sourceEnvironment.sys.id,
+            '--target',
+            targetEnvironmentId,
+            '--cmaToken',
+            cmaToken,
+            '--cdaToken',
+            testContext.cdaToken,
+          ],
+          {} as unknown as Config // Runtime variables, but not required for tests.
+        )
+        await cmd.run()
+      },
+    }
+  })
