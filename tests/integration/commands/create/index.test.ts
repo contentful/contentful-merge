@@ -62,7 +62,7 @@ const setupEnvironment = async (testSpace: Space): Promise<TestContext> => {
   }
 }
 
-const setupTestData = async (env: Environment) => {
+const setupTestData = async (env: Environment): Promise<() => void> => {
   const contentType = await env.createContentType({
     name: 'TestType',
     fields: [
@@ -80,43 +80,59 @@ const setupTestData = async (env: Environment) => {
     },
   })
   entry.publish()
+
+  return () => Promise.allSettled([entry.delete(), contentType.delete()])
 }
+
+let testContext: TestContext
+before(async () => {
+  const client = createClient({ accessToken: cmaToken })
+  const testSpace = await setupContentful(client)
+  const context = await setupEnvironment(testSpace)
+  await new Promise((r) => setTimeout(r, 1000)) // HACK sometimes 401 for CDA token
+
+  testContext = context
+})
+
+after(() =>
+  testUtils.cleanUpTestSpaces({
+    threshold: 0,
+    dryRun: false,
+  })
+)
 
 describe('create - happy path', () => {
   fancy
-    .add('testContext', async () => {
-      const client = createClient({ accessToken: cmaToken })
-      const testSpace = await setupContentful(client)
-      const testContext = await setupEnvironment(testSpace)
-      await setupTestData(testContext.sourceEnvironment)
-      await new Promise((r) => setTimeout(r, 5000)) // HACK / TODO - make this more intelligent. Sometimes 401 token, sometimes issues with entries.
-
-      return testContext
-    })
     .stdout()
-    .do(async (ctx) => {
+    .add('data', async () => {
+      const deleteTestData = await setupTestData(testContext.sourceEnvironment)
+
+      await new Promise((r) => setTimeout(r, 1000)) // HACK sometimes data doesn't exist immediately from CDA
+
+      return { deleteTestData }
+    })
+    .do(async () => {
+      // TODO - this could be a 'plugin'
       const cmd = new CreateCommand(
         [
           '--space',
-          ctx.testContext.spaceId,
+          testContext.spaceId,
           '--source',
-          ctx.testContext.sourceEnvironment.sys.id,
+          testContext.sourceEnvironment.sys.id,
           '--target',
           targetEnvironmentId,
           '--cmaToken',
           cmaToken,
           '--cdaToken',
-          ctx.testContext.cdaToken,
+          testContext.cdaToken,
         ],
         {} as unknown as Config // Runtime variables, but not required for tests.
       )
       await cmd.run()
     })
-    .finally(() => {
-      testUtils.cleanUpTestSpaces({
-        threshold: 0,
-        dryRun: false,
-      })
+    .finally(async (ctx) => {
+      // TODO could be a plugin
+      await ctx.data.deleteTestData()
     })
     .it('should create a changeset when environments differ', (ctx) => {
       expect(ctx.stdout).to.contain('Changeset successfully created 🎉')
