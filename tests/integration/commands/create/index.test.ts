@@ -81,7 +81,7 @@ after(() =>
 describe('create - happy path', () => {
   fancy
     .stdout()
-    .setupTestData(() => testContext.sourceEnvironment)
+    .createTestData(() => testContext.sourceEnvironment)
     .do(async () => {
       await new Promise((r) => setTimeout(r, 3000)) // HACK give it some time to let the api settle..
 

@@ -1,7 +1,7 @@
 import { fancy } from 'fancy-test'
 import { Environment } from 'contentful-management/types'
 
-const setupTestData = async (env: Environment): Promise<() => Promise<unknown>> => {
+const createTestData = async (env: Environment): Promise<() => Promise<unknown>> => {
   const contentType = await env.createContentType({
     name: 'TestType',
     fields: [
@@ -23,10 +23,10 @@ const setupTestData = async (env: Environment): Promise<() => Promise<unknown>> 
   return () => Promise.allSettled([entry.unpublish(), entry.delete(), contentType.unpublish(), contentType.delete()])
 }
 
-export default fancy.register('setupTestData', (getSourceEnvironment) => {
+export default fancy.register('createTestData', (getSourceEnvironment) => {
   return {
     async run(ctx: { deleteTestData: () => Promise<unknown> }) {
-      const deleteTestData = await setupTestData(getSourceEnvironment())
+      const deleteTestData = await createTestData(getSourceEnvironment())
       await new Promise((r) => setTimeout(r, 5000)) // HACK give it some time to let the api settle..
 
       ctx.deleteTestData = deleteTestData
