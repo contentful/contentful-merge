@@ -2,7 +2,7 @@ import { ClientAPI, CreateApiKeyProps, Environment, MetaLinkProps, Space, create
 import * as testUtils from '@contentful/integration-test-utils'
 import { Config, expect, test } from '@oclif/test'
 import fs from 'fs'
-import { fancy } from 'fancy-test'
+import fancy from './register-plugins'
 import CreateCommand from '../../../../src/commands/create'
 
 const organizationId = process.env.ORG_ID!
@@ -62,28 +62,6 @@ const setupEnvironment = async (testSpace: Space): Promise<TestContext> => {
   }
 }
 
-const setupTestData = async (env: Environment): Promise<() => void> => {
-  const contentType = await env.createContentType({
-    name: 'TestType',
-    fields: [
-      { id: 'title', name: 'Title', type: 'Text', required: true, localized: false },
-      { id: 'description', name: 'Description', type: 'Text', required: true, localized: false },
-    ],
-  })
-
-  await contentType.publish()
-
-  const entry = await env.createEntry(contentType.sys.id, {
-    fields: {
-      title: { 'en-US': 'Hello from CCCCLI' },
-      description: { 'en-US': "Lovely weather isn't it?" },
-    },
-  })
-  entry.publish()
-
-  return () => Promise.allSettled([entry.unpublish(), entry.delete(), contentType.unpublish(), contentType.delete()])
-}
-
 let testContext: TestContext
 before(async () => {
   const client = createClient({ accessToken: cmaToken })
@@ -103,11 +81,7 @@ after(() =>
 describe('create - happy path', () => {
   fancy
     .stdout()
-    .add('data', async () => {
-      const deleteTestData = await setupTestData(testContext.sourceEnvironment)
-
-      return { deleteTestData }
-    })
+    .setupTestData(() => testContext.sourceEnvironment)
     .do(async () => {
       await new Promise((r) => setTimeout(r, 3000)) // HACK give it some time to let the api settle..
 
@@ -130,8 +104,7 @@ describe('create - happy path', () => {
       await cmd.run()
     })
     .finally(async (ctx) => {
-      // TODO could be a plugin
-      await ctx.data.deleteTestData()
+      await ctx.deleteTestData()
     })
     .it('should create a changeset when environments differ', (ctx) => {
       expect(ctx.stdout).to.contain('Changeset successfully created 🎉')
@@ -145,8 +118,6 @@ describe('create - happy path', () => {
   fancy
     .stdout()
     .do(async () => {
-      await new Promise((r) => setTimeout(r, 3000)) // HACK give it some time to let the api settle..
-
       // TODO - this could be a 'plugin'
       const cmd = new CreateCommand(
         [
