@@ -81,7 +81,7 @@ const setupTestData = async (env: Environment): Promise<() => void> => {
   })
   entry.publish()
 
-  return () => Promise.allSettled([entry.delete(), contentType.delete()])
+  return () => Promise.allSettled([entry.unpublish(), entry.delete(), contentType.unpublish(), contentType.delete()])
 }
 
 let testContext: TestContext
@@ -142,37 +142,37 @@ describe('create - happy path', () => {
       expect(fs.existsSync('./changeset.json')).to.be.true
     })
 
-  // fancy
-  //   .stdout()
-  //   .do(async () => {
-  //     await new Promise((r) => setTimeout(r, 3000)) // HACK give it some time to let the api settle..
+  fancy
+    .stdout()
+    .do(async () => {
+      await new Promise((r) => setTimeout(r, 3000)) // HACK give it some time to let the api settle..
 
-  //     // TODO - this could be a 'plugin'
-  //     const cmd = new CreateCommand(
-  //       [
-  //         '--space',
-  //         testContext.spaceId,
-  //         '--source',
-  //         testContext.sourceEnvironment.sys.id,
-  //         '--target',
-  //         targetEnvironmentId,
-  //         '--cmaToken',
-  //         cmaToken,
-  //         '--cdaToken',
-  //         testContext.cdaToken,
-  //       ],
-  //       {} as unknown as Config // Runtime variables, but not required for tests.
-  //     )
-  //     await cmd.run()
-  //   })
-  //   .it('should not create a changeset when environments are the same', (ctx) => {
-  //     expect(ctx.stdout).to.contain('Changeset successfully created 🎉')
-  //     expect(ctx.stdout).to.contain(
-  //       'Created a new changeset for 2 environments with 0 source entities and 0 target entities.'
-  //     )
-  //     expect(ctx.stdout).to.contain('The resulting changeset has 0 removed, 0 added and 0 changed entries.')
-  //     expect(fs.existsSync('./changeset.json')).to.be.true
-  //   })
+      // TODO - this could be a 'plugin'
+      const cmd = new CreateCommand(
+        [
+          '--space',
+          testContext.spaceId,
+          '--source',
+          testContext.sourceEnvironment.sys.id,
+          '--target',
+          targetEnvironmentId,
+          '--cmaToken',
+          cmaToken,
+          '--cdaToken',
+          testContext.cdaToken,
+        ],
+        {} as unknown as Config // Runtime variables, but not required for tests.
+      )
+      await cmd.run()
+    })
+    .it('should not create a changeset when environments are the same', (ctx) => {
+      expect(ctx.stdout).to.contain('Changeset successfully created 🎉')
+      expect(ctx.stdout).to.contain(
+        'Created a new changeset for 2 environments with 0 source entities and 0 target entities.'
+      )
+      expect(ctx.stdout).to.contain('The resulting changeset has 0 removed, 0 added and 0 changed entries.')
+      expect(fs.existsSync('./changeset.json')).to.be.true
+    })
 })
 
 // describe('create - unhappy path', () => {
