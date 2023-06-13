@@ -16,6 +16,7 @@ if (!cmaToken) {
 // instead of implicitly depending on it or requiring it to be set twice.
 process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN = cmaToken
 
+const changesetPath = './changeset.json'
 const targetEnvironmentId = 'master'
 let testContext: TestContext
 let testSpace: Space
@@ -31,7 +32,23 @@ after(async () => {
   }
 })
 
+afterEach(async () => {
+  await fs.promises.rm(changesetPath, { force: true })
+})
+
 describe('create - happy path', () => {
+  fancy
+    .stdout()
+    .runCreateCommand(() => testContext, targetEnvironmentId, cmaToken)
+    .it('should not create a changeset when environments are the same', (ctx) => {
+      expect(ctx.stdout).to.contain('Changeset successfully created 🎉')
+      expect(ctx.stdout).to.contain(
+        'Created a new changeset for 2 environments with 0 source entities and 0 target entities.'
+      )
+      expect(ctx.stdout).to.contain('The resulting changeset has 0 removed, 0 added and 0 changed entries.')
+      expect(fs.existsSync(changesetPath)).to.be.true
+    })
+
   fancy
     .stdout()
     .createTestData(() => testContext.sourceEnvironment)
@@ -45,18 +62,6 @@ describe('create - happy path', () => {
         'Created a new changeset for 2 environments with 1 source entities and 0 target entities.'
       )
       expect(ctx.stdout).to.contain('The resulting changeset has 0 removed, 1 added and 0 changed entries.')
-      expect(fs.existsSync('./changeset.json')).to.be.true
-    })
-
-  fancy
-    .stdout()
-    .runCreateCommand(() => testContext, targetEnvironmentId, cmaToken)
-    .it('should not create a changeset when environments are the same', (ctx) => {
-      expect(ctx.stdout).to.contain('Changeset successfully created 🎉')
-      expect(ctx.stdout).to.contain(
-        'Created a new changeset for 2 environments with 0 source entities and 0 target entities.'
-      )
-      expect(ctx.stdout).to.contain('The resulting changeset has 0 removed, 0 added and 0 changed entries.')
-      expect(fs.existsSync('./changeset.json')).to.be.true
+      expect(fs.existsSync(changesetPath)).to.be.true
     })
 })

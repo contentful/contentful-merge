@@ -21,6 +21,5 @@ npm test
 
 ### Run the integration tests
 ```bash
-ORG_ID=<org_id> CMA_TOKEN=<cma_token> CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN=<cma_token> npm run test:integration
+ORG_ID=<org_id> CMA_TOKEN=<cma_token> npm run test:integration
 ```
-TODO: CMA token listed twice due to the internal way the utilities work.

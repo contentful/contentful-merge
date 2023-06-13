@@ -1,8 +1,8 @@
-import { fancy } from 'fancy-test'
+import { Config } from '@oclif/core'
 import { Environment } from 'contentful-management/types'
+import { fancy } from 'fancy-test'
 import CreateCommand from '../../../../src/commands/create'
 import { TestContext } from './bootstrap'
-import { Config } from '@oclif/core'
 
 const createTestData = async (env: Environment): Promise<() => Promise<unknown>> => {
   const contentType = await env.createContentType({
@@ -31,17 +31,15 @@ export default fancy
     return {
       async run(ctx: { deleteTestData: () => Promise<unknown> }) {
         const deleteTestData = await createTestData(getSourceEnvironment())
-        await new Promise((r) => setTimeout(r, 5000)) // HACK give it some time to let the api settle..
 
         ctx.deleteTestData = deleteTestData
-        return { deleteTestData }
       },
     }
   })
   .register('runCreateCommand', (getTestContext: () => TestContext, targetEnvironmentId: string, cmaToken: string) => {
     return {
       async run(ctx) {
-        await new Promise((r) => setTimeout(r, 3000)) // HACK give it some time to let the api settle..
+        await new Promise((r) => setTimeout(r, 1000)) // Workaround: Give API changes time to settle
 
         const testContext = getTestContext()
         const cmd = new CreateCommand(
