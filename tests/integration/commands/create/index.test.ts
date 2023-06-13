@@ -4,13 +4,13 @@ import fs from 'fs'
 import { TestContext, createEnvironment, createSpace } from './bootstrap'
 import fancy from './register-plugins'
 
-const organizationId = process.env.ORG_ID!
+const organizationId = process.env.CONTENTFUL_ORGANIZATION_ID!
 if (!organizationId) {
-  throw new Error('Please provide an `ORG_ID`')
+  throw new Error('Please provide an `CONTENTFUL_ORGANIZATION_ID`')
 }
-const cmaToken = process.env.CMA_TOKEN!
+const cmaToken = process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN!
 if (!cmaToken) {
-  throw new Error('Please provide an `CMA_TOKEN`')
+  throw new Error('Please provide an `CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN`')
 }
 
 const changesetPath = './changeset.json'
