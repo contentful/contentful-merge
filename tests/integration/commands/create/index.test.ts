@@ -12,9 +12,6 @@ const cmaToken = process.env.CMA_TOKEN!
 if (!cmaToken) {
   throw new Error('Please provide an `CMA_TOKEN`')
 }
-// Workaround: Test utils depend on this env var, explicitly setting it here
-// instead of implicitly depending on it or requiring it to be set twice.
-process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN = cmaToken
 
 const changesetPath = './changeset.json'
 const targetEnvironmentId = 'master'
