@@ -2,6 +2,7 @@ import { Entry } from 'contentful'
 import { ListrTask } from 'listr2'
 import { chunk, pick } from 'lodash'
 import { LogLevel } from '../../logger/types'
+import { exceedsLimitsForType } from '../../utils/exceeds-limits'
 import { CreateChangesetContext } from '../types'
 
 function cleanEntity(entry: Entry<any>): any {
@@ -11,7 +12,7 @@ function cleanEntity(entry: Entry<any>): any {
 export function createFetchAddedEntitiesTask(shouldExecute: boolean): ListrTask {
   return {
     title: 'Fetch full payload for added entities',
-    skip: !shouldExecute,
+    skip: (context) => !shouldExecute || exceedsLimitsForType('added', context),
     task: async (context: CreateChangesetContext, task) => {
       const {
         client,
