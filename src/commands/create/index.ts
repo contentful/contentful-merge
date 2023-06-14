@@ -10,6 +10,7 @@ import { MemoryLogger } from '../../engine/logger/memory-logger'
 import { writeLog } from '../../engine/logger/write-log'
 import { changesetItemsCount } from '../../engine/utils/changeset-items-count'
 import { createChangeset } from '../../engine/utils/create-changeset'
+import { exceedsLimitsForType } from '../../engine/utils/exceeds-limits'
 
 export default class Create extends Command {
   static description = 'Create Entries Changeset'
@@ -62,6 +63,12 @@ export default class Create extends Command {
         nonChanged: 0,
       },
       changeset: createChangeset(flags.source, flags.target),
+      limits: {
+        all: 100,
+        changed: 100,
+        added: 100,
+        removed: 100,
+      },
     }
 
     console.log(
@@ -78,16 +85,18 @@ export default class Create extends Command {
 
     const formatNumber = chalk.yellow.bold
 
-    // const changesetFilePath = path.join(process.cwd(), `changeset-${new Date().toISOString()}-${flags.source}_${flags.target}.json`)
-    const changesetFilePath = path.join(process.cwd(), 'changeset.json')
-    await fs.writeFile(changesetFilePath, JSON.stringify(result.changeset, null, 2))
-    const logFilePath = await writeLog(result.logger)
+    const limitsExceeded =
+      exceedsLimitsForType('removed', context) ||
+      exceedsLimitsForType('added', context) ||
+      exceedsLimitsForType('changed', context) ||
+      context.ids.added.length + context.ids.removed.length + context.changed.length > context.limits.all
 
     let output = '\n'
     output += chalk.underline.bold('Changeset successfully created 🎉')
     output += '\nCreated a new changeset for 2 environments '
     output += `with ${formatNumber(result.source.ids.length)} source `
     output += `entities and ${formatNumber(result.target.ids.length)} target entities. `
+
     output += `\nThe resulting changeset has ${formatNumber(
       changesetItemsCount(result.changeset, 'deleted')
     )} removed, `
@@ -100,9 +109,23 @@ export default class Create extends Command {
     output += `${formatNumber(client.requestCounts().cma)} CMA request were fired within ${formatNumber(
       duration
     )} seconds.`
+
     output += `\nThe process used approximately ${formatNumber(usedMemory.toFixed(2))} MB memory.`
     output += '\n'
-    output += `\n💾 ${changesetFilePath}`
+
+    if (limitsExceeded) {
+      output += chalk.redBright(
+        `\nThe selected environments have too many changes, we currently only allow a max of ${context.limits.all} changes`
+      )
+      output += '\n'
+    } else {
+      // const changesetFilePath = path.join(process.cwd(), `changeset-${new Date().toISOString()}-${flags.source}_${flags.target}.json`)
+      const changesetFilePath = path.join(process.cwd(), 'changeset.json')
+      await fs.writeFile(changesetFilePath, JSON.stringify(result.changeset, null, 2))
+      output += `\n💾 ${changesetFilePath}`
+    }
+
+    const logFilePath = await writeLog(result.logger)
     output += `\n📖 ${logFilePath}`
 
     console.log(output)
