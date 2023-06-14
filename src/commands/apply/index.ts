@@ -15,7 +15,7 @@ export default class Apply extends Command {
 
   static examples = [
     './bin/dev apply changeset.json --space "<space-id>" --environment "staging"',
-    'ccccli apply changeset.json --space "<space-id>" --environment "staging"',
+    'contentful-merge apply changeset.json --space "<space-id>" --environment "staging"',
   ]
 
   static args = {

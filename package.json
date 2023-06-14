@@ -5,8 +5,8 @@
   "author": "Contentful <opensource@contentful.com>",
   "private": true,
   "bin": {
-    "ccccli": "./bin/run",
-    "ccccli-dev": "./bin/dev"
+    "contentful-merge": "./bin/run",
+    "contentful-merge-dev": "./bin/dev"
   },
   "homepage": "https://github.com/contentful/contentful-merge",
   "license": "MIT",
@@ -58,8 +58,8 @@
     "typescript": "^5.0.4"
   },
   "oclif": {
-    "bin": "ccccli",
-    "dirname": "ccccli",
+    "bin": "contentful-merge",
+    "dirname": "contentful-merge",
     "commands": "./dist/commands",
     "plugins": [
       "@oclif/plugin-help",

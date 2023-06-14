@@ -1,7 +1,7 @@
-ccccli
+contentful-merge
 =================
 
-Content Changeset Creation CLI (POC)
+Contentful CLI to compare entries across environments.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/oclif-hello-world.svg)](https://npmjs.org/package/oclif-hello-world)
@@ -83,29 +83,29 @@ Overall 66 CDA and 0 CMA request were fired within 10.0 seconds.
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g ccccli
-$ ccccli COMMAND
+$ npm install -g contentful-merge
+$ contentful-merge COMMAND
 running command...
-$ ccccli (--version)
-ccccli/0.0.0 darwin-x64 node-v16.15.1
-$ ccccli --help [COMMAND]
+$ contentful-merge (--version)
+contentful-merge/0.0.0 darwin-x64 node-v16.15.1
+$ contentful-merge --help [COMMAND]
 USAGE
-  $ ccccli COMMAND
+  $ contentful-merge COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`ccccli create`](#ccccli-create)
-* [`ccccli help [COMMAND]`](#ccccli-help-command)
+* [`contentful-merge create`](#contentful-merge-create)
+* [`contentful-merge help [COMMAND]`](#contentful-merge-help-command)
 
-## `ccccli create`
+## `contentful-merge create`
 
 Create Entries Changeset
 
 ```
 USAGE
-  $ ccccli create --source <value> --target <value> --space <value> --token <value> [--inline]
+  $ contentful-merge create --source <value> --target <value> --space <value> --token <value> [--inline]
 
 FLAGS
   --inline          inline added entity payload
@@ -120,18 +120,18 @@ DESCRIPTION
 EXAMPLES
   ./bin/dev create --space "<space-id>" --source "master>" --target "staging" --token "<cda-token>"
 
-  $ ccccli create --space "<space-id>" --source "master" --target "staging" --token "<cda-token>"
+  $ contentful-merge create --space "<space-id>" --source "master" --target "staging" --token "<cda-token>"
 ```
 
-_See code: [dist/commands/create/index.ts](https://github.com/marcolink/ccccli/blob/v0.0.0/dist/commands/create/index.ts)_
+_See code: [dist/commands/create/index.ts](https://github.com/contentful/contentful-merge/blob/v0.0.0/dist/commands/create/index.ts)_
 
-## `ccccli help [COMMAND]`
+## `contentful-merge help [COMMAND]`
 
-Display help for ccccli.
+Display help for contentful-merge.
 
 ```
 USAGE
-  $ ccccli help [COMMAND] [-n]
+  $ contentful-merge help [COMMAND] [-n]
 
 ARGUMENTS
   COMMAND  Command to show help for.
@@ -140,7 +140,7 @@ FLAGS
   -n, --nested-commands  Include all nested commands in the output.
 
 DESCRIPTION
-  Display help for ccccli.
+  Display help for contentful-merge.
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.15/src/commands/help.ts)_
