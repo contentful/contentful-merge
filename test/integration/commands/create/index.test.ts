@@ -37,7 +37,7 @@ describe('create - happy path', () => {
   fancy
     .stdout()
     .runCreateCommand(() => testContext, targetEnvironmentId, cmaToken)
-    .it('should not create a changeset when environments are the same', (ctx) => {
+    .it('should not create a changeset when both environments are empty', (ctx) => {
       expect(ctx.stdout).to.contain('Changeset successfully created 🎉')
       expect(ctx.stdout).to.contain(
         'Created a new changeset for 2 environments with 0 source entities and 0 target entities.'
@@ -53,7 +53,7 @@ describe('create - happy path', () => {
     .finally(async (ctx) => {
       await ctx.deleteTestData()
     })
-    .it('should create a changeset when environments differ', (ctx) => {
+    .it('should create a changeset when environment has additions', (ctx) => {
       expect(ctx.stdout).to.contain('Changeset successfully created 🎉')
       expect(ctx.stdout).to.contain(
         'Created a new changeset for 2 environments with 1 source entities and 0 target entities.'

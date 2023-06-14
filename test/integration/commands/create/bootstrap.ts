@@ -1,6 +1,6 @@
+import * as testUtils from '@contentful/integration-test-utils'
 import { ClientAPI, Environment } from 'contentful-management'
 import { CreateApiKeyProps, Space } from 'contentful-management/types'
-import * as testUtils from '@contentful/integration-test-utils'
 
 export type TestContext = {
   sourceEnvironment: Environment
@@ -38,7 +38,7 @@ export const createSpace = async (client: ClientAPI, organizationId: string): Pr
 }
 
 export const createEnvironment = async (testSpace: Space, targetEnvironmentId: string): Promise<TestContext> => {
-  const sourceEnvironment = await testUtils.createTestEnvironment(testSpace, 'whatever-it-gets-ignored-anyway') // TODO not sure why, but an ID gets generated.
+  const sourceEnvironment = await testUtils.createTestEnvironment(testSpace, 'test-id')
 
   return {
     sourceEnvironment,

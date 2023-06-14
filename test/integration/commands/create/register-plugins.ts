@@ -39,7 +39,7 @@ export default fancy
   .register('runCreateCommand', (getTestContext: () => TestContext, targetEnvironmentId: string, cmaToken: string) => {
     return {
       async run(ctx) {
-        await new Promise((r) => setTimeout(r, 2000)) // Workaround: Give API changes time to settle
+        await new Promise((r) => setTimeout(r, 3000)) // Workaround: Give API changes time to settle
 
         const testContext = getTestContext()
         const cmd = new CreateCommand(
