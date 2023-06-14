@@ -10,7 +10,7 @@ if (!organizationId) {
 }
 const cmaToken = process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN!
 if (!cmaToken) {
-  throw new Error('Please provide an `CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN`')
+  throw new Error('Please provide a `CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN`')
 }
 
 const changesetPath = './changeset.json'
