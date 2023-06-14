@@ -1,7 +1,7 @@
-ccccli
+contentful-merge
 =================
 
-Content Changeset Creation CLI (POC)
+Contentful CLI to compare entries across environments.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/oclif-hello-world.svg)](https://npmjs.org/package/oclif-hello-world)
@@ -83,36 +83,76 @@ Overall 66 CDA and 0 CMA request were fired within 10.0 seconds.
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g ccccli
-$ ccccli COMMAND
+$ npm install -g contentful-merge
+$ contentful-merge COMMAND
 running command...
-$ ccccli (--version)
-ccccli/0.0.0 darwin-x64 node-v16.15.1
-$ ccccli --help [COMMAND]
+$ contentful-merge (--version)
+contentful-merge/0.0.0 darwin-arm64 node-v20.2.0
+$ contentful-merge --help [COMMAND]
 USAGE
-  $ ccccli COMMAND
+  $ contentful-merge COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`ccccli create`](#ccccli-create)
-* [`ccccli help [COMMAND]`](#ccccli-help-command)
+* [`contentful-merge apply [INPUT]`](#contentful-merge-apply-input)
+* [`contentful-merge create`](#contentful-merge-create)
+* [`contentful-merge help [COMMANDS]`](#contentful-merge-help-commands)
+* [`contentful-merge plugins`](#contentful-merge-plugins)
+* [`contentful-merge plugins:install PLUGIN...`](#contentful-merge-pluginsinstall-plugin)
+* [`contentful-merge plugins:inspect PLUGIN...`](#contentful-merge-pluginsinspect-plugin)
+* [`contentful-merge plugins:install PLUGIN...`](#contentful-merge-pluginsinstall-plugin-1)
+* [`contentful-merge plugins:link PLUGIN`](#contentful-merge-pluginslink-plugin)
+* [`contentful-merge plugins:uninstall PLUGIN...`](#contentful-merge-pluginsuninstall-plugin)
+* [`contentful-merge plugins:uninstall PLUGIN...`](#contentful-merge-pluginsuninstall-plugin-1)
+* [`contentful-merge plugins:uninstall PLUGIN...`](#contentful-merge-pluginsuninstall-plugin-2)
+* [`contentful-merge plugins update`](#contentful-merge-plugins-update)
 
-## `ccccli create`
+## `contentful-merge apply [INPUT]`
+
+Apply Changeset
+
+```
+USAGE
+  $ contentful-merge apply [INPUT] --space <value> --environment <value> [--cmaToken <value>] [--cdaToken
+    <value>] [--limit <value>]
+
+FLAGS
+  --cdaToken=<value>     cda token
+  --cmaToken=<value>     cma token
+  --environment=<value>  (required) source environment id
+  --limit=<value>        [default: 200] Limit parameter for collection endpoints
+  --space=<value>        (required) space id
+
+DESCRIPTION
+  Apply Changeset
+
+EXAMPLES
+  ./bin/dev apply changeset.json --space "<space-id>" --environment "staging"
+
+  $ contentful-merge apply changeset.json --space "<space-id>" --environment "staging"
+```
+
+_See code: [dist/commands/apply/index.ts](https://github.com/contentful/contentful-merge/blob/v0.0.0/dist/commands/apply/index.ts)_
+
+## `contentful-merge create`
 
 Create Entries Changeset
 
 ```
 USAGE
-  $ ccccli create --source <value> --target <value> --space <value> --token <value> [--inline]
+  $ contentful-merge create --source <value> --target <value> --space <value> [--cmaToken <value>]
+    [--cdaToken <value>] [--light] [--limit <value>]
 
 FLAGS
-  --inline          inline added entity payload
-  --source=<value>  (required) source environment id
-  --space=<value>   (required) space id
-  --target=<value>  (required) target environment id
-  --token=<value>   (required) cda token
+  --cdaToken=<value>  cda token
+  --cmaToken=<value>  cma token
+  --light             only creates link object for added entities
+  --limit=<value>     [default: 200] Limit parameter for collection endpoints
+  --source=<value>    (required) source environment id
+  --space=<value>     (required) space id
+  --target=<value>    (required) target environment id
 
 DESCRIPTION
   Create Entries Changeset
@@ -120,30 +160,266 @@ DESCRIPTION
 EXAMPLES
   ./bin/dev create --space "<space-id>" --source "master>" --target "staging" --token "<cda-token>"
 
-  $ ccccli create --space "<space-id>" --source "master" --target "staging" --token "<cda-token>"
+  $ contentful-merge create --space "<space-id>" --source "master" --target "staging" --token "<cda-token>"
 ```
 
-_See code: [dist/commands/create/index.ts](https://github.com/marcolink/ccccli/blob/v0.0.0/dist/commands/create/index.ts)_
+_See code: [dist/commands/create/index.ts](https://github.com/contentful/contentful-merge/blob/v0.0.0/dist/commands/create/index.ts)_
 
-## `ccccli help [COMMAND]`
+## `contentful-merge help [COMMANDS]`
 
-Display help for ccccli.
+Display help for contentful-merge.
 
 ```
 USAGE
-  $ ccccli help [COMMAND] [-n]
+  $ contentful-merge help [COMMANDS] [-n]
 
 ARGUMENTS
-  COMMAND  Command to show help for.
+  COMMANDS  Command to show help for.
 
 FLAGS
   -n, --nested-commands  Include all nested commands in the output.
 
 DESCRIPTION
-  Display help for ccccli.
+  Display help for contentful-merge.
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.15/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.2.9/src/commands/help.ts)_
+
+## `contentful-merge plugins`
+
+List installed plugins.
+
+```
+USAGE
+  $ contentful-merge plugins [--json] [--core]
+
+FLAGS
+  --core  Show core plugins.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  List installed plugins.
+
+EXAMPLES
+  $ contentful-merge plugins
+```
+
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v3.1.2/src/commands/plugins/index.ts)_
+
+## `contentful-merge plugins:install PLUGIN...`
+
+Installs a plugin into the CLI.
+
+```
+USAGE
+  $ contentful-merge plugins:install PLUGIN...
+
+ARGUMENTS
+  PLUGIN  Plugin to install.
+
+FLAGS
+  -f, --force    Run yarn install with force flag.
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Installs a plugin into the CLI.
+  Can be installed from npm or a git url.
+
+  Installation of a user-installed plugin will override a core plugin.
+
+  e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command
+  will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in
+  the CLI without the need to patch and update the whole CLI.
+
+
+ALIASES
+  $ contentful-merge plugins add
+
+EXAMPLES
+  $ contentful-merge plugins:install myplugin 
+
+  $ contentful-merge plugins:install https://github.com/someuser/someplugin
+
+  $ contentful-merge plugins:install someuser/someplugin
+```
+
+## `contentful-merge plugins:inspect PLUGIN...`
+
+Displays installation properties of a plugin.
+
+```
+USAGE
+  $ contentful-merge plugins:inspect PLUGIN...
+
+ARGUMENTS
+  PLUGIN  [default: .] Plugin to inspect.
+
+FLAGS
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Displays installation properties of a plugin.
+
+EXAMPLES
+  $ contentful-merge plugins:inspect myplugin
+```
+
+## `contentful-merge plugins:install PLUGIN...`
+
+Installs a plugin into the CLI.
+
+```
+USAGE
+  $ contentful-merge plugins:install PLUGIN...
+
+ARGUMENTS
+  PLUGIN  Plugin to install.
+
+FLAGS
+  -f, --force    Run yarn install with force flag.
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Installs a plugin into the CLI.
+  Can be installed from npm or a git url.
+
+  Installation of a user-installed plugin will override a core plugin.
+
+  e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command
+  will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in
+  the CLI without the need to patch and update the whole CLI.
+
+
+ALIASES
+  $ contentful-merge plugins add
+
+EXAMPLES
+  $ contentful-merge plugins:install myplugin 
+
+  $ contentful-merge plugins:install https://github.com/someuser/someplugin
+
+  $ contentful-merge plugins:install someuser/someplugin
+```
+
+## `contentful-merge plugins:link PLUGIN`
+
+Links a plugin into the CLI for development.
+
+```
+USAGE
+  $ contentful-merge plugins:link PLUGIN
+
+ARGUMENTS
+  PATH  [default: .] path to plugin
+
+FLAGS
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Links a plugin into the CLI for development.
+  Installation of a linked plugin will override a user-installed or core plugin.
+
+  e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello'
+  command will override the user-installed or core plugin implementation. This is useful for development work.
+
+
+EXAMPLES
+  $ contentful-merge plugins:link myplugin
+```
+
+## `contentful-merge plugins:uninstall PLUGIN...`
+
+Removes a plugin from the CLI.
+
+```
+USAGE
+  $ contentful-merge plugins:uninstall PLUGIN...
+
+ARGUMENTS
+  PLUGIN  plugin to uninstall
+
+FLAGS
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Removes a plugin from the CLI.
+
+ALIASES
+  $ contentful-merge plugins unlink
+  $ contentful-merge plugins remove
+```
+
+## `contentful-merge plugins:uninstall PLUGIN...`
+
+Removes a plugin from the CLI.
+
+```
+USAGE
+  $ contentful-merge plugins:uninstall PLUGIN...
+
+ARGUMENTS
+  PLUGIN  plugin to uninstall
+
+FLAGS
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Removes a plugin from the CLI.
+
+ALIASES
+  $ contentful-merge plugins unlink
+  $ contentful-merge plugins remove
+```
+
+## `contentful-merge plugins:uninstall PLUGIN...`
+
+Removes a plugin from the CLI.
+
+```
+USAGE
+  $ contentful-merge plugins:uninstall PLUGIN...
+
+ARGUMENTS
+  PLUGIN  plugin to uninstall
+
+FLAGS
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Removes a plugin from the CLI.
+
+ALIASES
+  $ contentful-merge plugins unlink
+  $ contentful-merge plugins remove
+```
+
+## `contentful-merge plugins update`
+
+Update installed plugins.
+
+```
+USAGE
+  $ contentful-merge plugins update [-h] [-v]
+
+FLAGS
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Update installed plugins.
+```
 <!-- commandsstop -->
 
 ## FAQ / Gotchas

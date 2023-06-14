@@ -1,17 +1,17 @@
 {
-  "name": "ccccli",
+  "name": "contentful-merge",
   "version": "0.0.0",
-  "description": "oclif example Hello World CLI",
+  "description": "contentful cli to diff and merge content across environments",
   "author": "Contentful <opensource@contentful.com>",
   "private": true,
   "bin": {
-    "ccccli": "./bin/run",
-    "ccccli-dev": "./bin/dev"
+    "contentful-merge": "./bin/run",
+    "contentful-merge-dev": "./bin/dev"
   },
-  "homepage": "https://github.com/marcolink/ccccli",
+  "homepage": "https://github.com/contentful/contentful-merge",
   "license": "MIT",
   "main": "dist/index.js",
-  "repository": "marcolink/ccccli",
+  "repository": "contentful/contentful-merge",
   "files": [
     "/bin",
     "/dist",
@@ -58,8 +58,8 @@
     "typescript": "^5.0.4"
   },
   "oclif": {
-    "bin": "ccccli",
-    "dirname": "ccccli",
+    "bin": "contentful-merge",
+    "dirname": "contentful-merge",
     "commands": "./dist/commands",
     "plugins": [
       "@oclif/plugin-help",
@@ -92,7 +92,7 @@
   "engines": {
     "node": ">=12.0.0"
   },
-  "bugs": "https://github.com/marcolink/ccccli/issues",
+  "bugs": "https://github.com/contentful/contentful-merge/issues",
   "keywords": [
     "oclif"
   ],
