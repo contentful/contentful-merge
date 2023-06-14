@@ -1,16 +1,21 @@
 import { Command, Flags } from '@oclif/core'
+
+import * as Sentry from '@sentry/node'
 import chalk from 'chalk'
+import * as fs from 'node:fs/promises'
 import path from 'node:path'
 import { createClient } from '../../engine/client'
 import { createChangesetTask } from '../../engine/create-changeset'
 import { CreateChangesetContext } from '../../engine/create-changeset/types'
-import * as fs from 'node:fs/promises'
 import { createTransformHandler } from '../../engine/logger/create-transform-handler'
 import { MemoryLogger } from '../../engine/logger/memory-logger'
 import { writeLog } from '../../engine/logger/write-log'
 import { changesetItemsCount } from '../../engine/utils/changeset-items-count'
 import { createChangeset } from '../../engine/utils/create-changeset'
 import { exceedsLimitsForType } from '../../engine/utils/exceeds-limits'
+import { initSentry } from '../../errorTracking/init-sentry'
+
+initSentry('create')
 
 export default class Create extends Command {
   static description = 'Create Entries Changeset'
@@ -33,6 +38,12 @@ export default class Create extends Command {
   async run(): Promise<void> {
     const { flags } = await this.parse(Create)
 
+    Sentry.configureScope((scope) => {
+      scope.setTag('spaceId', flags.space)
+      scope.setTag('sourceEnvironmentId', flags.source)
+      scope.setTag('targetEnvironmentId', flags.target)
+    })
+
     const logger = new MemoryLogger('create-changeset')
     const logHandler = createTransformHandler(logger)
 
@@ -42,6 +53,13 @@ export default class Create extends Command {
       space: flags.space,
       logHandler,
     })
+
+    const limits = {
+      all: 100,
+      changed: 100,
+      added: 100,
+      removed: 100,
+    }
 
     const context: CreateChangesetContext = {
       logger,
@@ -63,12 +81,7 @@ export default class Create extends Command {
         nonChanged: 0,
       },
       changeset: createChangeset(flags.source, flags.target),
-      limits: {
-        all: 100,
-        changed: 100,
-        added: 100,
-        removed: 100,
-      },
+      limits,
     }
 
     console.log(
@@ -78,6 +91,10 @@ export default class Create extends Command {
     const startTime = performance.now()
     const result = await createChangesetTask(context).run()
     const endTime = performance.now()
+
+    if (result.errors) {
+      result.errors.map((error: Error) => Sentry.captureException(error))
+    }
 
     const duration = ((endTime - startTime) / 1000).toFixed(1)
 
@@ -90,6 +107,16 @@ export default class Create extends Command {
       exceedsLimitsForType('added', context) ||
       exceedsLimitsForType('changed', context) ||
       context.ids.added.length + context.ids.removed.length + context.changed.length > context.limits.all
+
+    Sentry.setTag('limitsExceeded', limitsExceeded)
+    Sentry.setTag('added', context.ids.added.length)
+    Sentry.setTag('removed', context.ids.removed.length)
+    Sentry.setTag('changed', context.changed.length)
+    Sentry.setTag('cdaRequest', client.requestCounts().cda)
+    Sentry.setTag('cmaRequest', client.requestCounts().cma)
+    Sentry.setTag('memory', usedMemory.toFixed(2))
+    Sentry.setTag('duration', `${duration}`)
+    Sentry.setExtra('limits', limits)
 
     let output = '\n'
     output += chalk.underline.bold('Changeset successfully created 🎉')
@@ -129,5 +156,10 @@ export default class Create extends Command {
     output += `\n📖 ${logFilePath}`
 
     console.log(output)
+
+    if (limitsExceeded) {
+      Sentry.captureMessage('Max allowed changes exceeded')
+    }
+    await Sentry.close(2000)
   }
 }
