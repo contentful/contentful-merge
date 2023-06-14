@@ -1,14 +1,15 @@
 import * as testUtils from '@contentful/integration-test-utils'
-import { ClientAPI, Environment } from 'contentful-management'
+import { ApiKey, ClientAPI, Environment } from 'contentful-management'
 import { CreateApiKeyProps, Space } from 'contentful-management/types'
 
 export type TestContext = {
   sourceEnvironment: Environment
   cdaToken: string
   spaceId: string
+  teardown: () => Promise<void>
 }
 
-export const createCdaToken = async (space: Space, environmentIds: string[]): Promise<string> => {
+export const createCdaToken = async (space: Space, environmentIds: string[]): Promise<ApiKey> => {
   const apiKeyData: CreateApiKeyProps = {
     name: 'CCCCLI CDA Token',
     environments: environmentIds.map((envId) => ({
@@ -19,10 +20,7 @@ export const createCdaToken = async (space: Space, environmentIds: string[]): Pr
       },
     })),
   }
-  const apiKey = await space.createApiKey(apiKeyData)
-  const cdaToken = apiKey.accessToken
-
-  return cdaToken
+  return await space.createApiKey(apiKeyData)
 }
 
 export const createSpace = async (client: ClientAPI, organizationId: string): Promise<Space> => {
@@ -37,12 +35,18 @@ export const createSpace = async (client: ClientAPI, organizationId: string): Pr
   return testSpace
 }
 
+const teardown = async (apiKey: ApiKey, environment: Environment): Promise<void> => {
+  await Promise.allSettled([apiKey.delete(), environment.delete()])
+}
+
 export const createEnvironment = async (testSpace: Space, targetEnvironmentId: string): Promise<TestContext> => {
   const sourceEnvironment = await testUtils.createTestEnvironment(testSpace, 'test-id')
+  const apiKey = await createCdaToken(testSpace, [targetEnvironmentId, sourceEnvironment.sys.id])
 
   return {
     sourceEnvironment,
-    cdaToken: await createCdaToken(testSpace, [targetEnvironmentId, sourceEnvironment.sys.id]),
+    cdaToken: apiKey.accessToken,
     spaceId: testSpace.sys.id,
+    teardown: () => teardown(apiKey, sourceEnvironment),
   }
 }

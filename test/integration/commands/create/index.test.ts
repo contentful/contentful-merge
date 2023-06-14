@@ -1,12 +1,16 @@
 import { expect } from '@oclif/test'
 import { Space, createClient } from 'contentful-management'
 import fs from 'fs'
-import { TestContext, createEnvironment, createSpace } from './bootstrap'
+import { TestContext, createEnvironment } from './bootstrap'
 import fancy from './register-plugins'
 
 const organizationId = process.env.CONTENTFUL_ORGANIZATION_ID!
 if (!organizationId) {
   throw new Error('Please provide a `CONTENTFUL_ORGANIZATION_ID`')
+}
+const spaceId = process.env.CONTENTFUL_SPACE_ID!
+if (!spaceId) {
+  throw new Error('Please provide a `CONTENTFUL_SPACE_ID`')
 }
 const cmaToken = process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN!
 if (!cmaToken) {
@@ -19,19 +23,13 @@ let testContext: TestContext
 let testSpace: Space
 before(async () => {
   const client = createClient({ accessToken: cmaToken })
-  testSpace = await createSpace(client, organizationId)
+  testSpace = await client.getSpace(spaceId)
   testContext = await createEnvironment(testSpace, targetEnvironmentId)
 })
 
-after(async () => {
-  if (testSpace) {
-    await testSpace.delete()
-  }
-})
+after(() => testContext.teardown())
 
-afterEach(async () => {
-  await fs.promises.rm(changesetPath, { force: true })
-})
+afterEach(() => fs.promises.rm(changesetPath, { force: true }))
 
 describe('create - happy path', () => {
   fancy
