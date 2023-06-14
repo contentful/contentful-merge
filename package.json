@@ -45,7 +45,7 @@
     "contentful-management": "^10.36.0",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^8.8.0",
-    "fancy-test": "^2.0.25",
+    "fancy-test": "^2.0.26",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.2",
     "mocha": "^9",
