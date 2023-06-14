@@ -16,8 +16,8 @@ export default class Create extends Command {
   static description = 'Create Entries Changeset'
 
   static examples = [
-    './bin/dev create --space "<space-id>" --source "master" --target "staging" --cdaToken "<cda-token>" --cmaToken "<cma-token>"',
-    'ccccli create --space "<space-id>" --source "master" --target "staging" --cdaToken "<cda-token>" --cmaToken "<cma-token>"',
+    './bin/dev create --space "<space-id>" --source "master>" --target "staging" --token "<cda-token>"',
+    'contentful-merge create --space "<space-id>" --source "master" --target "staging" --token "<cda-token>"',
   ]
 
   static flags = {

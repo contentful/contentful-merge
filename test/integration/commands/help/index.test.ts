@@ -5,6 +5,6 @@ describe('runs', () => {
     .stdout()
     .command(['help'])
     .it('help cmd', (ctx) => {
-      expect(ctx.stdout).to.contain('Display help for ccccli.')
+      expect(ctx.stdout).to.contain('Display help for contentful-merge.')
     })
 })
