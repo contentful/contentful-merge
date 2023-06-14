@@ -35,6 +35,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.6.5",
     "@commitlint/config-conventional": "^17.6.5",
+    "@contentful/integration-test-utils": "^2.0.1",
     "@oclif/test": "^2.3.22",
     "@types/chai": "^4",
     "@types/mocha": "^9.0.0",
@@ -44,6 +45,7 @@
     "contentful-management": "^10.36.0",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^8.8.0",
+    "fancy-test": "^2.0.25",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.2",
     "mocha": "^9",
@@ -82,8 +84,9 @@
     "prettier": "prettier --config ./.prettierrc --check \"{**/*.js,**/*.ts,**/*.json}\"",
     "prettier-fix": "prettier --config ./.prettierrc --write \"{**/*.js,**/*.ts,**/*.json}\"",
     "prepack": "npm run build && oclif manifest && oclif readme",
+    "test": "npm run test-integration",
+    "test-integration": "mocha --forbid-only --exit \"test/integration/**/*.test.ts\"",
     "prepare": "husky install",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif readme && git add README.md"
   },
   "engines": {

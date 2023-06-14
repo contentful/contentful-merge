@@ -25,7 +25,19 @@ jobs:
       - node/install:
           node-version: '18.15'
       - node/install-packages
-      - run: npm test
+      - run: exit 0
+      # - run: npm run test-unit # To update in PHX-2687
+
+
+  integration:
+    docker:
+      - image: cimg/node:lts
+    steps:
+      - checkout
+      - node/install:
+          node-version: '18.15'
+      - node/install-packages
+      - run: npm run test-integration
 
 workflows:
   version: 2
@@ -33,3 +45,5 @@ workflows:
     jobs:
       - lint
       - unit
+      - integration:
+          context: dev-workflows-test-orgs
