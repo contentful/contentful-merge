@@ -1,7 +1,8 @@
+import { Hook } from '@oclif/core'
 import * as Sentry from '@sentry/node'
 import { ProfilingIntegration } from '@sentry/profiling-node'
 
-export function initSentry(command: string) {
+const hook: Hook<'init'> = async function () {
   Sentry.init({
     dsn: 'https://5bc27276ac684a56bab07632be10a455@o2239.ingest.sentry.io/4505312653410304',
     tracesSampleRate: 1.0,
@@ -10,6 +11,6 @@ export function initSentry(command: string) {
     // TODO:  we should default to development and set production during a production build
     environment: process.env.CI ? 'development' : 'production',
   })
-
-  Sentry.setTag('command', command)
 }
+
+export default hook

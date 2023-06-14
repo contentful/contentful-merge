@@ -13,10 +13,13 @@ import { writeLog } from '../../engine/logger/write-log'
 import { changesetItemsCount } from '../../engine/utils/changeset-items-count'
 import { createChangeset } from '../../engine/utils/create-changeset'
 import { exceedsLimitsForType } from '../../engine/utils/exceeds-limits'
-import { initSentry } from '../../errorTracking/init-sentry'
 
-initSentry('create')
-
+const limits = {
+  all: 100,
+  changed: 100,
+  added: 100,
+  removed: 100,
+}
 export default class Create extends Command {
   static description = 'Create Entries Changeset'
 
@@ -39,9 +42,11 @@ export default class Create extends Command {
     const { flags } = await this.parse(Create)
 
     Sentry.configureScope((scope) => {
+      scope.setTag('command', 'create')
       scope.setTag('spaceId', flags.space)
       scope.setTag('sourceEnvironmentId', flags.source)
       scope.setTag('targetEnvironmentId', flags.target)
+      scope.setExtra('limits', limits)
     })
 
     const logger = new MemoryLogger('create-changeset')
@@ -53,13 +58,6 @@ export default class Create extends Command {
       space: flags.space,
       logHandler,
     })
-
-    const limits = {
-      all: 100,
-      changed: 100,
-      added: 100,
-      removed: 100,
-    }
 
     const context: CreateChangesetContext = {
       logger,
@@ -116,7 +114,7 @@ export default class Create extends Command {
     Sentry.setTag('cmaRequest', client.requestCounts().cma)
     Sentry.setTag('memory', usedMemory.toFixed(2))
     Sentry.setTag('duration', `${duration}`)
-    Sentry.setExtra('limits', limits)
+    Sentry.setExtra('statistics', context.statistics)
 
     let output = '\n'
     output += chalk.underline.bold('Changeset successfully created 🎉')
@@ -155,11 +153,18 @@ export default class Create extends Command {
     const logFilePath = await writeLog(result.logger)
     output += `\n📖 ${logFilePath}`
 
-    console.log(output)
+    this.log(output)
 
     if (limitsExceeded) {
       Sentry.captureMessage('Max allowed changes exceeded')
     }
+  }
+
+  protected async finally(error: Error | undefined): Promise<any> {
+    if (error) {
+      Sentry.captureException(error)
+    }
     await Sentry.close(2000)
+    return super.finally(error)
   }
 }
