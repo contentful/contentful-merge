@@ -115,7 +115,7 @@ export default class Create extends Command {
 
     if (limitsExceeded) {
       output += chalk.redBright(
-        `\nThe selected environments have to many changes, we currently only allow a max of ${context.limits.all} changes`
+        `\nThe selected environments have too many changes, we currently only allow a max of ${context.limits.all} changes`
       )
       output += '\n'
     } else {
