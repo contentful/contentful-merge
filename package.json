@@ -63,9 +63,6 @@
     "bin": "contentful-merge",
     "dirname": "contentful-merge",
     "commands": "./dist/commands",
-    "hooks": {
-      "init": "./src/hooks/init-sentry"
-    },
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-plugins"

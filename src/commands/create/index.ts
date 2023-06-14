@@ -1,6 +1,7 @@
 import { Command, Flags } from '@oclif/core'
 
 import * as Sentry from '@sentry/node'
+import { ProfilingIntegration } from '@sentry/profiling-node'
 import chalk from 'chalk'
 import * as fs from 'node:fs/promises'
 import path from 'node:path'
@@ -13,6 +14,15 @@ import { writeLog } from '../../engine/logger/write-log'
 import { changesetItemsCount } from '../../engine/utils/changeset-items-count'
 import { createChangeset } from '../../engine/utils/create-changeset'
 import { exceedsLimitsForType } from '../../engine/utils/exceeds-limits'
+
+Sentry.init({
+  dsn: 'https://5bc27276ac684a56bab07632be10a455@o2239.ingest.sentry.io/4505312653410304',
+  tracesSampleRate: 1.0,
+  profilesSampleRate: 1.0,
+  integrations: [new ProfilingIntegration()],
+  // TODO:  we should default to development and set production during a production build
+  environment: process.env.CI ? 'development' : 'production',
+})
 
 const limits = {
   all: 100,
@@ -87,7 +97,13 @@ export default class Create extends Command {
     )
 
     const startTime = performance.now()
+    const transaction = Sentry.startTransaction({
+      op: 'create',
+      name: 'Create Changeset',
+    })
     const result = await createChangesetTask(context).run()
+    transaction?.finish()
+
     const endTime = performance.now()
 
     if (result.errors) {
