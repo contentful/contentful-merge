@@ -6,7 +6,7 @@ import fancy from './register-plugins'
 
 const organizationId = process.env.CONTENTFUL_ORGANIZATION_ID!
 if (!organizationId) {
-  throw new Error('Please provide an `CONTENTFUL_ORGANIZATION_ID`')
+  throw new Error('Please provide a `CONTENTFUL_ORGANIZATION_ID`')
 }
 const cmaToken = process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN!
 if (!cmaToken) {
