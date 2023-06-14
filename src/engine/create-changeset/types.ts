@@ -29,4 +29,10 @@ export interface CreateChangesetContext extends BaseContext {
   statistics: {
     nonChanged: number
   }
+  limits: {
+    all: number
+    changed: number
+    added: number
+    removed: number
+  }
 }

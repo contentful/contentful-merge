@@ -3,6 +3,7 @@ import { ListrTask } from 'listr2'
 import { chunk } from 'lodash'
 import { BaseContext, ChangedChangesetItem } from '../../types'
 import { createLinkObject } from '../../utils/create-link-object'
+import { exceedsLimitsForType } from '../../utils/exceeds-limits'
 import type { CreateChangesetContext } from '../types'
 
 const format: (delta: Delta | undefined) => Patch = diffFormatters.jsonpatch.format
@@ -92,5 +93,6 @@ export const createFetchChangedTasks = (): ListrTask => {
 
       return Promise.resolve(context)
     },
+    skip: (context) => exceedsLimitsForType('changed', context),
   }
 }
