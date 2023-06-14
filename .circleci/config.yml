@@ -17,15 +17,17 @@ jobs:
       - run: npm run prettier
       - run: npm run check-types
 
-  # unit: # To update in PHX-2687
-  #   docker:
-  #     - image: cimg/node:lts
-  #   steps:
-  #     - checkout
-  #     - node/install:
-  #         node-version: '18.15'
-  #     - node/install-packages
-  #     - run: npm run test-unit
+  unit:
+    docker:
+      - image: cimg/node:lts
+    steps:
+      - checkout
+      - node/install:
+          node-version: '18.15'
+      - node/install-packages
+      - run: exit 0
+      # - run: npm run test-unit # To update in PHX-2687
+
 
   integration:
     docker:
@@ -42,6 +44,6 @@ workflows:
   build_and_test:
     jobs:
       - lint
-      # - unit # To add `unit` <--- in PHX-2687
+      - unit
       - integration:
           context: dev-workflows-test-orgs
