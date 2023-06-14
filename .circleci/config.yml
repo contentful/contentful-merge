@@ -25,7 +25,7 @@ jobs:
   #     - node/install:
   #         node-version: '18.15'
   #     - node/install-packages
-  #     - run: npm test-unit
+  #     - run: npm run test-unit
 
   integration:
     docker:
@@ -35,7 +35,7 @@ jobs:
       - node/install:
           node-version: '18.15'
       - node/install-packages
-      - run: npm test-integration
+      - run: npm run test-integration
 
 workflows:
   version: 2
