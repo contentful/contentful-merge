@@ -1,10 +1,13 @@
 import axios from 'axios'
 import { Entry, EntryCollection } from 'contentful'
 import { EntryProps } from 'contentful-management'
-import { createHttpClient } from 'contentful-sdk-core'
+import { createHttpClient, getUserAgentHeader } from 'contentful-sdk-core'
 import { pickBy } from 'lodash'
 import { ClientLogHandler } from '../logger/types'
 import { stripSys } from '../utils/strip-sys'
+import { v4 } from 'uuid'
+
+import ContentfulSdkCorePKGJson from 'contentful-sdk-core/package.json'
 
 type CreateClientParams = {
   space: string
@@ -35,6 +38,14 @@ type PublishEntryParams = ParamEnvironment & { entryId: string; entry: EntryProp
 
 const cleanQuery = (query?: Record<string, any>) => pickBy(query, (v) => v !== undefined)
 
+const SDK = `contentful-sdk-core/${ContentfulSdkCorePKGJson.version}`
+const VERSION = '0.0.0'
+const SEQUENCE = v4()
+const FEATURE = 'merge-library'
+const APPLICATION = `contentful-merge/${VERSION}`
+const INTEGRATION = 'cli'
+const USER_AGENT = getUserAgentHeader(SDK, APPLICATION, INTEGRATION, FEATURE)
+
 export const createClient = ({ space, cdaToken, cmaToken, logHandler }: CreateClientParams) => {
   const cdaClient = createHttpClient(axios, {
     accessToken: cdaToken,
@@ -43,6 +54,8 @@ export const createClient = ({ space, cdaToken, cmaToken, logHandler }: CreateCl
     headers: {
       Authorization: `Bearer ${cdaToken}`,
       'Content-Type': 'application/vnd.contentful.delivery.v1+json',
+      'CF-Sequence': SEQUENCE,
+      'X-Contentful-User-Agent': USER_AGENT,
     },
     baseURL: `https://cdn.contentful.com/spaces/${space}/environments/`,
     logHandler: (level, data) => logHandler(level, `CDA ${data}`),
@@ -55,6 +68,8 @@ export const createClient = ({ space, cdaToken, cmaToken, logHandler }: CreateCl
     headers: {
       Authorization: `Bearer ${cmaToken}`,
       'Content-Type': 'application/vnd.contentful.management.v1+json',
+      'CF-Sequence': SEQUENCE,
+      'X-Contentful-User-Agent': USER_AGENT,
     },
     baseURL: `https://api.contentful.com/spaces/${space}/environments/`,
     logHandler: (level, data) => logHandler(level, `CMA ${data}`),
