@@ -42,7 +42,6 @@ workflows:
   build_and_test:
     jobs:
       - lint
-      # - unit # To update in PHX-2687
-      - integration
-          context:
-            - dev-workflows-test-orgs
+      # - unit # To add `unit` <--- in PHX-2687
+      - integration:
+          context: dev-workflows-test-orgs
