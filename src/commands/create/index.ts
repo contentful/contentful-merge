@@ -1,21 +1,21 @@
-import {Command, Flags} from '@oclif/core'
+import { Command, Flags } from '@oclif/core'
 
 import * as Sentry from '@sentry/node'
-import {ProfilingIntegration} from '@sentry/profiling-node'
+import { ProfilingIntegration } from '@sentry/profiling-node'
 import chalk from 'chalk'
 import crypto from 'crypto'
 import * as fs from 'node:fs/promises'
 import path from 'node:path'
-import {analyticsCloseAndFlush, trackCreateCommandCompleted, trackCreateCommandStarted} from '../../analytics'
-import {createClient} from '../../engine/client'
-import {createChangesetTask} from '../../engine/create-changeset'
-import {CreateChangesetContext} from '../../engine/create-changeset/types'
-import {createTransformHandler} from '../../engine/logger/create-transform-handler'
-import {MemoryLogger} from '../../engine/logger/memory-logger'
-import {writeLog} from '../../engine/logger/write-log'
-import {changesetItemsCount} from '../../engine/utils/changeset-items-count'
-import {createChangeset} from '../../engine/utils/create-changeset'
-import {exceedsLimitsForType} from '../../engine/utils/exceeds-limits'
+import { analyticsCloseAndFlush, trackCreateCommandCompleted, trackCreateCommandStarted } from '../../analytics'
+import { createClient } from '../../engine/client'
+import { createChangesetTask } from '../../engine/create-changeset'
+import { CreateChangesetContext } from '../../engine/create-changeset/types'
+import { createTransformHandler } from '../../engine/logger/create-transform-handler'
+import { MemoryLogger } from '../../engine/logger/memory-logger'
+import { writeLog } from '../../engine/logger/write-log'
+import { changesetItemsCount } from '../../engine/utils/changeset-items-count'
+import { createChangeset } from '../../engine/utils/create-changeset'
+import { exceedsLimitsForType } from '../../engine/utils/exceeds-limits'
 
 Sentry.init({
   dsn: 'https://5bc27276ac684a56bab07632be10a455@o2239.ingest.sentry.io/4505312653410304',
@@ -44,17 +44,17 @@ export default class Create extends Command {
   ]
 
   static flags = {
-    source: Flags.string({description: 'source environment id', required: true}),
-    target: Flags.string({description: 'target environment id', required: true}),
-    space: Flags.string({description: 'space id', required: true}),
-    cmaToken: Flags.string({description: 'cma token', required: false, env: 'CMA_TOKEN'}),
-    cdaToken: Flags.string({description: 'cda token', required: false, env: 'CDA_TOKEN'}),
-    light: Flags.boolean({description: 'only creates link object for added entities', required: false}),
-    limit: Flags.integer({description: 'Limit parameter for collection endpoints', required: false, default: 200}),
+    source: Flags.string({ description: 'source environment id', required: true }),
+    target: Flags.string({ description: 'target environment id', required: true }),
+    space: Flags.string({ description: 'space id', required: true }),
+    cmaToken: Flags.string({ description: 'cma token', required: false, env: 'CMA_TOKEN' }),
+    cdaToken: Flags.string({ description: 'cda token', required: false, env: 'CDA_TOKEN' }),
+    light: Flags.boolean({ description: 'only creates link object for added entities', required: false }),
+    limit: Flags.integer({ description: 'Limit parameter for collection endpoints', required: false, default: 200 }),
   }
 
   async run(): Promise<void> {
-    const {flags} = await this.parse(Create)
+    const { flags } = await this.parse(Create)
 
     Sentry.configureScope((scope) => {
       scope.setTag('command', 'create')
@@ -89,8 +89,8 @@ export default class Create extends Command {
       sourceEnvironmentId: flags.source,
       targetEnvironmentId: flags.target,
       inline: !flags.light,
-      source: {comparables: [], ids: []},
-      target: {comparables: [], ids: []},
+      source: { comparables: [], ids: [] },
+      target: { comparables: [], ids: [] },
       ids: {
         added: [],
         removed: [],
@@ -104,7 +104,7 @@ export default class Create extends Command {
     }
 
     console.log(
-      chalk.underline.bold(`\nStart changeset creation for ${chalk(flags.source)} => ${chalk(flags.target)} 🎬`),
+      chalk.underline.bold(`\nStart changeset creation for ${chalk(flags.source)} => ${chalk(flags.target)} 🎬`)
     )
 
     const startTime = performance.now()
@@ -165,16 +165,16 @@ export default class Create extends Command {
     output += `entities and ${formatNumber(result.target.ids.length)} target entities. `
 
     output += `\nThe resulting changeset has ${formatNumber(
-      changesetItemsCount(result.changeset, 'deleted'),
+      changesetItemsCount(result.changeset, 'deleted')
     )} removed, `
     output += `${formatNumber(changesetItemsCount(result.changeset, 'added'))} added and `
     output += `${formatNumber(changesetItemsCount(result.changeset, 'changed'))} changed entries.`
     output += `\n${formatNumber(result.statistics.nonChanged)} entities were detected with a different ${chalk.gray(
-      'sys.updatedAt',
+      'sys.updatedAt'
     )} date, but were identical.`
     output += `\nOverall ${formatNumber(client.requestCounts().cda)} CDA and `
     output += `${formatNumber(client.requestCounts().cma)} CMA request were fired within ${formatNumber(
-      duration,
+      duration
     )} seconds.`
 
     output += `\nThe process used approximately ${formatNumber(usedMemory.toFixed(2))} MB memory.`
@@ -182,7 +182,7 @@ export default class Create extends Command {
 
     if (limitsExceeded) {
       output += chalk.redBright(
-        `\nThe selected environments have too many changes, we currently only allow a max of ${context.limits.all} changes`,
+        `\nThe selected environments have too many changes, we currently only allow a max of ${context.limits.all} changes`
       )
       output += '\n'
     } else {
@@ -206,8 +206,7 @@ export default class Create extends Command {
     if (error) {
       Sentry.captureException(error)
     }
-    await Sentry.close(2000)
-    await analyticsCloseAndFlush(2000)
+    await Promise.allSettled([Sentry.close(2000), analyticsCloseAndFlush(2000)])
     return super.finally(error)
   }
 }

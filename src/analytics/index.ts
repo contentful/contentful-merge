@@ -1,13 +1,13 @@
 import { EventProperties } from '@segment/analytics-core/src/events/interfaces'
 import { Analytics } from '@segment/analytics-node'
+import crypto from 'crypto'
 
-// development write key
-const writeKey = 'rVISKfhJoJ0asHt5rC7XcPFQpRS3Yo2g'
-const userId = '<random>'
+const writeKey = 'YiSkRXCjHUpIDIk9wfbWhoGEGpR99ZXE'
+const userId = crypto.randomUUID()
 
 const analytics = new Analytics({
   writeKey,
-  disable: !!process.env.DISABLE_ANALYTICS,
+  disable: !!process.env.DISABLE_ANALYTICS || !!process.env.CI,
 })
 
 export async function analyticsCloseAndFlush(timeout: number) {
