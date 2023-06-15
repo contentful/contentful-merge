@@ -5,7 +5,6 @@ import { createHttpClient, getUserAgentHeader } from 'contentful-sdk-core'
 import { pickBy } from 'lodash'
 import { ClientLogHandler } from '../logger/types'
 import { stripSys } from '../utils/strip-sys'
-import { v4 } from 'uuid'
 
 import ContentfulSdkCorePKGJson from 'contentful-sdk-core/package.json'
 
@@ -40,13 +39,18 @@ const cleanQuery = (query?: Record<string, any>) => pickBy(query, (v) => v !== u
 
 const SDK = `contentful-sdk-core/${ContentfulSdkCorePKGJson.version}`
 const VERSION = '0.0.0'
-const SEQUENCE = v4()
 const FEATURE = 'merge-library'
 const APPLICATION = `contentful-merge/${VERSION}`
 const INTEGRATION = 'cli'
 const USER_AGENT = getUserAgentHeader(SDK, APPLICATION, INTEGRATION, FEATURE)
 
-export const createClient = ({ space, cdaToken, cmaToken, logHandler }: CreateClientParams) => {
+export const createClient = ({
+  space,
+  cdaToken,
+  cmaToken,
+  logHandler,
+  sequenceKey,
+}: CreateClientParams & { sequenceKey: string }) => {
   const cdaClient = createHttpClient(axios, {
     accessToken: cdaToken,
     space,
@@ -54,7 +58,7 @@ export const createClient = ({ space, cdaToken, cmaToken, logHandler }: CreateCl
     headers: {
       Authorization: `Bearer ${cdaToken}`,
       'Content-Type': 'application/vnd.contentful.delivery.v1+json',
-      'CF-Sequence': SEQUENCE,
+      'CF-Sequence': sequenceKey,
       'X-Contentful-User-Agent': USER_AGENT,
     },
     baseURL: `https://cdn.contentful.com/spaces/${space}/environments/`,
@@ -68,7 +72,7 @@ export const createClient = ({ space, cdaToken, cmaToken, logHandler }: CreateCl
     headers: {
       Authorization: `Bearer ${cmaToken}`,
       'Content-Type': 'application/vnd.contentful.management.v1+json',
-      'CF-Sequence': SEQUENCE,
+      'CF-Sequence': sequenceKey,
       'X-Contentful-User-Agent': USER_AGENT,
     },
     baseURL: `https://api.contentful.com/spaces/${space}/environments/`,

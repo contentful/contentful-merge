@@ -3,6 +3,7 @@ import { Command, Flags } from '@oclif/core'
 import * as Sentry from '@sentry/node'
 import { ProfilingIntegration } from '@sentry/profiling-node'
 import chalk from 'chalk'
+
 import crypto from 'crypto'
 import * as fs from 'node:fs/promises'
 import path from 'node:path'
@@ -33,7 +34,7 @@ const limits = {
   removed: 100,
 }
 
-const sequenceKey = crypto.randomBytes(20).toString('hex')
+const sequenceKey = crypto.randomUUID()
 
 export default class Create extends Command {
   static description = 'Create Entries Changeset'
@@ -78,6 +79,7 @@ export default class Create extends Command {
       cmaToken: flags.cmaToken!,
       space: flags.space,
       logHandler,
+      sequenceKey,
     })
 
     const context: CreateChangesetContext = {
