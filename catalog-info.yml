@@ -10,5 +10,5 @@ metadata:
     contentful.com/ci-alert-slack: prd-phoenix-ci-alerts
 spec:
   type: cli
-  lifecycle: beta
+  lifecycle: experimental
   owner: group:team-phoenix
