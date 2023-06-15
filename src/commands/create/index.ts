@@ -3,8 +3,10 @@ import { Command, Flags } from '@oclif/core'
 import * as Sentry from '@sentry/node'
 import { ProfilingIntegration } from '@sentry/profiling-node'
 import chalk from 'chalk'
+import crypto from 'crypto'
 import * as fs from 'node:fs/promises'
 import path from 'node:path'
+import { analyticsCloseAndFlush, trackCreateCommandCompleted, trackCreateCommandStarted } from '../../analytics'
 import { createClient } from '../../engine/client'
 import { createChangesetTask } from '../../engine/create-changeset'
 import { CreateChangesetContext } from '../../engine/create-changeset/types'
@@ -30,6 +32,9 @@ const limits = {
   added: 100,
   removed: 100,
 }
+
+const sequenceKey = crypto.randomBytes(20).toString('hex')
+
 export default class Create extends Command {
   static description = 'Create Entries Changeset'
 
@@ -57,6 +62,12 @@ export default class Create extends Command {
       scope.setTag('sourceEnvironmentId', flags.source)
       scope.setTag('targetEnvironmentId', flags.target)
       scope.setExtra('limits', limits)
+    })
+    trackCreateCommandStarted({
+      space_key: flags.space,
+      target_environment_key: flags.target,
+      source_environment_key: flags.source,
+      sequence_key: sequenceKey,
     })
 
     const logger = new MemoryLogger('create-changeset')
@@ -132,6 +143,21 @@ export default class Create extends Command {
     Sentry.setTag('duration', `${duration}`)
     Sentry.setExtra('statistics', context.statistics)
 
+    trackCreateCommandCompleted({
+      space_key: flags.space,
+      target_environment_key: flags.target,
+      source_environment_key: flags.source,
+      sequence_key: sequenceKey,
+      duration: endTime - startTime,
+      num_changeset_items: context.changeset.items.length,
+      num_added_items: context.ids.added.length,
+      num_removed_items: context.ids.removed.length,
+      num_changed_items: context.changed.length,
+      num_source_entries: context.source.ids.length,
+      num_target_entries: context.target.ids.length,
+      num_changeset_items_exceeded: limitsExceeded,
+    })
+
     let output = '\n'
     output += chalk.underline.bold('Changeset successfully created 🎉')
     output += '\nCreated a new changeset for 2 environments '
@@ -180,7 +206,7 @@ export default class Create extends Command {
     if (error) {
       Sentry.captureException(error)
     }
-    await Sentry.close(2000)
+    await Promise.allSettled([Sentry.close(2000), analyticsCloseAndFlush(2000)])
     return super.finally(error)
   }
 }
