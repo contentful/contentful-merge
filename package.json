@@ -56,6 +56,7 @@
     "ora": "^6.3.1",
     "prettier": "^2.8.8",
     "shx": "^0.3.3",
+    "sinon": "^15.1.2",
     "ts-node": "^10.9.1",
     "tslib": "^2.5.3",
     "typescript": "^5.0.4",
@@ -84,15 +85,15 @@
     "lint-fix": "eslint src --ext '.ts,.js' --fix",
     "lint-staged": "lint-staged",
     "postpack": "shx rm -f oclif.manifest.json",
-    "posttest": "npm run lint",
     "prettier": "prettier --config ./.prettierrc --check \"{**/*.js,**/*.ts,**/*.json}\"",
     "prettier-fix": "prettier --config ./.prettierrc --write \"{**/*.js,**/*.ts,**/*.json}\"",
     "prepack": "npm run build && oclif manifest && oclif readme",
-    "test": "npm run test-integration",
-    "test-integration": "mocha --forbid-only --exit \"test/integration/**/*.test.ts\"",
     "prepare": "husky install",
-    "version": "oclif readme && git add README.md",
-    "segment": "typewriter"
+    "segment": "typewriter",
+    "test": "npm run test-unit && npm run test-integration",
+    "test-integration": "mocha --forbid-only --exit \"test/integration/**/*.test.ts\"",
+    "test-unit": "mocha \"test/unit/**/*.test.ts\"",
+    "version": "oclif readme && git add README.md"
   },
   "engines": {
     "node": ">=12.0.0"
