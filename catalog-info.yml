@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: contentful-merge
+  description: |
+    Contentful command line interface to merge entries across environments.
+  annotations:
+    circleci.com/project-slug: github/contentful/contentful-merge
+    github.com/project-slug: contentful/contentful-merge
+    contentful.com/ci-alert-slack: prd-phoenix-ci-alerts
+spec:
+  type: cli
+  lifecycle: experimental
+  owner: group:team-phoenix

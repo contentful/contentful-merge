@@ -1,5 +1,6 @@
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
+import crypto from 'crypto'
 import { applyChangesetTask } from '../../engine/apply-changeset'
 import { ApplyChangesetContext } from '../../engine/apply-changeset/types'
 import { createClient } from '../../engine/client'
@@ -9,6 +10,8 @@ import { MemoryLogger } from '../../engine/logger/memory-logger'
 import { writeLog } from '../../engine/logger/write-log'
 import { createChangeset } from '../../engine/utils/create-changeset'
 import { OutputFormatter } from '../../engine/utils/output-formatter'
+
+const sequenceKey = crypto.randomUUID()
 
 export default class Apply extends Command {
   static description = 'Apply Changeset'
@@ -41,6 +44,7 @@ export default class Apply extends Command {
       cmaToken: flags.cmaToken!,
       space: flags.space,
       logHandler,
+      sequenceKey,
     })
 
     const responseCollector = new ResponseStatusCollector()
