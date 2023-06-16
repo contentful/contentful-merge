@@ -4,10 +4,6 @@ import fs from 'fs'
 import { TestContext, createEnvironment } from './bootstrap'
 import fancy from './register-plugins'
 
-const organizationId = process.env.CONTENTFUL_ORGANIZATION_ID!
-if (!organizationId) {
-  throw new Error('Please provide a `CONTENTFUL_ORGANIZATION_ID`')
-}
 const spaceId = process.env.CONTENTFUL_SPACE_ID!
 if (!spaceId) {
   throw new Error('Please provide a `CONTENTFUL_SPACE_ID`')
