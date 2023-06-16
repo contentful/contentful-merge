@@ -4,7 +4,7 @@ import { initializeTask } from '../../../test-utils'
 import { GetEntriesParams } from '../../../../../src/engine/client'
 import { MemoryLogger } from '../../../../../src/engine/logger/memory-logger'
 import { CreateChangesetContext } from '../../../../../src/engine/create-changeset/types'
-import { sourceEntriesMockOnlySys, targetEntriesMockOnlySys } from '../../../mocks/entries'
+import { sourceEntriesFixtureOnlySys, targetEntriesFixtureOnlySys } from '../../../fixtures/entries'
 import { createEntitiesTask } from '../../../../../src/engine/create-changeset/tasks/create-entities-task'
 
 const sourceEnvironmentId = 'staging'
@@ -17,9 +17,9 @@ const mockClient = {
       getMany: async ({ environment, query }: GetEntriesParams) => {
         switch (environment) {
           case sourceEnvironmentId:
-            return sourceEntriesMockOnlySys
+            return sourceEntriesFixtureOnlySys
           case targetEnvironmentId:
-            return targetEntriesMockOnlySys
+            return targetEntriesFixtureOnlySys
         }
       },
     },

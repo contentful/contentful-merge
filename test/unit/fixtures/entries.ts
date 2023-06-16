@@ -1,10 +1,10 @@
 /******************************************************/
-/*** Mocks containing sys.id and sys.updatedAt only ***/
+/*** Fixtures containing sys.id and sys.updatedAt only ***/
 /******************************************************/
 
 // changes: two entries added, two removed, three changed
 // in addition, one sys.updatedAt changed, but no actual changes
-export const sourceEntriesMockOnlySys = {
+export const sourceEntriesFixtureOnlySys = {
   sys: { type: 'Array' },
   total: 8,
   skip: 0,
@@ -63,7 +63,7 @@ export const sourceEntriesMockOnlySys = {
   ],
 }
 
-export const targetEntriesMockOnlySys = {
+export const targetEntriesFixtureOnlySys = {
   sys: { type: 'Array' },
   total: 8,
   skip: 0,
@@ -117,12 +117,12 @@ export const targetEntriesMockOnlySys = {
 }
 
 /*****************************************************/
-/*********** Mocks containing full entries ***********/
+/*********** Fixtures containing full entries ***********/
 /*****************************************************/
 
 // changes: two entries added, two removed, three changed
 // in addition, one sys.updatedAt changed, but no actual changes
-export const sourceEntriesMock = {
+export const sourceEntriesFixture = {
   sys: { type: 'Array' },
   total: 8,
   skip: 0,
@@ -355,7 +355,7 @@ export const sourceEntriesMock = {
   ],
 }
 
-export const targetEntriesMock = {
+export const targetEntriesFixture = {
   sys: { type: 'Array' },
   total: 8,
   skip: 0,

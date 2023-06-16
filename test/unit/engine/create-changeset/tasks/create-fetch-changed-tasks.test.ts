@@ -3,7 +3,7 @@ import { createStubInstance } from 'sinon'
 import { GetEntriesParams } from '../../../../../src/engine/client'
 import { initializeTask, matchChangeType } from '../../../test-utils'
 import { MemoryLogger } from '../../../../../src/engine/logger/memory-logger'
-import { sourceEntriesMock, targetEntriesMock } from '../../../mocks/entries'
+import { sourceEntriesFixture, targetEntriesFixture } from '../../../fixtures/entries'
 import { createChangeset } from '../../../../../src/engine/utils/create-changeset'
 import { CreateChangesetContext } from '../../../../../src/engine/create-changeset/types'
 import { createFetchChangedTasks } from '../../../../../src/engine/create-changeset/tasks/create-fetch-changed-tasks'
@@ -18,9 +18,9 @@ const mockClient = {
       getMany: async ({ environment, query }: GetEntriesParams) => {
         switch (environment) {
           case sourceEnvironmentId:
-            return sourceEntriesMock
+            return sourceEntriesFixture
           case targetEnvironmentId:
-            return targetEntriesMock
+            return targetEntriesFixture
         }
       },
     },
