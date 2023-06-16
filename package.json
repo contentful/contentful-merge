@@ -22,7 +22,7 @@
     "@contentful/jsondiffpatch": "^1.3.1",
     "@oclif/core": "^2.8.6",
     "@oclif/plugin-plugins": "^3.1.2",
-    "@sentry/node": "^7.55.0",
+    "@sentry/node": "^7.55.2",
     "@sentry/profiling-node": "^1.0.4",
     "@segment/analytics-node": "^1.0.0-beta.26",
     "axios": "^0.27.2",
