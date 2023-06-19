@@ -1,4 +1,5 @@
 import { expect } from 'chai'
+import { Entry } from 'contentful'
 import { createStubInstance } from 'sinon'
 import { GetEntriesParams } from '../../../../../src/engine/client'
 import { initializeTask, matchChangeType } from '../../../test-utils'
@@ -6,7 +7,10 @@ import { MemoryLogger } from '../../../../../src/engine/logger/memory-logger'
 import { sourceEntriesFixture, targetEntriesFixture } from '../../../fixtures/entries'
 import { CreateChangesetContext } from '../../../../../src/engine/create-changeset/types'
 import { AddedChangesetItem, ChangedChangesetItem, DeletedChangesetItem } from '../../../../../src/engine/types'
-import { createFetchAddedEntitiesTask } from '../../../../../src/engine/create-changeset/tasks/create-fetch-added-entities-task'
+import {
+  cleanEntity,
+  createFetchAddedEntitiesTask,
+} from '../../../../../src/engine/create-changeset/tasks/create-fetch-added-entities-task'
 
 const sourceEnvironmentId = 'staging'
 const targetEnvironmentId = 'qa'
@@ -174,5 +178,19 @@ describe('createFetchAddedEntitiesTask', () => {
   })
   it.skip('TODO [skipped]: respects the limit parameter', async () => {
     /* TODO */
+  })
+})
+
+describe('cleanEntity', () => {
+  it('removes all but three sys properties from an entry', () => {
+    const entry = { ...sourceEntriesFixture.items[0] } as unknown as Entry<any>
+
+    expect(Object.keys(entry.sys)).to.have.length(16)
+
+    const cleanedEntry = cleanEntity(entry)
+    expect(Object.keys(cleanedEntry.sys)).to.have.length(3)
+    expect(cleanedEntry.sys).to.have.property('id')
+    expect(cleanedEntry.sys).to.have.property('type')
+    expect(cleanedEntry.sys).to.have.property('contentType')
   })
 })
