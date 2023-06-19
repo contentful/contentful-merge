@@ -1,21 +1,10 @@
-import { create as createDiffer, Delta, formatters as diffFormatters, Patch } from '@contentful/jsondiffpatch'
 import { ListrTask } from 'listr2'
 import { chunk } from 'lodash'
 import { BaseContext, ChangedChangesetItem } from '../../types'
 import { createLinkObject } from '../../utils/create-link-object'
 import { exceedsLimitsForType } from '../../utils/exceeds-limits'
 import type { CreateChangesetContext } from '../types'
-
-const format: (delta: Delta | undefined) => Patch = diffFormatters.jsonpatch.format
-
-const entryDiff = createDiffer({
-  propertyFilter: function (name: string) {
-    return !['sys'].includes(name)
-  },
-  textDiff: {
-    minLength: Number.MAX_SAFE_INTEGER,
-  },
-})
+import { createPatch } from '../../utils/create-patch'
 
 type GetEntryPatchParams = {
   context: BaseContext
@@ -45,7 +34,7 @@ async function getEntriesPatches({
     const targetEntry = targetEntries.find((entry) => entry.sys.id === entryId)
 
     if (sourceEntry && targetEntry) {
-      const patch = format(entryDiff.diff(sourceEntry, targetEntry))
+      const patch = createPatch({ target: targetEntry, source: sourceEntry })
       result.push({
         ...createLinkObject(entryId, 'changed'),
         patch,
