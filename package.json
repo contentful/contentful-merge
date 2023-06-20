@@ -22,9 +22,9 @@
     "@contentful/jsondiffpatch": "^1.3.1",
     "@oclif/core": "^2.8.7",
     "@oclif/plugin-plugins": "^3.1.3",
+    "@segment/analytics-node": "^1.0.0-beta.26",
     "@sentry/node": "^7.56.0",
     "@sentry/profiling-node": "^1.0.6",
-    "@segment/analytics-node": "^1.0.0-beta.26",
     "axios": "^0.27.2",
     "chalk": "^4.1.2",
     "contentful": "^10.2.4",
@@ -52,6 +52,7 @@
     "husky": "^8.0.3",
     "lint-staged": "^13.2.2",
     "mocha": "^10.2.0",
+    "mocha-junit-reporter": "^2.2.0",
     "oclif": "^3",
     "ora": "^6.3.1",
     "prettier": "^2.8.8",
@@ -59,8 +60,7 @@
     "sinon": "^15.1.2",
     "ts-node": "^10.9.1",
     "tslib": "^2.5.3",
-    "typescript": "^5.0.4",
-    "typewriter": "^9.0.0"
+    "typescript": "^5.0.4"
   },
   "oclif": {
     "bin": "contentful-merge",
@@ -89,10 +89,11 @@
     "prettier-fix": "prettier --config ./.prettierrc --write \"{**/*.js,**/*.ts,**/*.json}\"",
     "prepack": "npm run build && oclif manifest && oclif readme",
     "prepare": "husky install",
-    "segment": "typewriter",
     "test": "npm run test-unit && npm run test-integration",
-    "test-integration": "mocha --forbid-only --exit \"test/integration/**/*.test.ts\"",
-    "test-unit": "mocha \"test/unit/**/*.test.ts\"",
+    "test-integration": "mocha --forbid-only --exit test/integration/**/*.test.ts",
+    "test-integration-with-reports": "npm run test-integration -- --reporter mocha-junit-reporter --reporter-options mochaFile=reports/integration-results.xml",
+    "test-unit": "mocha test/unit/**/*.test.ts",
+    "test-unit-with-reports": "npm run test-unit -- --reporter mocha-junit-reporter --reporter-options mochaFile=reports/unit-results.xml",
     "version": "oclif readme && git add README.md"
   },
   "engines": {

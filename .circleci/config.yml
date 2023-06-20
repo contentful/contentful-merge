@@ -25,8 +25,11 @@ jobs:
       - node/install:
           node-version: '18.15'
       - node/install-packages
-      - run: npm run test-unit
-
+      - run: npm run test-unit-with-reports
+      - store_test_results:
+          path: reports
+      - store_artifacts:
+          path: ./reports/unit-results.xml
 
   integration:
     docker:
@@ -36,8 +39,11 @@ jobs:
       - node/install:
           node-version: '18.15'
       - node/install-packages
-      - run: npm run test-integration
-
+      - run: npm run test-integration-with-reports
+      - store_test_results:
+          path: reports
+      - store_artifacts:
+          path: ./reports/integration-results.xml
 workflows:
   version: 2
   build_and_test:
