@@ -27,7 +27,7 @@
     "@segment/analytics-node": "^1.0.0-beta.26",
     "axios": "^0.27.2",
     "chalk": "^4.1.2",
-    "contentful": "^9.2.9",
+    "contentful": "^10.2.4",
     "contentful-collection": "^0.0.4",
     "contentful-sdk-core": "^7.1.0",
     "fast-json-patch": "^3.1.1",
