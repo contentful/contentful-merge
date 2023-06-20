@@ -21,7 +21,7 @@ const createTestData = async (env: Environment): Promise<() => Promise<unknown>>
       description: { 'en-US': "Lovely weather isn't it?" },
     },
   })
-  entry.publish()
+  await entry.publish()
 
   return () => Promise.allSettled([entry.unpublish(), entry.delete(), contentType.unpublish(), contentType.delete()])
 }

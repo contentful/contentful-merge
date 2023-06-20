@@ -21,5 +21,5 @@ npm test
 
 ### Run the integration tests
 ```bash
-CONTENTFUL_ORGANIZATION_ID=<org_id> CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN=<cma_token> npm run test:integration
+CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN=<cma_token> CONTENTFUL_SPACE_ID=<space_id> npm run test:integration
 ```
