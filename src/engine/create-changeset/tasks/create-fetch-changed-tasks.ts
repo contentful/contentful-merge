@@ -34,7 +34,7 @@ async function getEntriesPatches({
     const targetEntry = targetEntries.find((entry) => entry.sys.id === entryId)
 
     if (sourceEntry && targetEntry) {
-      const patch = createPatch({ target: targetEntry, source: sourceEntry })
+      const patch = createPatch({ targetEntry, sourceEntry })
       result.push({
         ...createLinkObject(entryId, 'changed'),
         patch,

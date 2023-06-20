@@ -12,6 +12,6 @@ const entryDiff = createDiffer({
   },
 })
 
-export const createPatch = ({ target, source }: { target: Entry<any>; source: Entry<any> }) => {
-  return format(entryDiff.diff(target, source))
+export const createPatch = ({ targetEntry, sourceEntry }: { targetEntry: Entry<any>; sourceEntry: Entry<any> }) => {
+  return format(entryDiff.diff(targetEntry, sourceEntry))
 }
