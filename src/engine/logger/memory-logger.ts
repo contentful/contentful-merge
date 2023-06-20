@@ -1,13 +1,14 @@
 import { ILogger, LogEntry, LogLevel } from './types'
+import { CommandType } from '../types'
 
 export class MemoryLogger implements ILogger {
   protected data: LogEntry[]
 
-  constructor(protected type: string) {
+  constructor(protected type: CommandType) {
     this.data = []
   }
 
-  public getType(): string {
+  public getType(): CommandType {
     return this.type
   }
 

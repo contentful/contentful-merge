@@ -25,8 +25,7 @@ jobs:
       - node/install:
           node-version: '18.15'
       - node/install-packages
-      - run: exit 0
-      # - run: npm run test-unit # To update in PHX-2687
+      - run: npm run test-unit
 
 
   integration:

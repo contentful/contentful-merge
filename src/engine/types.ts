@@ -78,3 +78,5 @@ export type BaseActionParams = {
   responseCollector: ResponseStatusCollector
   task: ListrTaskWrapper<any, any>
 }
+
+export type CommandType = 'create-changeset' | 'apply-changeset'

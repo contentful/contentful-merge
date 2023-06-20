@@ -28,7 +28,7 @@ type EntriesQuery = {
   select?: Array<string>
 }
 
-type GetEntriesParams = ParamEnvironment & { query?: EntriesQuery & PageAbleParam & Record<string, any> }
+export type GetEntriesParams = ParamEnvironment & { query?: EntriesQuery & PageAbleParam & Record<string, any> }
 type GetEntryParams = ParamEnvironment & { entryId: string; query?: EntriesQuery }
 type DeleteEntryParams = ParamEnvironment & { entryId: string }
 type CreateEntryParams = ParamEnvironment & { entryId: string; contentType: string; entry: Omit<EntryProps, 'sys'> }
