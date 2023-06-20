@@ -185,7 +185,7 @@ describe('cleanEntity', () => {
   it('removes all but three sys properties from an entry', () => {
     const entry = { ...sourceEntriesFixture.items[0] } as unknown as Entry<any>
 
-    expect(Object.keys(entry.sys)).to.have.length(16)
+    expect(Object.keys(entry.sys)).to.have.length(8)
 
     const cleanedEntry = cleanEntity(entry)
     expect(Object.keys(cleanedEntry.sys)).to.have.length(3)
