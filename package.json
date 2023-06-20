@@ -23,7 +23,7 @@
     "@oclif/core": "^2.8.7",
     "@oclif/plugin-plugins": "^3.1.3",
     "@sentry/node": "^7.56.0",
-    "@sentry/profiling-node": "^1.0.4",
+    "@sentry/profiling-node": "^1.0.6",
     "@segment/analytics-node": "^1.0.0-beta.26",
     "axios": "^0.27.2",
     "chalk": "^4.1.2",
