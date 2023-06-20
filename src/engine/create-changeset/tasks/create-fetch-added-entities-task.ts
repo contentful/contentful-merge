@@ -5,8 +5,8 @@ import { LogLevel } from '../../logger/types'
 import { exceedsLimitsForType } from '../../utils/exceeds-limits'
 import { CreateChangesetContext } from '../types'
 
-function cleanEntity(entry: Entry<any>): any {
-  return { ...entry, sys: pick(entry.sys, ['id', 'type', 'contentType', 'locale']) }
+export function cleanEntity(entry: Entry<any>): any {
+  return { ...entry, sys: pick(entry.sys, ['id', 'type', 'contentType']) }
 }
 
 export function createFetchAddedEntitiesTask(shouldExecute: boolean): ListrTask {
