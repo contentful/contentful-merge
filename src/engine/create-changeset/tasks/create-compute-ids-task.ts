@@ -11,7 +11,7 @@ export const createComputeIdsTask = (): ListrTask => {
       const added = new Set(source.ids.filter((item) => !target.ids.includes(item)))
       const removed = new Set(target.ids.filter((item) => !source.ids.includes(item)))
 
-      const changed = target.comparables.filter((targetComparable) => {
+      const maybeChanged = target.comparables.filter((targetComparable) => {
         const sourceComparable = source.comparables.find((value) => value.sys.id === targetComparable.sys.id)
 
         if (sourceComparable) {
@@ -22,7 +22,7 @@ export const createComputeIdsTask = (): ListrTask => {
       })
 
       context.ids = { added: [...added], removed: [...removed] }
-      context.changed = changed
+      context.maybeChanged = maybeChanged
 
       return Promise.resolve(context)
     },

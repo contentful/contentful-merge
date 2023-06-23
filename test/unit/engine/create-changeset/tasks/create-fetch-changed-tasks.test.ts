@@ -39,7 +39,7 @@ describe('createFetchChangedTasks', () => {
         added: ['3op5VIqGZiwoe06c8IQIMO', '6gFiJvssqQ62CMYqECOu2M'],
         removed: ['34MlmiuMgU8wKCOOIkAuMy', '1toEOumnkEksWakieoeC6M'],
       },
-      changed: [
+      maybeChanged: [
         {
           sys: {
             id: '2uNOpLMJioKeoMq8W44uYc',

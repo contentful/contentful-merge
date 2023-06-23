@@ -24,7 +24,7 @@ export interface CreateChangesetContext extends BaseContext {
     added: Array<string>
     removed: Array<string>
   }
-  changed: Array<Comparable>
+  maybeChanged: Array<Comparable>
   changeset: Changeset
   statistics: {
     nonChanged: number

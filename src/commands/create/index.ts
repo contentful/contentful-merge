@@ -1,9 +1,7 @@
 import { Command, Flags } from '@oclif/core'
-
 import * as Sentry from '@sentry/node'
 import { ProfilingIntegration } from '@sentry/profiling-node'
 import chalk from 'chalk'
-
 import crypto from 'crypto'
 import * as fs from 'node:fs/promises'
 import path from 'node:path'
@@ -97,7 +95,7 @@ export default class Create extends Command {
         added: [],
         removed: [],
       },
-      changed: [],
+      maybeChanged: [],
       statistics: {
         nonChanged: 0,
       },
@@ -133,12 +131,12 @@ export default class Create extends Command {
       exceedsLimitsForType('removed', context) ||
       exceedsLimitsForType('added', context) ||
       exceedsLimitsForType('changed', context) ||
-      context.ids.added.length + context.ids.removed.length + context.changed.length > context.limits.all
+      context.ids.added.length + context.ids.removed.length + context.maybeChanged.length > context.limits.all
 
     Sentry.setTag('limitsExceeded', limitsExceeded)
     Sentry.setTag('added', context.ids.added.length)
     Sentry.setTag('removed', context.ids.removed.length)
-    Sentry.setTag('changed', context.changed.length)
+    Sentry.setTag('maybeChanged', context.maybeChanged.length)
     Sentry.setTag('cdaRequest', client.requestCounts().cda)
     Sentry.setTag('cmaRequest', client.requestCounts().cma)
     Sentry.setTag('memory', usedMemory.toFixed(2))
@@ -154,7 +152,7 @@ export default class Create extends Command {
       num_changeset_items: context.changeset.items.length,
       num_added_items: context.ids.added.length,
       num_removed_items: context.ids.removed.length,
-      num_changed_items: context.changed.length,
+      num_changed_items: context.maybeChanged.length,
       num_source_entries: context.source.ids.length,
       num_target_entries: context.target.ids.length,
       num_changeset_items_exceeded: limitsExceeded,

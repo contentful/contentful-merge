@@ -4,6 +4,7 @@ import { chunk, pick } from 'lodash'
 import { LogLevel } from '../../logger/types'
 import { exceedsLimitsForType } from '../../utils/exceeds-limits'
 import { CreateChangesetContext } from '../types'
+import { pluralizeEntries } from '../../utils/pluralize-entries'
 
 export function cleanEntity(entry: Entry<any>): any {
   return { ...entry, sys: pick(entry.sys, ['id', 'type', 'contentType']) }
@@ -11,7 +12,7 @@ export function cleanEntity(entry: Entry<any>): any {
 
 export function createFetchAddedEntitiesTask(shouldExecute: boolean): ListrTask {
   return {
-    title: 'Fetch full payload for added entities',
+    title: 'Fetching full payload for added entries',
     skip: (context) => !shouldExecute || exceedsLimitsForType('added', context),
     task: async (context: CreateChangesetContext, task) => {
       const {
@@ -24,7 +25,7 @@ export function createFetchAddedEntitiesTask(shouldExecute: boolean): ListrTask 
       } = context
       logger.log(LogLevel.INFO, 'Start createFetchAddedEntitiesTask')
 
-      task.title = `Fetch full payload for ${added.length} added entities`
+      task.title = `Fetching full payload for ${added.length} added ${pluralizeEntries(added.length)}`
 
       // TODO: use pLimit
       const idChunks = chunk(added, limit)

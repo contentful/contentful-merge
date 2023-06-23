@@ -5,6 +5,7 @@ import { createLinkObject } from '../../utils/create-link-object'
 import { exceedsLimitsForType } from '../../utils/exceeds-limits'
 import type { CreateChangesetContext } from '../types'
 import { createPatch } from '../../utils/create-patch'
+import { pluralizeEntries } from '../../utils/pluralize-entries'
 
 type GetEntryPatchParams = {
   context: BaseContext
@@ -47,21 +48,22 @@ async function getEntriesPatches({
 
 export const createFetchChangedTasks = (): ListrTask => {
   return {
-    title: 'Fetch full payload for changed entities',
+    title: 'Fetching full payload for changed entries',
     task: async (context: CreateChangesetContext, task) => {
-      const { ids, sourceEnvironmentId, changed, targetEnvironmentId, statistics, limit, changeset } = context
-      task.title = `Fetch full payload for ${changed.length} changed entities`
+      const { ids, sourceEnvironmentId, maybeChanged, targetEnvironmentId, statistics, limit, changeset } = context
+      const numberOfMaybeChanged = maybeChanged.length
+      task.title = `Fetching full payload for ${numberOfMaybeChanged} changed ${pluralizeEntries(numberOfMaybeChanged)}`
 
       // TODO: use pLimit
       const idChunks = chunk(
-        changed.map((c) => c.sys.id),
+        maybeChanged.map((c) => c.sys.id),
         limit
       )
 
       let iterator = 0
 
       for (const chunk of idChunks) {
-        task.output = `Fetching ${limit} entities ${++iterator * limit}/${changed.length}`
+        task.output = `Fetching ${limit} entities ${++iterator * limit}/${numberOfMaybeChanged}`
         // eslint-disable-next-line no-await-in-loop
         const changedObjects = await getEntriesPatches({
           context,
