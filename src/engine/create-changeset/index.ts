@@ -15,7 +15,7 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
         task: (ctx, task): Listr => {
           const performanceObserver = new ClientPerformanceObserver(ctx.client)
           performanceObserver.start((payload) => {
-            task.title = `Create Changeset (CMA: ${payload.cma}, CDA: ${payload.cda})`
+            task.title = `Creating a Changeset`
           })
           return task.newListr(
             [
