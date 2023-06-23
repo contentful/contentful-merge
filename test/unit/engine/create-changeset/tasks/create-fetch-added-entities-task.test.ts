@@ -59,6 +59,7 @@ describe('createFetchAddedEntitiesTask', () => {
         added: 100,
         removed: 100,
       },
+      exceedsLimits: false,
       changeset: {
         sys: {
           type: 'Changeset',

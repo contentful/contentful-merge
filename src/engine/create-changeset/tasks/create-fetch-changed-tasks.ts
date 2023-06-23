@@ -2,7 +2,6 @@ import { ListrTask } from 'listr2'
 import { chunk } from 'lodash'
 import { BaseContext, ChangedChangesetItem } from '../../types'
 import { createLinkObject } from '../../utils/create-link-object'
-import { exceedsLimitsForType } from '../../utils/exceeds-limits'
 import type { CreateChangesetContext } from '../types'
 import { createPatch } from '../../utils/create-patch'
 import { pluralizeEntries } from '../../utils/pluralize-entries'
@@ -49,6 +48,7 @@ async function getEntriesPatches({
 export const createFetchChangedTasks = (): ListrTask => {
   return {
     title: 'Fetching full payload for changed entries',
+    skip: (context: CreateChangesetContext) => context.exceedsLimits === true,
     task: async (context: CreateChangesetContext, task) => {
       const { ids, sourceEnvironmentId, maybeChanged, targetEnvironmentId, statistics, limit, changeset } = context
       const numberOfMaybeChanged = maybeChanged.length

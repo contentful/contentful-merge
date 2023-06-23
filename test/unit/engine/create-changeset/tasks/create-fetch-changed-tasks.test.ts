@@ -74,6 +74,7 @@ describe('createFetchChangedTasks', () => {
         added: 100,
         removed: 100,
       },
+      exceedsLimits: false,
       changeset: createChangeset('staging', 'qa'),
     } as unknown as CreateChangesetContext
   })

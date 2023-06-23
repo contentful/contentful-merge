@@ -101,6 +101,7 @@ export default class Create extends Command {
       },
       changeset: createChangeset(flags.source, flags.target),
       limits,
+      exceedsLimits: false,
     }
 
     console.log(
@@ -127,11 +128,7 @@ export default class Create extends Command {
 
     const formatNumber = chalk.yellow.bold
 
-    const limitsExceeded =
-      exceedsLimitsForType('removed', context) ||
-      exceedsLimitsForType('added', context) ||
-      exceedsLimitsForType('changed', context) ||
-      context.ids.added.length + context.ids.removed.length + context.maybeChanged.length > context.limits.all
+    const limitsExceeded = context.exceedsLimits
 
     Sentry.setTag('limitsExceeded', limitsExceeded)
     Sentry.setTag('added', context.ids.added.length)
@@ -155,7 +152,7 @@ export default class Create extends Command {
       num_changed_items: context.maybeChanged.length,
       num_source_entries: context.source.ids.length,
       num_target_entries: context.target.ids.length,
-      num_changeset_items_exceeded: limitsExceeded,
+      num_changeset_items_exceeded: context.exceedsLimits,
     })
 
     let output = '\n'
@@ -197,7 +194,7 @@ export default class Create extends Command {
 
     this.log(output)
 
-    if (limitsExceeded) {
+    if (context.exceedsLimits) {
       Sentry.captureMessage('Max allowed changes exceeded')
     }
   }
