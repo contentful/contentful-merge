@@ -97,6 +97,9 @@ export default class Create extends Command {
       },
       maybeChanged: [],
       statistics: {
+        added: 0,
+        changed: 0,
+        removed: 0,
         nonChanged: 0,
       },
       changeset: createChangeset(flags.source, flags.target),

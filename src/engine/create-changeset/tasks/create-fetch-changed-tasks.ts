@@ -73,6 +73,9 @@ export const createFetchChangedTasks = (): ListrTask => {
         })
 
         const withChange = changedObjects.filter((o) => o.patch.length > 0)
+        // changed means: entries have actual changed content
+        statistics.changed += withChange.length
+        // nonChanged means: entries have different sys.updatedAt but identical content
         statistics.nonChanged += changedObjects.length - withChange.length
         changeset.items.push(...withChange)
       }
@@ -82,8 +85,10 @@ export const createFetchChangedTasks = (): ListrTask => {
         ...ids.added.map((item) => createLinkObject(item, 'added'))
       )
 
+      statistics.added = ids.added.length
+      statistics.removed = ids.removed.length
+
       return Promise.resolve(context)
     },
-    skip: (context) => exceedsLimitsForType('changed', context),
   }
 }

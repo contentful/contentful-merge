@@ -51,6 +51,9 @@ describe('createFetchAddedEntitiesTask', () => {
         },
       ],
       statistics: {
+        added: 0,
+        changed: 0,
+        removed: 0,
         nonChanged: 0,
       },
       limits: {
