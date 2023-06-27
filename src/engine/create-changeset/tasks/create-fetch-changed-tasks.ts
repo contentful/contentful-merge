@@ -47,12 +47,14 @@ async function getEntriesPatches({
 
 export const createFetchChangedTasks = (): ListrTask => {
   return {
-    title: 'Fetching full payload for changed entries',
+    title: 'Fetching full payload for entries to be compared',
     skip: (context: CreateChangesetContext) => context.exceedsLimits === true,
     task: async (context: CreateChangesetContext, task) => {
       const { ids, sourceEnvironmentId, maybeChanged, targetEnvironmentId, statistics, limit, changeset } = context
       const numberOfMaybeChanged = maybeChanged.length
-      task.title = `Fetching full payload for ${numberOfMaybeChanged} changed ${pluralizeEntries(numberOfMaybeChanged)}`
+      task.title = `Fetching full payload for ${numberOfMaybeChanged} ${pluralizeEntries(
+        numberOfMaybeChanged
+      )} to be compared`
 
       // TODO: use pLimit
       const idChunks = chunk(
