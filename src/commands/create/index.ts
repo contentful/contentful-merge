@@ -122,6 +122,7 @@ export default class Create extends Command {
 
     const endTime = performance.now()
 
+    // TODO I don't think this will ever be true, we should collect errors some other way
     if (result.errors) {
       result.errors.map((error: Error) => Sentry.captureException(error))
     }

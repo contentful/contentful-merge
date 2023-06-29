@@ -29,14 +29,17 @@ afterEach(() => fs.promises.rm(changesetPath, { force: true }))
 
 describe('create - happy path', () => {
   fancy
-    .stdout()
+    .stdout() // to print the output during testing use `.stdout({ print: true })`
     .runCreateCommand(() => testContext, targetEnvironmentId, cmaToken)
+    // TODO: When both environments are emtpy, we should either actually not create a changeset,
+    // or change the name of this test
     .it('should not create a changeset when both environments are empty', (ctx) => {
       expect(ctx.stdout).to.contain('Changeset successfully created 🎉')
-      expect(ctx.stdout).to.contain(
-        'Created a new changeset for 2 environments with 0 source entities and 0 target entities.'
-      )
-      expect(ctx.stdout).to.contain('The resulting changeset has 0 removed, 0 added and 0 changed entries.')
+      expect(ctx.stdout).to.contain('0 entries detected in the source environment')
+      expect(ctx.stdout).to.contain('0 entries detected in the target environment')
+      expect(ctx.stdout).to.contain('0 added entries')
+      expect(ctx.stdout).to.contain('0 changed entries')
+      expect(ctx.stdout).to.contain('0 removed entries')
       expect(fs.existsSync(changesetPath)).to.be.true
     })
 
@@ -49,10 +52,11 @@ describe('create - happy path', () => {
     })
     .it('should create a changeset when environment has additions', (ctx) => {
       expect(ctx.stdout).to.contain('Changeset successfully created 🎉')
-      expect(ctx.stdout).to.contain(
-        'Created a new changeset for 2 environments with 1 source entities and 0 target entities.'
-      )
-      expect(ctx.stdout).to.contain('The resulting changeset has 0 removed, 1 added and 0 changed entries.')
+      expect(ctx.stdout).to.contain('1 entry detected in the source environment')
+      expect(ctx.stdout).to.contain('0 entries detected in the target environment')
+      expect(ctx.stdout).to.contain('1 added entry')
+      expect(ctx.stdout).to.contain('0 changed entries')
+      expect(ctx.stdout).to.contain('0 removed entries')
       expect(fs.existsSync(changesetPath)).to.be.true
     })
 })

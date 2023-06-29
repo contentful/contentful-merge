@@ -125,6 +125,12 @@ describe('createComputeIdsTask', () => {
         removed: [],
       },
       maybeChanged: [],
+      limits: {
+        all: 100,
+        added: 100,
+        removed: 100,
+        changed: 100,
+      },
     } as unknown as CreateChangesetContext
   })
   it('adds added ids to the context', async () => {

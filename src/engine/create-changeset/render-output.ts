@@ -36,7 +36,7 @@ export async function renderOutput(context: CreateChangesetContext, changesetFil
     )} detected in the source environment "${context.sourceEnvironmentId}"`
     output += `\n  ${greenCheckmark} ${formatNumber(context.target.ids.length)} ${pluralizeEntries(
       context.target.ids.length
-    )} detected in the source environment "${context.targetEnvironmentId}"`
+    )} detected in the target environment "${context.targetEnvironmentId}"`
 
     output += `\n  ${greenCheckmark} ${formatNumber(context.statistics.added)} added ${pluralizeEntries(
       context.statistics.added
