@@ -39,7 +39,7 @@
     "@commitlint/cli": "^17.6.6",
     "@commitlint/config-conventional": "^17.6.6",
     "@contentful/integration-test-utils": "^2.0.1",
-    "@oclif/test": "^2.3.23",
+    "@oclif/test": "^2.3.25",
     "@types/chai": "^4",
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.3.2",
