@@ -42,7 +42,7 @@ describe('createFetchAddedEntitiesTask', () => {
         added: ['3op5VIqGZiwoe06c8IQIMO', '6gFiJvssqQ62CMYqECOu2M'],
         removed: ['34MlmiuMgU8wKCOOIkAuMy'],
       },
-      changed: [
+      maybeChanged: [
         {
           sys: {
             id: '2uNOpLMJioKeoMq8W44uYc',
@@ -51,6 +51,9 @@ describe('createFetchAddedEntitiesTask', () => {
         },
       ],
       statistics: {
+        added: 0,
+        changed: 0,
+        removed: 0,
         nonChanged: 0,
       },
       limits: {
@@ -59,6 +62,7 @@ describe('createFetchAddedEntitiesTask', () => {
         added: 100,
         removed: 100,
       },
+      exceedsLimits: false,
       changeset: {
         sys: {
           type: 'Changeset',

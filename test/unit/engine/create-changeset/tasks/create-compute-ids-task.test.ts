@@ -124,7 +124,13 @@ describe('createComputeIdsTask', () => {
         added: [],
         removed: [],
       },
-      changed: [],
+      maybeChanged: [],
+      limits: {
+        all: 100,
+        added: 100,
+        removed: 100,
+        changed: 100,
+      },
     } as unknown as CreateChangesetContext
   })
   it('adds added ids to the context', async () => {
@@ -143,7 +149,7 @@ describe('createComputeIdsTask', () => {
     const task = initializeTask(createComputeIdsTask(), context)
     await task.run()
 
-    expect(context.changed).to.deep.equal([
+    expect(context.maybeChanged).to.deep.equal([
       {
         sys: {
           id: '2uNOpLMJioKeoMq8W44uYc',
@@ -176,6 +182,6 @@ describe('createComputeIdsTask', () => {
 
     expect(context.ids.added).not.includes('Dy6jo5j4goU2C4sc8Kwkk')
     expect(context.ids.removed).not.includes('Dy6jo5j4goU2C4sc8Kwkk')
-    expect(context.changed.map(({ sys: { id } }) => id)).not.includes('Dy6jo5j4goU2C4sc8Kwkk')
+    expect(context.maybeChanged.map(({ sys: { id } }) => id)).not.includes('Dy6jo5j4goU2C4sc8Kwkk')
   })
 })

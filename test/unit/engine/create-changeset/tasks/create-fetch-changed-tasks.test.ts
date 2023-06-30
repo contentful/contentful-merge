@@ -39,7 +39,7 @@ describe('createFetchChangedTasks', () => {
         added: ['3op5VIqGZiwoe06c8IQIMO', '6gFiJvssqQ62CMYqECOu2M'],
         removed: ['34MlmiuMgU8wKCOOIkAuMy', '1toEOumnkEksWakieoeC6M'],
       },
-      changed: [
+      maybeChanged: [
         {
           sys: {
             id: '2uNOpLMJioKeoMq8W44uYc',
@@ -66,6 +66,9 @@ describe('createFetchChangedTasks', () => {
         },
       ],
       statistics: {
+        added: 0,
+        changed: 0,
+        removed: 0,
         nonChanged: 0,
       },
       limits: {
@@ -74,6 +77,7 @@ describe('createFetchChangedTasks', () => {
         added: 100,
         removed: 100,
       },
+      exceedsLimits: false,
       changeset: createChangeset('staging', 'qa'),
     } as unknown as CreateChangesetContext
   })

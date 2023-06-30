@@ -24,9 +24,12 @@ export interface CreateChangesetContext extends BaseContext {
     added: Array<string>
     removed: Array<string>
   }
-  changed: Array<Comparable>
+  maybeChanged: Array<Comparable>
   changeset: Changeset
   statistics: {
+    added: number
+    changed: number
+    removed: number
     nonChanged: number
   }
   limits: {
@@ -35,4 +38,5 @@ export interface CreateChangesetContext extends BaseContext {
     added: number
     removed: number
   }
+  exceedsLimits: boolean
 }

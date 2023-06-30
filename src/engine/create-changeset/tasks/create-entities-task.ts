@@ -36,7 +36,7 @@ const execute = async ({ context, environmentId, scope, task }: ExecuteParams) =
           query: { select: ['sys.id', 'sys.updatedAt'], limit: LIMIT, skip: LIMIT * i },
         })
         requestsDone++
-        task.output = `fetching ${requestsDone * LIMIT}/${total} entities`
+        task.output = `Fetching ${requestsDone * LIMIT}/${total} entries`
         result.push(...response.items)
       })
     )
@@ -52,7 +52,7 @@ const execute = async ({ context, environmentId, scope, task }: ExecuteParams) =
 
 export function createEntitiesTask(scope: EnvironmentScope, environmentId: string): ListrTask {
   return {
-    title: `${scope} environment "${environmentId}" with (${LIMIT} entities/request)`,
+    title: `Reading the ${scope} environment "${environmentId}"`,
     task: async (context: CreateChangesetContext, task) => {
       context.logger.log(LogLevel.INFO, 'Start createEntitiesTask')
       return execute({ context, task, scope, environmentId })

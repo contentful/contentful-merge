@@ -1,9 +1,7 @@
 import { Command, Flags } from '@oclif/core'
-
 import * as Sentry from '@sentry/node'
 import { ProfilingIntegration } from '@sentry/profiling-node'
 import chalk from 'chalk'
-
 import crypto from 'crypto'
 import * as fs from 'node:fs/promises'
 import path from 'node:path'
@@ -14,9 +12,8 @@ import { CreateChangesetContext } from '../../engine/create-changeset/types'
 import { createTransformHandler } from '../../engine/logger/create-transform-handler'
 import { MemoryLogger } from '../../engine/logger/memory-logger'
 import { writeLog } from '../../engine/logger/write-log'
-import { changesetItemsCount } from '../../engine/utils/changeset-items-count'
 import { createChangeset } from '../../engine/utils/create-changeset'
-import { exceedsLimitsForType } from '../../engine/utils/exceeds-limits'
+import { renderOutput } from '../../engine/create-changeset/render-output'
 
 Sentry.init({
   dsn: 'https://5bc27276ac684a56bab07632be10a455@o2239.ingest.sentry.io/4505312653410304',
@@ -97,16 +94,22 @@ export default class Create extends Command {
         added: [],
         removed: [],
       },
-      changed: [],
+      maybeChanged: [],
       statistics: {
+        added: 0,
+        changed: 0,
+        removed: 0,
         nonChanged: 0,
       },
       changeset: createChangeset(flags.source, flags.target),
       limits,
+      exceedsLimits: false,
     }
 
     console.log(
-      chalk.underline.bold(`\nStart changeset creation for ${chalk(flags.source)} => ${chalk(flags.target)} 🎬`)
+      chalk.underline.bold(
+        `\nStart changeset creation for ${chalk.yellow(flags.source)} => ${chalk.yellow(flags.target)} 🎬`
+      )
     )
 
     const startTime = performance.now()
@@ -119,6 +122,7 @@ export default class Create extends Command {
 
     const endTime = performance.now()
 
+    // TODO I don't think this will ever be true, we should collect errors some other way
     if (result.errors) {
       result.errors.map((error: Error) => Sentry.captureException(error))
     }
@@ -127,18 +131,12 @@ export default class Create extends Command {
 
     const usedMemory = process.memoryUsage().heapUsed / 1024 / 1024
 
-    const formatNumber = chalk.yellow.bold
-
-    const limitsExceeded =
-      exceedsLimitsForType('removed', context) ||
-      exceedsLimitsForType('added', context) ||
-      exceedsLimitsForType('changed', context) ||
-      context.ids.added.length + context.ids.removed.length + context.changed.length > context.limits.all
+    const limitsExceeded = context.exceedsLimits
 
     Sentry.setTag('limitsExceeded', limitsExceeded)
     Sentry.setTag('added', context.ids.added.length)
     Sentry.setTag('removed', context.ids.removed.length)
-    Sentry.setTag('changed', context.changed.length)
+    Sentry.setTag('maybeChanged', context.maybeChanged.length)
     Sentry.setTag('cdaRequest', client.requestCounts().cda)
     Sentry.setTag('cmaRequest', client.requestCounts().cma)
     Sentry.setTag('memory', usedMemory.toFixed(2))
@@ -154,54 +152,25 @@ export default class Create extends Command {
       num_changeset_items: context.changeset.items.length,
       num_added_items: context.ids.added.length,
       num_removed_items: context.ids.removed.length,
-      num_changed_items: context.changed.length,
+      num_changed_items: context.maybeChanged.length,
       num_source_entries: context.source.ids.length,
       num_target_entries: context.target.ids.length,
-      num_changeset_items_exceeded: limitsExceeded,
+      num_changeset_items_exceeded: context.exceedsLimits,
     })
 
-    let output = '\n'
-    output += chalk.underline.bold('Changeset successfully created 🎉')
-    output += '\nCreated a new changeset for 2 environments '
-    output += `with ${formatNumber(result.source.ids.length)} source `
-    output += `entities and ${formatNumber(result.target.ids.length)} target entities. `
-
-    output += `\nThe resulting changeset has ${formatNumber(
-      changesetItemsCount(result.changeset, 'deleted')
-    )} removed, `
-    output += `${formatNumber(changesetItemsCount(result.changeset, 'added'))} added and `
-    output += `${formatNumber(changesetItemsCount(result.changeset, 'changed'))} changed entries.`
-    output += `\n${formatNumber(result.statistics.nonChanged)} entities were detected with a different ${chalk.gray(
-      'sys.updatedAt'
-    )} date, but were identical.`
-    output += `\nOverall ${formatNumber(client.requestCounts().cda)} CDA and `
-    output += `${formatNumber(client.requestCounts().cma)} CMA request were fired within ${formatNumber(
-      duration
-    )} seconds.`
-
-    output += `\nThe process used approximately ${formatNumber(usedMemory.toFixed(2))} MB memory.`
-    output += '\n'
-
-    if (limitsExceeded) {
-      output += chalk.redBright(
-        `\nThe selected environments have too many changes, we currently only allow a max of ${context.limits.all} changes`
-      )
-      output += '\n'
-    } else {
-      // const changesetFilePath = path.join(process.cwd(), `changeset-${new Date().toISOString()}-${flags.source}_${flags.target}.json`)
-      const changesetFilePath = path.join(process.cwd(), 'changeset.json')
-      await fs.writeFile(changesetFilePath, JSON.stringify(result.changeset, null, 2))
-      output += `\n💾 ${changesetFilePath}`
-    }
+    // const changesetFilePath = path.join(process.cwd(), `changeset-${new Date().toISOString()}-${flags.source}_${flags.target}.json`)
+    const changesetFilePath = path.join(process.cwd(), 'changeset.json')
 
     const logFilePath = await writeLog(result.logger)
-    output += `\n📖 ${logFilePath}`
 
-    this.log(output)
-
-    if (limitsExceeded) {
+    if (context.exceedsLimits) {
       Sentry.captureMessage('Max allowed changes exceeded')
+    } else {
+      await fs.writeFile(changesetFilePath, JSON.stringify(context.changeset, null, 2))
     }
+
+    const output = await renderOutput(context, changesetFilePath, logFilePath)
+    this.log(output)
   }
 
   protected async finally(error: Error | undefined): Promise<any> {

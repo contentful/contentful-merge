@@ -7,7 +7,7 @@ export const createLoadChangesetTask = (): ListrTask => {
   return {
     title: 'load changeset data',
     task: async (context: ApplyChangesetContext, task) => {
-      task.output = `loading data from ${context.inputPath}`
+      task.output = `Loading data from ${context.inputPath}`
       context.logger.log(LogLevel.INFO, 'Start createLoadChangesetTask')
       context.changeset = await fs.readFile(context.inputPath, 'utf8').then((rawJson) => JSON.parse(rawJson))
     },
