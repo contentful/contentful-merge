@@ -45,7 +45,7 @@
     "@types/node": "^20.3.1",
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "chai": "^4",
-    "contentful-management": "^10.38.0",
+    "contentful-management": "^10.38.3",
     "eslint": "^8.43.0",
     "eslint-config-prettier": "^8.8.0",
     "fancy-test": "^2.0.27",
