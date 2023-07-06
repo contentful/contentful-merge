@@ -1,4 +1,4 @@
-import { BaseContext, Changeset } from '../types'
+import { BaseContext, Changeset, EntityType } from '../types'
 
 export interface Comparable {
   sys: {
@@ -7,10 +7,12 @@ export interface Comparable {
   }
 }
 
-export interface EnvironmentData {
+export interface EntityData {
   ids: Array<string>
   comparables: Array<Comparable>
 }
+
+export type EnvironmentData = Record<EntityType, EntityData>
 
 export type EnvironmentScope = 'source' | 'target'
 
@@ -20,11 +22,18 @@ export interface CreateChangesetContext extends BaseContext {
   source: EnvironmentData
   target: EnvironmentData
   inline: boolean
-  ids: {
-    added: Array<string>
-    removed: Array<string>
-  }
-  maybeChanged: Array<Comparable>
+
+  entities: Record<
+    EntityType,
+    {
+      ids: {
+        added: Array<string>
+        removed: Array<string>
+      }
+      maybeChanged: Array<Comparable>
+    }
+  >
+
   changeset: Changeset
   statistics: {
     added: number
@@ -39,4 +48,5 @@ export interface CreateChangesetContext extends BaseContext {
     removed: number
   }
   exceedsLimits: boolean
+  contentModelDiverged: boolean
 }

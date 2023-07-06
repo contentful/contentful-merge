@@ -4,25 +4,25 @@ import { chunk, pick } from 'lodash'
 import { LogLevel } from '../../logger/types'
 import { CreateChangesetContext } from '../types'
 import { pluralizeEntries } from '../../utils/pluralize-entries'
+import { EntityType } from '../../types'
 
 export function cleanEntity(entry: Entry<any>): any {
   return { ...entry, sys: pick(entry.sys, ['id', 'type', 'contentType']) }
 }
 
-export function createFetchAddedEntitiesTask(shouldExecute: boolean): ListrTask {
+export function createFetchAddedEntitiesTask(shouldExecute: boolean, entityType: EntityType): ListrTask {
   return {
     title: 'Fetching full payload for added entries',
-    skip: (context: CreateChangesetContext) => context.exceedsLimits === true,
+    skip: (context: CreateChangesetContext) => context.exceedsLimits,
     task: async (context: CreateChangesetContext, task) => {
-      const {
-        client,
-        ids: { added },
-        sourceEnvironmentId,
-        changeset,
-        limit,
-        logger,
-      } = context
+      const { client, entities, sourceEnvironmentId, changeset, limit, logger } = context
       logger.log(LogLevel.INFO, 'Start createFetchAddedEntitiesTask')
+
+      const {
+        [entityType]: {
+          ids: { added },
+        },
+      } = entities
 
       task.title = `Fetching full payload for ${added.length} added ${pluralizeEntries(added.length)}`
 
