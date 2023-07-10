@@ -11,6 +11,7 @@ oclif.manifest.json
 .idea
 changeset.json
 changeset-*.json
+.env
 .envrc
 .envrc
 .commands

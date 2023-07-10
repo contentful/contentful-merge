@@ -161,3 +161,56 @@ export const createClient = ({
     },
   }
 }
+
+export function createCDAClient({
+  space,
+  cdaToken,
+  logHandler,
+  sequenceKey,
+}: {
+  space: string
+  cdaToken: string
+  logHandler: ClientLogHandler
+  sequenceKey: string
+}) {
+  const cdaClient = createHttpClient(axios, {
+    accessToken: cdaToken,
+    space,
+    throttle: 30,
+    headers: {
+      Authorization: `Bearer ${cdaToken}`,
+      'Content-Type': 'application/vnd.contentful.delivery.v1+json',
+      'CF-Sequence': sequenceKey,
+      'X-Contentful-User-Agent': USER_AGENT,
+    },
+    baseURL: `https://cdn.contentful.com/spaces/${space}/environments/`,
+    logHandler: (level, data) => logHandler(level, `CDA ${data}`),
+  })
+
+  const count = {
+    cda: 0,
+    cma: 0,
+  }
+
+  return {
+    cda: {
+      requestCounts: () => count.cda,
+      entries: {
+        getMany: async ({ environment, query }: GetEntriesParams) => {
+          count.cda++
+          const result = await cdaClient.get(`${environment}/entries`, {
+            params: { ...cleanQuery(query) },
+          })
+          return result.data as EntryCollection<any>
+        },
+        get: async ({ environment, entryId, query }: GetEntryParams) => {
+          count.cda++
+          const result = await cdaClient.get(`${environment}/entries/${entryId}`, {
+            params: { ...cleanQuery(query) },
+          })
+          return result.data as Entry<any>
+        },
+      },
+    },
+  }
+}
