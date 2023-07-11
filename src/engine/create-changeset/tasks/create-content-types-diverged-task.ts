@@ -9,9 +9,9 @@ export function createContentTypesDivergedTask(): ListrTask {
       context.logger.log(LogLevel.INFO, `Start createContentTypesDivergedTask`)
 
       if (
-        context.entities.contentTypes.ids.added.length > 0 ||
-        context.entities.contentTypes.ids.removed.length > 0 ||
-        context.entities.contentTypes.maybeChanged.length > 0
+        context.affectedEntities.contentTypes.added.length > 0 ||
+        context.affectedEntities.contentTypes.removed.length > 0 ||
+        context.affectedEntities.contentTypes.maybeChanged.length > 0
       ) {
         context.contentModelDiverged = true
       }

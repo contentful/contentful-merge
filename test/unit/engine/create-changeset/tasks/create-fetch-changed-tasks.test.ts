@@ -35,12 +35,10 @@ describe('createFetchChangedTasks', () => {
       targetEnvironmentId,
       logger: createStubInstance(MemoryLogger),
       client: mockClient,
-      entities: {
+      affectedEntities: {
         entries: {
-          ids: {
-            added: ['3op5VIqGZiwoe06c8IQIMO', '6gFiJvssqQ62CMYqECOu2M'],
-            removed: ['34MlmiuMgU8wKCOOIkAuMy', '1toEOumnkEksWakieoeC6M'],
-          },
+          added: ['3op5VIqGZiwoe06c8IQIMO', '6gFiJvssqQ62CMYqECOu2M'],
+          removed: ['34MlmiuMgU8wKCOOIkAuMy', '1toEOumnkEksWakieoeC6M'],
           maybeChanged: [
             {
               sys: {

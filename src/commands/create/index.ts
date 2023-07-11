@@ -88,17 +88,17 @@ export default class Create extends Command {
       sourceEnvironmentId: flags.source,
       targetEnvironmentId: flags.target,
       inline: !flags.light,
-      source: {
+      sourceData: {
         entries: { comparables: [], ids: [] },
         contentTypes: { comparables: [], ids: [] },
       },
-      target: {
+      targetData: {
         entries: { comparables: [], ids: [] },
         contentTypes: { comparables: [], ids: [] },
       },
-      entities: {
-        entries: { ids: { added: [], removed: [] }, maybeChanged: [] },
-        contentTypes: { ids: { added: [], removed: [] }, maybeChanged: [] },
+      affectedEntities: {
+        entries: { added: [], removed: [], maybeChanged: [] },
+        contentTypes: { added: [], removed: [], maybeChanged: [] },
       },
       statistics: {
         added: 0,
@@ -140,9 +140,9 @@ export default class Create extends Command {
     const limitsExceeded = context.exceedsLimits
 
     Sentry.setTag('limitsExceeded', limitsExceeded)
-    Sentry.setTag('added', context.entities.entries.ids.added.length)
-    Sentry.setTag('removed', context.entities.entries.ids.removed.length)
-    Sentry.setTag('maybeChanged', context.entities.entries.maybeChanged.length)
+    Sentry.setTag('added', context.affectedEntities.entries.added.length)
+    Sentry.setTag('removed', context.affectedEntities.entries.removed.length)
+    Sentry.setTag('maybeChanged', context.affectedEntities.entries.maybeChanged.length)
     Sentry.setTag('cdaRequest', client.requestCounts().cda)
     Sentry.setTag('cmaRequest', client.requestCounts().cma)
     Sentry.setTag('memory', usedMemory.toFixed(2))
@@ -156,11 +156,11 @@ export default class Create extends Command {
       sequence_key: sequenceKey,
       duration: endTime - startTime,
       num_changeset_items: context.changeset.items.length,
-      num_added_items: context.entities.entries.ids.added.length,
-      num_removed_items: context.entities.entries.ids.removed.length,
-      num_changed_items: context.entities.entries.maybeChanged.length,
-      num_source_entries: context.source.entries.ids.length,
-      num_target_entries: context.target.entries.ids.length,
+      num_added_items: context.affectedEntities.entries.added.length,
+      num_removed_items: context.affectedEntities.entries.removed.length,
+      num_changed_items: context.affectedEntities.entries.maybeChanged.length,
+      num_source_entries: context.sourceData.entries.ids.length,
+      num_target_entries: context.targetData.entries.ids.length,
       num_changeset_items_exceeded: context.exceedsLimits,
     })
 

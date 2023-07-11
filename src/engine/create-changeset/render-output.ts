@@ -10,11 +10,11 @@ const greenCheckmark = chalk.green(figures.tick)
 
 export async function renderOutput(context: CreateChangesetContext, changesetFilePath: string, logFilePath: string) {
   let output = '\n'
-  const entriesAddedLength = context.entities.entries.ids.added.length
-  const entriesRemovedLength = context.entities.entries.ids.removed.length
-  const entriesMaybeChangedLength = context.entities.entries.maybeChanged.length
-  const sourceEntriesLength = context.source.entries.ids.length
-  const targetEntriesLength = context.target.entries.ids.length
+  const entriesAddedLength = context.affectedEntities.entries.added.length
+  const entriesRemovedLength = context.affectedEntities.entries.removed.length
+  const entriesMaybeChangedLength = context.affectedEntities.entries.maybeChanged.length
+  const sourceEntriesLength = context.sourceData.entries.ids.length
+  const targetEntriesLength = context.targetData.entries.ids.length
   if (context.contentModelDiverged) {
     const errorMessage = `\nThe content model of the source and target environment are different. Before merging entries between environments, please make sure the content models are identical. We suggest using the Merge App to compare content models of different environments. read more about the merge app here: https://www.contentful.com/marketplace/app/merge`
     output += chalk.underline.bold('Changeset could not be created 💔')

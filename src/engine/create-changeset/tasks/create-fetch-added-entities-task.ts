@@ -15,14 +15,12 @@ export function createFetchAddedEntitiesTask(shouldExecute: boolean, entityType:
     title: 'Fetching full payload for added entries',
     skip: (context: CreateChangesetContext) => context.exceedsLimits,
     task: async (context: CreateChangesetContext, task) => {
-      const { client, entities, sourceEnvironmentId, changeset, limit, logger } = context
+      const { client, affectedEntities, sourceEnvironmentId, changeset, limit, logger } = context
       logger.log(LogLevel.INFO, 'Start createFetchAddedEntitiesTask')
 
       const {
-        [entityType]: {
-          ids: { added },
-        },
-      } = entities
+        [entityType]: { added },
+      } = affectedEntities
 
       task.title = `Fetching full payload for ${added.length} added ${pluralizeEntries(added.length)}`
 

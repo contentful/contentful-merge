@@ -10,7 +10,7 @@ describe('createComputeIdsTask', () => {
   beforeEach(() => {
     context = {
       logger: createStubInstance(MemoryLogger),
-      source: {
+      sourceData: {
         entries: {
           comparables: [
             {
@@ -67,7 +67,7 @@ describe('createComputeIdsTask', () => {
           ],
         },
       },
-      target: {
+      targetData: {
         entries: {
           comparables: [
             {
@@ -124,8 +124,8 @@ describe('createComputeIdsTask', () => {
           ],
         },
       },
-      entities: {
-        entries: { ids: { added: [], removed: [] }, maybeChanged: [] },
+      affectedEntities: {
+        entries: { added: [], removed: [], maybeChanged: [] },
         contentTypes: { ids: { added: [], removed: [] }, maybeChanged: [] },
       },
       limits: {
@@ -140,19 +140,19 @@ describe('createComputeIdsTask', () => {
     const task = initializeTask(createComputeIdsTask('entries'), context)
     await task.run()
 
-    expect(context.entities.entries.ids.added).to.deep.equal(['3op5VIqGZiwoe06c8IQIMO', '6gFiJvssqQ62CMYqECOu2M'])
+    expect(context.affectedEntities.entries.added).to.deep.equal(['3op5VIqGZiwoe06c8IQIMO', '6gFiJvssqQ62CMYqECOu2M'])
   })
   it('adds removed ids to the context', async () => {
     const task = initializeTask(createComputeIdsTask('entries'), context)
     await task.run()
 
-    expect(context.entities.entries.ids.removed).to.deep.equal(['34MlmiuMgU8wKCOOIkAuMy', '1toEOumnkEksWakieoeC6M'])
+    expect(context.affectedEntities.entries.removed).to.deep.equal(['34MlmiuMgU8wKCOOIkAuMy', '1toEOumnkEksWakieoeC6M'])
   })
   it('adds changed ids to the context', async () => {
     const task = initializeTask(createComputeIdsTask('entries'), context)
     await task.run()
 
-    expect(context.entities.entries.maybeChanged).to.deep.equal([
+    expect(context.affectedEntities.entries.maybeChanged).to.deep.equal([
       {
         sys: {
           id: '2uNOpLMJioKeoMq8W44uYc',
@@ -183,8 +183,10 @@ describe('createComputeIdsTask', () => {
     const task = initializeTask(createComputeIdsTask('entries'), context)
     await task.run()
 
-    expect(context.entities.entries.ids.added).not.includes('Dy6jo5j4goU2C4sc8Kwkk')
-    expect(context.entities.entries.ids.removed).not.includes('Dy6jo5j4goU2C4sc8Kwkk')
-    expect(context.entities.entries.maybeChanged.map(({ sys: { id } }) => id)).not.includes('Dy6jo5j4goU2C4sc8Kwkk')
+    expect(context.affectedEntities.entries.added).not.includes('Dy6jo5j4goU2C4sc8Kwkk')
+    expect(context.affectedEntities.entries.removed).not.includes('Dy6jo5j4goU2C4sc8Kwkk')
+    expect(context.affectedEntities.entries.maybeChanged.map(({ sys: { id } }) => id)).not.includes(
+      'Dy6jo5j4goU2C4sc8Kwkk'
+    )
   })
 })

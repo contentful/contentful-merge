@@ -38,12 +38,10 @@ describe('createFetchAddedEntitiesTask', () => {
       sourceEnvironmentId,
       logger: createStubInstance(MemoryLogger),
       client: mockClient,
-      entities: {
+      affectedEntities: {
         entries: {
-          ids: {
-            added: ['3op5VIqGZiwoe06c8IQIMO', '6gFiJvssqQ62CMYqECOu2M'],
-            removed: ['34MlmiuMgU8wKCOOIkAuMy'],
-          },
+          added: ['3op5VIqGZiwoe06c8IQIMO', '6gFiJvssqQ62CMYqECOu2M'],
+          removed: ['34MlmiuMgU8wKCOOIkAuMy'],
           maybeChanged: [
             {
               sys: {

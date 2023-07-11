@@ -63,11 +63,11 @@ export const createFetchChangedTasks = (entityType: EntityType): ListrTask => {
     title: `Fetching full payload for ${entityType} to be compared`,
     skip: (context: CreateChangesetContext) => context.exceedsLimits,
     task: async (context: CreateChangesetContext, task) => {
-      const { sourceEnvironmentId, entities, targetEnvironmentId, statistics, limit, changeset } = context
+      const { sourceEnvironmentId, affectedEntities, targetEnvironmentId, statistics, limit, changeset } = context
 
       const {
-        [entityType]: { maybeChanged, ids },
-      } = entities
+        [entityType]: { maybeChanged, added, removed },
+      } = affectedEntities
 
       const numberOfMaybeChanged = maybeChanged.length
       task.title = `Fetching full payload for ${numberOfMaybeChanged} ${pluralizeEntries(
@@ -102,12 +102,12 @@ export const createFetchChangedTasks = (entityType: EntityType): ListrTask => {
       }
 
       changeset.items.push(
-        ...ids.removed.map((item) => createLinkObject(item, 'deleted', EntityTypeMap[entityType])),
-        ...ids.added.map((item) => createLinkObject(item, 'added', EntityTypeMap[entityType]))
+        ...removed.map((item) => createLinkObject(item, 'deleted', EntityTypeMap[entityType])),
+        ...added.map((item) => createLinkObject(item, 'added', EntityTypeMap[entityType]))
       )
 
-      statistics.added = ids.added.length
-      statistics.removed = ids.removed.length
+      statistics.added = added.length
+      statistics.removed = removed.length
 
       return Promise.resolve(context)
     },

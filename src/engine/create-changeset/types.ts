@@ -19,17 +19,15 @@ export type EnvironmentScope = 'source' | 'target'
 export interface CreateChangesetContext extends BaseContext {
   sourceEnvironmentId: string
   targetEnvironmentId: string
-  source: EnvironmentData
-  target: EnvironmentData
+  sourceData: EnvironmentData
+  targetData: EnvironmentData
   inline: boolean
 
-  entities: Record<
+  affectedEntities: Record<
     EntityType,
     {
-      ids: {
-        added: Array<string>
-        removed: Array<string>
-      }
+      added: Array<string>
+      removed: Array<string>
       maybeChanged: Array<Comparable>
     }
   >

@@ -64,7 +64,7 @@ export function createEntitiesTask(scope: EnvironmentScope, environmentId: strin
     task: async (context: CreateChangesetContext, task) => {
       context.logger.log(LogLevel.INFO, `Start createEntitiesTask for ${entityType}`)
       const result = await execute({ context, task, scope, environmentId, entityType })
-      context[scope][entityType] = result
+      context[`${scope}Data`][entityType] = result
       return context
     },
   }
