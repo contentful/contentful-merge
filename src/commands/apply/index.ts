@@ -1,21 +1,17 @@
-import { Args, Command, Flags } from '@oclif/core'
-import chalk from 'chalk'
-import crypto from 'crypto'
-import { applyChangesetTask } from '../../engine/apply-changeset'
-import { ApplyChangesetContext } from '../../engine/apply-changeset/types'
-import { createClient } from '../../engine/client'
-import { ResponseStatusCollector } from '../../engine/client/response-status-collector'
-import { createTransformHandler } from '../../engine/logger/create-transform-handler'
-import { MemoryLogger } from '../../engine/logger/memory-logger'
-import { writeLog } from '../../engine/logger/write-log'
-import { createChangeset } from '../../engine/utils/create-changeset'
-import { OutputFormatter } from '../../engine/utils/output-formatter'
+import { Command } from '@oclif/core'
 
-const sequenceKey = crypto.randomUUID()
+// const sequenceKey = crypto.randomUUID()
 
 export default class Apply extends Command {
   static description = 'Apply Changeset'
 
+  static hidden = true
+
+  async run(): Promise<void> {
+    this.log('The apply command is not implemented yet.')
+  }
+
+  /*
   static examples = [
     './bin/dev apply changeset.json --space "<space-id>" --environment "staging"',
     'contentful-merge apply changeset.json --space "<space-id>" --environment "staging"',
@@ -88,4 +84,5 @@ export default class Apply extends Command {
 
     // console.log(responseCollector.toString())
   }
+   */
 }
