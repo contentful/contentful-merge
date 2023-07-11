@@ -8,7 +8,7 @@ export default class Apply extends Command {
   static hidden = true
 
   async run(): Promise<void> {
-    this.log('the apply command is not implemented yet!')
+    this.log('The apply command is not implemented yet.')
   }
 
   /*
