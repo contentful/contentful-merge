@@ -1,41 +1,18 @@
 import { expect } from 'chai'
-import { createStubInstance } from 'sinon'
-import { GetEntriesParams } from '../../../../../src/engine/client'
 import { initializeTask, matchChangeType } from '../../../test-utils'
-import { MemoryLogger } from '../../../../../src/engine/logger/memory-logger'
-import { sourceEntriesFixture, targetEntriesFixture } from '../../../fixtures/entries'
-import { createChangeset } from '../../../../../src/engine/utils/create-changeset'
 import { CreateChangesetContext } from '../../../../../src/engine/create-changeset/types'
 import { createFetchChangedTasks } from '../../../../../src/engine/create-changeset/tasks/create-fetch-changed-tasks'
-
-const sourceEnvironmentId = 'staging'
-const targetEnvironmentId = 'qa'
-
-const mockClient = {
-  cma: {},
-  cda: {
-    entries: {
-      getMany: async ({ environment, query }: GetEntriesParams) => {
-        switch (environment) {
-          case sourceEnvironmentId:
-            return sourceEntriesFixture
-          case targetEnvironmentId:
-            return targetEntriesFixture
-        }
-      },
-    },
-  },
-}
-
+import { createCreateChangesetContext } from '../../../fixtures/create-changeset-context-fixture'
+import * as sinon from 'sinon'
+import { EnvironmentIdFixture } from '../../../fixtures/environment-id-fixtures'
+import { sourceEntriesFixture, targetEntriesFixture } from '../../../fixtures/entries'
+;``
 describe('createFetchChangedTasks', () => {
   let context: CreateChangesetContext
   beforeEach(() => {
-    context = {
-      sourceEnvironmentId,
-      targetEnvironmentId,
-      logger: createStubInstance(MemoryLogger),
-      client: mockClient,
+    context = createCreateChangesetContext({
       affectedEntities: {
+        contentTypes: { added: [], removed: [], maybeChanged: [] },
         entries: {
           added: ['3op5VIqGZiwoe06c8IQIMO', '6gFiJvssqQ62CMYqECOu2M'],
           removed: ['34MlmiuMgU8wKCOOIkAuMy', '1toEOumnkEksWakieoeC6M'],
@@ -67,26 +44,25 @@ describe('createFetchChangedTasks', () => {
           ],
         },
       },
-      statistics: {
-        added: 0,
-        changed: 0,
-        removed: 0,
-        nonChanged: 0,
-      },
-      limits: {
-        all: 100,
-        changed: 100,
-        added: 100,
-        removed: 100,
-      },
-      exceedsLimits: false,
-      changeset: createChangeset('staging', 'qa'),
-    } as unknown as CreateChangesetContext
+    })
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    context.client.cda.entries.getMany = async ({ environment }) => {
+      switch (environment) {
+        case EnvironmentIdFixture.source:
+          return sourceEntriesFixture
+        case EnvironmentIdFixture.target:
+          return targetEntriesFixture
+      }
+    }
   })
+
   it('fetches the full payload of all changed entries and calculates changeset', async () => {
     const task = initializeTask(createFetchChangedTasks({ entityType: 'entries', skipHandler: () => false }), context)
 
     expect(context.changeset.items.length).to.equal(0)
+    expect(context.affectedEntities.entries.maybeChanged.length).to.equal(4)
+
     await task.run()
     expect(context.changeset.items.length).to.equal(7)
   })
@@ -107,6 +83,7 @@ describe('createFetchChangedTasks', () => {
   it('adds 3 changed item to the changeset', async () => {
     const task = initializeTask(createFetchChangedTasks({ entityType: 'entries', skipHandler: () => false }), context)
     await task.run()
+
     const changedItems = context.changeset.items.filter(matchChangeType('changed'))
 
     expect(changedItems.length).to.equal(3)

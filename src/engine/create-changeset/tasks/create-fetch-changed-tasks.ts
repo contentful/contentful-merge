@@ -83,7 +83,7 @@ export const createFetchChangedTasks = ({ entityType, skipHandler }: FetchChange
       // TODO: use pLimit
       const idChunks = chunk(
         maybeChanged.map((c) => c.sys.id),
-        limit
+        limit ?? 1000
       )
 
       let iterator = 0

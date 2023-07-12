@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { ContentTypeCollection, Entry, EntryCollection } from 'contentful'
-import { EntryProps, GetContentTypeParams, GetSpaceEnvironmentParams, QueryParams } from 'contentful-management'
+import { EntryProps } from 'contentful-management'
 import { createHttpClient, getUserAgentHeader } from 'contentful-sdk-core'
 import { pickBy } from 'lodash'
 import { ClientLogHandler } from '../logger/types'

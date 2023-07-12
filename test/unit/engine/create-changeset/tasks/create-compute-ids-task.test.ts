@@ -1,16 +1,15 @@
 import { expect } from 'chai'
-import { createStubInstance } from 'sinon'
 import { initializeTask } from '../../../test-utils'
-import { MemoryLogger } from '../../../../../src/engine/logger/memory-logger'
 import { CreateChangesetContext } from '../../../../../src/engine/create-changeset/types'
 import { createComputeIdsTask } from '../../../../../src/engine/create-changeset/tasks/create-compute-ids-task'
+import { createCreateChangesetContext } from '../../../fixtures/create-changeset-context-fixture'
 
 describe('createComputeIdsTask', () => {
   let context: CreateChangesetContext
   beforeEach(() => {
-    context = {
-      logger: createStubInstance(MemoryLogger),
+    context = createCreateChangesetContext({
       sourceData: {
+        contentTypes: { ids: [], comparables: [] },
         entries: {
           comparables: [
             {
@@ -68,6 +67,7 @@ describe('createComputeIdsTask', () => {
         },
       },
       targetData: {
+        contentTypes: { ids: [], comparables: [] },
         entries: {
           comparables: [
             {
@@ -124,17 +124,7 @@ describe('createComputeIdsTask', () => {
           ],
         },
       },
-      affectedEntities: {
-        entries: { added: [], removed: [], maybeChanged: [] },
-        contentTypes: { ids: { added: [], removed: [] }, maybeChanged: [] },
-      },
-      limits: {
-        all: 100,
-        added: 100,
-        removed: 100,
-        changed: 100,
-      },
-    } as unknown as CreateChangesetContext
+    })
   })
   it('adds added ids to the context', async () => {
     const task = initializeTask(createComputeIdsTask({ entityType: 'entries' }), context)

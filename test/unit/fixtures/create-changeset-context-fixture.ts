@@ -2,17 +2,19 @@ import { createChangeset } from '../../../src/engine/utils/create-changeset'
 import { createStubInstance } from 'sinon'
 import { MemoryLogger } from '../../../src/engine/logger/memory-logger'
 import { CreateChangesetContext } from '../../../src/engine/create-changeset/types'
-import { deepClone } from 'fast-json-patch/index'
+import { EnvironmentIdFixture } from './environment-id-fixtures'
+import { createMockClient } from './create-mock-client'
 
-const mock: CreateChangesetContext = {
+export const createCreateChangesetContext = (context?: Partial<CreateChangesetContext>): CreateChangesetContext => ({
+  client: createMockClient(),
   accessToken: '<access-token>',
   contentModelDiverged: false,
-  changeset: createChangeset('<source>', '<target>'),
+  changeset: createChangeset(EnvironmentIdFixture.source, EnvironmentIdFixture.target),
   spaceId: '<space-id>',
-  sourceEnvironmentId: '<source>',
-  targetEnvironmentId: '<target>',
+  sourceEnvironmentId: EnvironmentIdFixture.source,
+  targetEnvironmentId: EnvironmentIdFixture.target,
   statistics: { added: 0, removed: 0, changed: 0, nonChanged: 0 },
-  limit: 0,
+  limit: 1000,
   exceedsLimits: false,
   logger: createStubInstance(MemoryLogger),
   sourceData: {
@@ -39,9 +41,5 @@ const mock: CreateChangesetContext = {
     removed: 100,
     changed: 100,
   },
-}
-
-export const createChangesetContextMock = {
-  clone: () => deepClone(mock),
-  ...mock,
-}
+  ...context,
+})
