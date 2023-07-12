@@ -4,7 +4,6 @@ import { pluralizeEntries } from '../utils/pluralize-entries'
 import { figures } from 'listr2'
 
 const formatNumber = chalk.yellow.bold
-
 const bulletPoint = chalk.yellow('·')
 const greenCheckmark = chalk.green(figures.tick)
 
@@ -15,15 +14,16 @@ export async function renderOutput(context: CreateChangesetContext, changesetFil
   const entriesMaybeChangedLength = context.affectedEntities.entries.maybeChanged.length
   const sourceEntriesLength = context.sourceData.entries.ids.length
   const targetEntriesLength = context.targetData.entries.ids.length
-  if (context.contentModelDiverged) {
-    const errorMessage = `\nThe content model of the source and target environment are different. Before merging entries between environments, please make sure the content models are identical. We suggest using the Merge App to compare content models of different environments. read more about the merge app here: https://www.contentful.com/marketplace/app/merge`
-    output += chalk.underline.bold('Changeset could not be created 💔')
-    output += '\n'
-    output += chalk.redBright(errorMessage)
-    output += '\n'
-  } else if (context.exceedsLimits) {
-    const errorMessage = `\nThe detected number of entries to be compared, added or removed is too high.\nThe currently allowed limit is ${context.limits.all} entries.`
 
+  const hasErrors = context.contentModelDiverged || context.exceedsLimits
+
+  if (hasErrors) {
+    let errorMessage = '\n'
+    if (context.contentModelDiverged) {
+      errorMessage += `The content model of the source and target environment are different. Before merging entries between environments, please make sure the content models are identical. We suggest using the Merge App to compare content models of different environments. read more about the merge app here: https://www.contentful.com/marketplace/app/merge`
+    } else if (context.exceedsLimits) {
+      errorMessage += `The detected number of entries to be compared, added or removed is too high.\nThe currently allowed limit is ${context.limits.all} entries.`
+    }
     output += chalk.underline.bold('Changeset could not be created 💔')
     output += '\n'
     output += chalk.redBright(errorMessage)
