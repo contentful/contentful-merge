@@ -9,7 +9,7 @@ export function cleanEntity(entry: Entry<any>): any {
   return { ...entry, sys: pick(entry.sys, ['id', 'type', 'contentType']) }
 }
 
-export function createFetchAddedEntitiesTask(shouldExecute: boolean): ListrTask {
+export function createFetchAddedEntitiesTask(): ListrTask {
   return {
     title: 'Fetching full payload for added entries',
     skip: (context: CreateChangesetContext) => context.exceedsLimits === true,

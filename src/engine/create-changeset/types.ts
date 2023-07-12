@@ -19,7 +19,6 @@ export interface CreateChangesetContext extends BaseContext {
   targetEnvironmentId: string
   source: EnvironmentData
   target: EnvironmentData
-  inline: boolean
   ids: {
     added: Array<string>
     removed: Array<string>

@@ -22,10 +22,10 @@ export default class Apply extends Command {
   }
 
   static flags = {
-    space: Flags.string({ description: 'space id', required: true }),
-    environment: Flags.string({ description: 'source environment id', required: true }),
-    cmaToken: Flags.string({ description: 'cma token', required: false, env: 'CMA_TOKEN' }),
-    cdaToken: Flags.string({ description: 'cda token', required: false, env: 'CDA_TOKEN' }),
+    space: Flags.string({ description: 'Space id', required: true }),
+    environment: Flags.string({ description: 'Target environment id', required: true }),
+    cmaToken: Flags.string({ description: 'CMA token', required: false, env: 'CMA_TOKEN' }),
+    cdaToken: Flags.string({ description: 'CDA token', required: false, env: 'CDA_TOKEN' }),
     limit: Flags.integer({ description: 'Limit parameter for collection endpoints', required: false, default: 200 }),
   }
 
