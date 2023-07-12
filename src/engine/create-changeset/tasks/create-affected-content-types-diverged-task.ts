@@ -1,12 +1,11 @@
 import { CreateChangesetContext } from '../types'
 import { ListrTask } from 'listr2'
 import { LogLevel } from '../../logger/types'
-import { isString, uniq } from 'lodash'
 
 export function createAffectedContentTypesDivergedTask(): ListrTask {
   return {
     title: `Checking for diverged Content Types`,
-    task: async (context: CreateChangesetContext, task) => {
+    task: async (context: CreateChangesetContext) => {
       context.logger.log(LogLevel.INFO, `Start createAffectedContentTypesDivergedTask`)
 
       const affectedContentTypeIds = [
@@ -17,7 +16,7 @@ export function createAffectedContentTypesDivergedTask(): ListrTask {
 
       const affectedEntryIds = [
         ...context.affectedEntities.entries.added,
-        ...context.affectedEntities.contentTypes.maybeChanged.map((comparable) => comparable.sys.id),
+        ...context.affectedEntities.entries.maybeChanged.map((comparable) => comparable.sys.id),
       ]
 
       const contentTypeIdsOfAffectedEntries = [
