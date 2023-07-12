@@ -137,19 +137,19 @@ describe('createComputeIdsTask', () => {
     } as unknown as CreateChangesetContext
   })
   it('adds added ids to the context', async () => {
-    const task = initializeTask(createComputeIdsTask('entries'), context)
+    const task = initializeTask(createComputeIdsTask({ entityType: 'entries' }), context)
     await task.run()
 
     expect(context.affectedEntities.entries.added).to.deep.equal(['3op5VIqGZiwoe06c8IQIMO', '6gFiJvssqQ62CMYqECOu2M'])
   })
   it('adds removed ids to the context', async () => {
-    const task = initializeTask(createComputeIdsTask('entries'), context)
+    const task = initializeTask(createComputeIdsTask({ entityType: 'entries' }), context)
     await task.run()
 
     expect(context.affectedEntities.entries.removed).to.deep.equal(['34MlmiuMgU8wKCOOIkAuMy', '1toEOumnkEksWakieoeC6M'])
   })
   it('adds changed ids to the context', async () => {
-    const task = initializeTask(createComputeIdsTask('entries'), context)
+    const task = initializeTask(createComputeIdsTask({ entityType: 'entries' }), context)
     await task.run()
 
     expect(context.affectedEntities.entries.maybeChanged).to.deep.equal([
@@ -180,7 +180,7 @@ describe('createComputeIdsTask', () => {
     ])
   })
   it('does not add id to context if nothing has changed', async () => {
-    const task = initializeTask(createComputeIdsTask('entries'), context)
+    const task = initializeTask(createComputeIdsTask({ entityType: 'entries' }), context)
     await task.run()
 
     expect(context.affectedEntities.entries.added).not.includes('Dy6jo5j4goU2C4sc8Kwkk')

@@ -84,28 +84,28 @@ describe('createFetchChangedTasks', () => {
     } as unknown as CreateChangesetContext
   })
   it('fetches the full payload of all changed entries and calculates changeset', async () => {
-    const task = initializeTask(createFetchChangedTasks('entries'), context)
+    const task = initializeTask(createFetchChangedTasks({ entityType: 'entries', skipHandler: () => false }), context)
 
     expect(context.changeset.items.length).to.equal(0)
     await task.run()
     expect(context.changeset.items.length).to.equal(7)
   })
   it('adds 2 added items to the changeset', async () => {
-    const task = initializeTask(createFetchChangedTasks('entries'), context)
+    const task = initializeTask(createFetchChangedTasks({ entityType: 'entries', skipHandler: () => false }), context)
     await task.run()
     const addedItems = context.changeset.items.filter(matchChangeType('added'))
 
     expect(addedItems.length).to.equal(2)
   })
   it('adds 2 deleted items to the changeset', async () => {
-    const task = initializeTask(createFetchChangedTasks('entries'), context)
+    const task = initializeTask(createFetchChangedTasks({ entityType: 'entries', skipHandler: () => false }), context)
     await task.run()
     const deletedItems = context.changeset.items.filter(matchChangeType('deleted'))
 
     expect(deletedItems.length).to.equal(2)
   })
   it('adds 3 changed item to the changeset', async () => {
-    const task = initializeTask(createFetchChangedTasks('entries'), context)
+    const task = initializeTask(createFetchChangedTasks({ entityType: 'entries', skipHandler: () => false }), context)
     await task.run()
     const changedItems = context.changeset.items.filter(matchChangeType('changed'))
 

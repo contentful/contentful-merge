@@ -1,10 +1,13 @@
 import { ListrTask } from 'listr2'
 import { LogLevel } from '../../logger/types'
-import { CreateChangesetContext } from '../types'
+import { CreateChangesetContext, EnvironmentScope } from '../types'
 import { doesExceedLimits } from '../../utils/exceeds-limits'
 import { EntityType } from '../../types'
+type ComputeIdsTaskProps = {
+  entityType: EntityType
+}
 
-export const createComputeIdsTask = (entityType: EntityType): ListrTask => {
+export const createComputeIdsTask = ({ entityType }: ComputeIdsTaskProps): ListrTask => {
   return {
     title: `Counting number of ${entityType} changes between environments`,
     task: async (context: CreateChangesetContext) => {

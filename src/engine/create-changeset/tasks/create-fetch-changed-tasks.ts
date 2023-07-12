@@ -5,6 +5,7 @@ import { createLinkObject } from '../../utils/create-link-object'
 import type { CreateChangesetContext } from '../types'
 import { createPatch } from '../../utils/create-patch'
 import { pluralizeEntries } from '../../utils/pluralize-entries'
+import { SkipHandler } from '../types'
 
 type GetEntryPatchParams = {
   context: BaseContext
@@ -58,10 +59,15 @@ async function getEntityPatches({
   return result
 }
 
-export const createFetchChangedTasks = (entityType: EntityType): ListrTask => {
+type FetchChangedTaskProps = {
+  entityType: EntityType
+  skipHandler: SkipHandler
+}
+
+export const createFetchChangedTasks = ({ entityType, skipHandler }: FetchChangedTaskProps): ListrTask => {
   return {
     title: `Fetching full payload for ${entityType} to be compared`,
-    skip: (context: CreateChangesetContext) => context.exceedsLimits,
+    skip: skipHandler,
     task: async (context: CreateChangesetContext, task) => {
       const { sourceEnvironmentId, affectedEntities, targetEnvironmentId, statistics, limit, changeset } = context
 

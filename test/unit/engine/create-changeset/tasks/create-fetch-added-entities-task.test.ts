@@ -144,7 +144,13 @@ describe('createFetchAddedEntitiesTask', () => {
     } as unknown as CreateChangesetContext
   })
   it('fetches the full payload of all added entries and adds it to the changeset', async () => {
-    const task = initializeTask(createFetchAddedEntitiesTask(true, 'entries'), context)
+    const task = initializeTask(
+      createFetchAddedEntitiesTask({
+        entityType: 'entries',
+        skipHandler: () => false,
+      }),
+      context
+    )
 
     const addedItems = context.changeset.items.filter(matchChangeType('added')) as AddedChangesetItem[]
 
@@ -161,7 +167,13 @@ describe('createFetchAddedEntitiesTask', () => {
     )
   })
   it('does not fetch anything for changed entries', async () => {
-    const task = initializeTask(createFetchAddedEntitiesTask(true, 'entries'), context)
+    const task = initializeTask(
+      createFetchAddedEntitiesTask({
+        entityType: 'entries',
+        skipHandler: () => false,
+      }),
+      context
+    )
 
     const changedItems = context.changeset.items.filter(matchChangeType('changed'))
 
@@ -172,7 +184,13 @@ describe('createFetchAddedEntitiesTask', () => {
     expect(changedItems).to.satisfy((items: ChangedChangesetItem[]) => items.every((item) => item.data === undefined))
   })
   it('does not fetch anything for deleted entries', async () => {
-    const task = initializeTask(createFetchAddedEntitiesTask(true, 'entries'), context)
+    const task = initializeTask(
+      createFetchAddedEntitiesTask({
+        entityType: 'entries',
+        skipHandler: () => false,
+      }),
+      context
+    )
 
     const deletedItems = context.changeset.items.filter(matchChangeType('deleted'))
 

@@ -87,7 +87,6 @@ export default class Create extends Command {
       spaceId: flags.space,
       sourceEnvironmentId: flags.source,
       targetEnvironmentId: flags.target,
-      inline: !flags.light,
       sourceData: {
         entries: { comparables: [], ids: [] },
         contentTypes: { comparables: [], ids: [] },

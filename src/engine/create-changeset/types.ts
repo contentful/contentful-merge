@@ -4,6 +4,9 @@ export interface Comparable {
   sys: {
     id: string
     updatedAt: string
+    contentType?: {
+      sys: { id: string }
+    }
   }
 }
 
@@ -19,9 +22,9 @@ export type EnvironmentScope = 'source' | 'target'
 export interface CreateChangesetContext extends BaseContext {
   sourceEnvironmentId: string
   targetEnvironmentId: string
+
   sourceData: EnvironmentData
   targetData: EnvironmentData
-  inline: boolean
 
   affectedEntities: Record<
     EntityType,
@@ -33,18 +36,23 @@ export interface CreateChangesetContext extends BaseContext {
   >
 
   changeset: Changeset
+
   statistics: {
     added: number
     changed: number
     removed: number
     nonChanged: number
   }
+
   limits: {
     all: number
     changed: number
     added: number
     removed: number
   }
+
   exceedsLimits: boolean
   contentModelDiverged: boolean
 }
+
+export type SkipHandler = (context: CreateChangesetContext) => boolean

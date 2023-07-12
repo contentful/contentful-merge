@@ -6,8 +6,15 @@ import { createEntitiesTask } from './tasks/create-entities-task'
 import { createFetchAddedEntitiesTask } from './tasks/create-fetch-added-entities-task'
 import { createFetchChangedTasks } from './tasks/create-fetch-changed-tasks'
 import { CreateChangesetContext } from './types'
-import { createContentTypesDivergedTask } from './tasks/create-content-types-diverged-task'
+import { createAffectedContentTypesDivergedTask } from './tasks/create-affected-content-types-diverged-task'
 
+const subTaskOptions = {
+  concurrent: false,
+  rendererOptions: {
+    timer: PRESET_TIMER,
+    collapseSubtasks: true,
+  },
+}
 export const createChangesetTask = (context: CreateChangesetContext): Listr => {
   return new Listr<CreateChangesetContext>(
     [
@@ -25,18 +32,21 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
                 task: (ctx, task): Listr => {
                   return task.newListr(
                     [
-                      createEntitiesTask('source', ctx.sourceEnvironmentId, 'contentTypes'),
-                      createEntitiesTask('target', ctx.targetEnvironmentId, 'contentTypes'),
-                      createComputeIdsTask('contentTypes'),
-                      createContentTypesDivergedTask(),
+                      createEntitiesTask({
+                        scope: 'source',
+                        environmentId: ctx.sourceEnvironmentId,
+                        entityType: 'contentTypes',
+                      }),
+                      createEntitiesTask({
+                        scope: 'target',
+                        environmentId: ctx.targetEnvironmentId,
+                        entityType: 'contentTypes',
+                      }),
+                      createComputeIdsTask({
+                        entityType: 'contentTypes',
+                      }),
                     ],
-                    {
-                      concurrent: false,
-                      rendererOptions: {
-                        timer: PRESET_TIMER,
-                        collapseSubtasks: true,
-                      },
-                    }
+                    subTaskOptions
                   )
                 },
               },
@@ -46,19 +56,34 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
                 task: (ctx, task): Listr => {
                   return task.newListr(
                     [
-                      createEntitiesTask('source', ctx.sourceEnvironmentId, 'entries'),
-                      createEntitiesTask('target', ctx.targetEnvironmentId, 'entries'),
-                      createComputeIdsTask('entries'),
-                      createFetchChangedTasks('entries'),
-                      createFetchAddedEntitiesTask(context.inline, 'entries'),
+                      createEntitiesTask({
+                        scope: 'source',
+                        environmentId: ctx.sourceEnvironmentId,
+                        entityType: 'entries',
+                      }),
+                      createEntitiesTask({
+                        scope: 'target',
+                        environmentId: ctx.targetEnvironmentId,
+                        entityType: 'entries',
+                      }),
+                      createComputeIdsTask({
+                        entityType: 'entries',
+                      }),
+                      createAffectedContentTypesDivergedTask(),
+                      createFetchChangedTasks({
+                        entityType: 'entries',
+                        skipHandler: () => {
+                          return context.contentModelDiverged || context.exceedsLimits
+                        },
+                      }),
+                      createFetchAddedEntitiesTask({
+                        entityType: 'entries',
+                        skipHandler: () => {
+                          return context.contentModelDiverged || context.exceedsLimits
+                        },
+                      }),
                     ],
-                    {
-                      concurrent: false,
-                      rendererOptions: {
-                        timer: PRESET_TIMER,
-                        collapseSubtasks: true,
-                      },
-                    }
+                    subTaskOptions
                   )
                 },
               },

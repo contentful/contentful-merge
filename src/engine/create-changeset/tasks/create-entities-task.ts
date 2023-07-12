@@ -13,9 +13,10 @@ type ExecuteParams = {
   scope: EnvironmentScope
   environmentId: string
   entityType: EntityType
+  additionalFields: string[]
 }
 
-const execute = async ({ context, environmentId, scope, task, entityType }: ExecuteParams) => {
+const execute = async ({ context, environmentId, task, entityType, additionalFields = [] }: ExecuteParams) => {
   const {
     client: { cda },
   } = context
@@ -41,7 +42,7 @@ const execute = async ({ context, environmentId, scope, task, entityType }: Exec
       limiter(async () => {
         const response = await api.getMany({
           environment: environmentId,
-          query: { select: ['sys.id', 'sys.updatedAt'], limit: LIMIT, skip: LIMIT * i },
+          query: { select: ['sys.id', 'sys.updatedAt', ...additionalFields], limit: LIMIT, skip: LIMIT * i },
         })
         requestsDone++
         task.output = `Fetching ${requestsDone * LIMIT}/${total} ${entityType}`
@@ -58,12 +59,19 @@ const execute = async ({ context, environmentId, scope, task, entityType }: Exec
   return localContext
 }
 
-export function createEntitiesTask(scope: EnvironmentScope, environmentId: string, entityType: EntityType): ListrTask {
+type EntitiesTaskProps = {
+  scope: EnvironmentScope
+  environmentId: string
+  entityType: EntityType
+}
+
+export function createEntitiesTask({ scope, environmentId, entityType }: EntitiesTaskProps): ListrTask {
   return {
     title: `Reading the ${scope} environment "${environmentId}"`,
     task: async (context: CreateChangesetContext, task) => {
       context.logger.log(LogLevel.INFO, `Start createEntitiesTask for ${entityType}`)
-      const result = await execute({ context, task, scope, environmentId, entityType })
+      const additionalFields = entityType === 'entries' ? ['sys.contentType.sys.id'] : []
+      const result = await execute({ context, task, scope, environmentId, entityType, additionalFields })
       context[`${scope}Data`][entityType] = result
       return context
     },
