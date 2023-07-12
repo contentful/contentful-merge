@@ -29,9 +29,13 @@ const waitForKeyReady = async (apiKey: ApiKey): Promise<void> => {
   throw new Error('Failed to create a working CDA key.')
 }
 
-export const createCdaToken = async (space: Space, environmentIds: string[]): Promise<ApiKey> => {
+export const createCdaToken = async (
+  space: Space,
+  environmentIds: string[],
+  customAppendix?: string
+): Promise<ApiKey> => {
   const apiKeyData: CreateApiKeyProps = {
-    name: `CDA Token ${randomId}`,
+    name: `CDA Token ${randomId} ${customAppendix ? customAppendix : ''}`,
     environments: environmentIds.map((envId) => ({
       sys: {
         type: 'Link',

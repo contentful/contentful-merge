@@ -1,5 +1,5 @@
 import { Config } from '@oclif/core'
-import { Environment } from 'contentful-management/types'
+import { ApiKey, Environment } from 'contentful-management/types'
 import { fancy } from 'fancy-test'
 import CreateCommand from '../../../../src/commands/create'
 import { TestContext } from './bootstrap'
@@ -36,32 +36,37 @@ export default fancy
       },
     }
   })
-  .register('runCreateCommand', (getTestContext: () => TestContext, targetEnvironmentId: string, cmaToken: string) => {
-    return {
-      async run(ctx) {
-        await new Promise((r) => setTimeout(r, 3000)) // Workaround: Give API changes time to settle
+  .register(
+    'runCreateCommand',
+    (getTestContext: () => TestContext, targetEnvironmentId: string, cmaToken: string, getApiKey?: () => string) => {
+      return {
+        async run(ctx) {
+          await new Promise((r) => setTimeout(r, 3000)) // Workaround: Give API changes time to settle
 
-        const testContext = getTestContext()
-        const cmd = new CreateCommand(
-          [
-            '--space',
-            testContext.spaceId,
-            '--source',
-            testContext.sourceEnvironment.sys.id,
-            '--target',
-            targetEnvironmentId,
-            '--cmaToken',
-            cmaToken,
-            '--cdaToken',
-            testContext.cdaToken,
-          ],
-          {} as unknown as Config // Runtime config, but not required for tests.
-        )
-        try {
-          await cmd.run()
-        } catch (e) {
-          console.error(e)
-        }
-      },
+          const testContext = getTestContext()
+          const cdaToken = getApiKey ? getApiKey() : undefined
+
+          const cmd = new CreateCommand(
+            [
+              '--space',
+              testContext.spaceId,
+              '--source',
+              testContext.sourceEnvironment.sys.id,
+              '--target',
+              targetEnvironmentId,
+              '--cmaToken',
+              cmaToken,
+              '--cdaToken',
+              cdaToken || testContext.cdaToken,
+            ],
+            {} as unknown as Config // Runtime config, but not required for tests.
+          )
+          try {
+            await cmd.run()
+          } catch (e) {
+            console.log(e)
+          }
+        },
+      }
     }
-  })
+  )
