@@ -8,7 +8,6 @@
 
 <h1 align='center'>Contentful Merge</h1>
 
-<!-- // TODO UPDATE -->
 <p align="center">
   <a href="#introduction">Introduction</a> |
   <a href="#warning-this-project-is-still-in-beta-warning">Beta disclaimer</a> |
@@ -41,7 +40,6 @@
 <!-- header  END -->
 
 
-
 ## Introduction
 
 **Contentful**
@@ -68,7 +66,7 @@ _____________________
 
 Takes a space id and two environment ids and creates a changest which details all entry changes between the two environments.
 - It uses the [Contentful Delivery API](https://www.contentful.com/developers/docs/references/content-delivery-api/) (CDA) to fetch all data.
-- A custom CDA client executes requests in the  different environments in parallel, using `auto` throttling to calculate the maximum amount of possible requests per second.
+- A custom CDA client executes requests in the  different environments in parallel.
 - All requests are batched.
 - To identify <b>added</b> and <b>removed</b>, entry ids are compared in both environments.
 - To identify <b>changed</b> entries, comparison happens in two steps:
@@ -240,7 +238,7 @@ Make sure your CDA token has access to both environments, otherwise the CDA may 
 
 **I have made draft changes in my environment, but I don't see those in the changeset**
 
-As the CDA and not the CMA is used to fetch and compare entries, only published changes will be taken into account. Draft changes are not available via the CDA.
+As the CDA is used to fetch and compare entries, only published changes will be taken into account. Draft changes are not available via the CDA.
 
 **I have run the `create` command several times, but only see one `changeset.json` file created.**
 
