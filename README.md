@@ -175,7 +175,7 @@ The created changeset will be saved in JSON format in a file called `changeset.j
     }
   },
   "items": [
-    <individual changeset items, see below>
+    // <individual changeset items, see below>
   ]
 }
 ```
@@ -192,6 +192,7 @@ The actual changes are in the `items` array. They have the following structure:
       "id": "5mgMoU9aCWE88SIqSIMGYE"
     }
   }
+}
 
 // added
 {
@@ -203,7 +204,10 @@ The actual changes are in the `items` array. They have the following structure:
       "id": "5mgMoU9aCWE88SIqSIMGYE"
     }
   },
-  "data": <payload of added entry>
+  "data": {
+    // <payload of added entry>
+  }
+}
 
 // changed
 {
@@ -216,9 +220,9 @@ The actual changes are in the `items` array. They have the following structure:
     }
   },
   "patch": [
-    <individual patch operations for each change>
+    // <individual patch operations for each change>
   ]
-},
+}
 ```
 There are three different change types: `added`, `changed`, `deleted`.
 
