@@ -89,7 +89,7 @@
     "prepack": "npm run build && oclif manifest && oclif readme",
     "prepare": "husky install",
     "test": "npm run test-unit && npm run test-integration",
-    "test-integration": "mocha --forbid-only --exit test/integration/**/*.test.ts",
+    "test-integration": "mocha --exit test/integration/**/*.test.ts",
     "test-integration-with-reports": "npm run test-integration -- --reporter mocha-junit-reporter --reporter-options mochaFile=reports/integration-results.xml",
     "test-unit": "mocha test/unit/**/*.test.ts",
     "test-unit-watch": "npm run test-unit -- -w --watch-files '**/*.ts'",

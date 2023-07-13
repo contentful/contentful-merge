@@ -1,7 +1,7 @@
 import { expect } from '@oclif/test'
-import { Space, createClient } from 'contentful-management'
+import { ApiKey, Space, createClient } from 'contentful-management'
 import fs from 'fs'
-import { TestContext, createEnvironment } from './bootstrap'
+import { TestContext, createCdaToken, createEnvironment } from './bootstrap'
 import fancy from './register-plugins'
 
 const spaceId = process.env.CONTENTFUL_SPACE_ID!
@@ -17,13 +17,18 @@ const changesetPath = './changeset.json'
 const targetEnvironmentId = 'master'
 let testContext: TestContext
 let testSpace: Space
+let cdaTokenWithOnlyMasterAccess: ApiKey
 before(async () => {
   const client = createClient({ accessToken: cmaToken })
   testSpace = await client.getSpace(spaceId)
   testContext = await createEnvironment(testSpace, targetEnvironmentId)
+  cdaTokenWithOnlyMasterAccess = await createCdaToken(testSpace, ['master'], 'Master Only CDA Key')
 })
 
-after(() => testContext.teardown())
+after(() => {
+  testContext.teardown()
+  cdaTokenWithOnlyMasterAccess.delete()
+})
 
 afterEach(() => fs.promises.rm(changesetPath, { force: true }))
 
@@ -58,5 +63,31 @@ describe('create - happy path', () => {
       expect(ctx.stdout).to.contain('0 changed entries')
       expect(ctx.stdout).to.contain('0 removed entries')
       expect(fs.existsSync(changesetPath)).to.be.true
+    })
+})
+
+describe('create - fails', async () => {
+  fancy
+    .stdout()
+    .runCreateCommand(
+      () => testContext,
+      targetEnvironmentId,
+      cmaToken,
+      () => 'invalid-cda-token'
+    )
+    .it('fails and informs on 401 (invalid token)', (ctx) => {
+      expect(ctx.stdout).to.contain('Request failed with status code 401')
+    })
+
+  fancy
+    .stdout()
+    .runCreateCommand(
+      () => testContext,
+      targetEnvironmentId,
+      cmaToken,
+      () => cdaTokenWithOnlyMasterAccess.accessToken
+    )
+    .it('fails and informs on 404', (ctx) => {
+      expect(ctx.stdout).to.contain('Request failed with status code 404')
     })
 })

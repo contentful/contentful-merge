@@ -187,6 +187,16 @@ export default class Create extends Command {
     this.log(output)
   }
 
+  async catch(error: any) {
+    if (error.response?.status == 404) {
+      this.warn(
+        'Environment not found. Please make sure the api key you are providing has access to all compared environments.'
+      )
+    }
+
+    throw error
+  }
+
   protected async finally(error: Error | undefined): Promise<any> {
     if (error) {
       Sentry.captureException(error)
