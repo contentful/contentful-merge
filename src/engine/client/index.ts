@@ -187,29 +187,24 @@ export function createCDAClient({
     logHandler: (level, data) => logHandler(level, `CDA ${data}`),
   })
 
-  const count = {
-    cda: 0,
-    cma: 0,
-  }
+  let count = 0
 
   return {
-    cda: {
-      requestCounts: () => count.cda,
-      entries: {
-        getMany: async ({ environment, query }: GetEntriesParams) => {
-          count.cda++
-          const result = await cdaClient.get(`${environment}/entries`, {
-            params: { ...cleanQuery(query) },
-          })
-          return result.data as EntryCollection<any>
-        },
-        get: async ({ environment, entryId, query }: GetEntryParams) => {
-          count.cda++
-          const result = await cdaClient.get(`${environment}/entries/${entryId}`, {
-            params: { ...cleanQuery(query) },
-          })
-          return result.data as Entry<any>
-        },
+    requestCounts: () => count,
+    entries: {
+      getMany: async ({ environment, query }: GetEntriesParams) => {
+        count++
+        const result = await cdaClient.get(`${environment}/entries`, {
+          params: { ...cleanQuery(query) },
+        })
+        return result.data as EntryCollection<any>
+      },
+      get: async ({ environment, entryId, query }: GetEntryParams) => {
+        count++
+        const result = await cdaClient.get(`${environment}/entries/${entryId}`, {
+          params: { ...cleanQuery(query) },
+        })
+        return result.data as Entry<any>
       },
     },
   }

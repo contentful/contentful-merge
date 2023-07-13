@@ -1,4 +1,4 @@
-import { Client } from '../types'
+import { CDAClient, Client } from '../types'
 import { OutputFormatter } from '../utils/output-formatter'
 
 export class ClientPerformanceObserver {
@@ -40,6 +40,41 @@ export class ClientPerformanceObserver {
       )}, current ${OutputFormatter.formatNumber(cdaCallsLastSecond + '/s')}`
       if (typeof callback === 'function') {
         callback({ cda: this.cdaPerformanceMessage, cma: this.cmaPerformanceMessage })
+      }
+    }, 1000)
+  }
+}
+
+export class SingleClientPerformanceObserver {
+  private updater: ReturnType<typeof setInterval> | undefined
+  private startTime: DOMHighResTimeStamp
+  private currentCount = 0
+  private performanceMessage = ''
+  private client: CDAClient
+
+  constructor(client: CDAClient) {
+    this.client = client
+    this.startTime = performance.now()
+  }
+
+  stop() {
+    clearInterval(this.updater)
+  }
+
+  public start(callback?: (payload: string) => void): void {
+    this.startTime = performance.now()
+    this.currentCount = this.client.requestCounts()
+    this.updater = setInterval(() => {
+      const currentTime = performance.now()
+      const duration = (currentTime - this.startTime) / 1000
+      const callsLastSecond = (this.client.requestCounts() - this.currentCount).toFixed(1)
+      this.currentCount = this.client.requestCounts()
+      const averageCallsPerSecond = (this.client.requestCounts() / duration).toFixed(1)
+      this.performanceMessage = `average ${OutputFormatter.formatNumber(
+        averageCallsPerSecond + '/s'
+      )}, current ${OutputFormatter.formatNumber(callsLastSecond + '/s')}`
+      if (typeof callback === 'function') {
+        callback(this.performanceMessage)
       }
     }, 1000)
   }

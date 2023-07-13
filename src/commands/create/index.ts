@@ -6,7 +6,7 @@ import crypto from 'crypto'
 import * as fs from 'node:fs/promises'
 import path from 'node:path'
 import { analyticsCloseAndFlush, trackCreateCommandCompleted, trackCreateCommandStarted } from '../../analytics'
-import { createClient } from '../../engine/client'
+import { createCDAClient } from '../../engine/client'
 import { createChangesetTask } from '../../engine/create-changeset'
 import { CreateChangesetContext } from '../../engine/create-changeset/types'
 import { createTransformHandler } from '../../engine/logger/create-transform-handler'
@@ -46,7 +46,7 @@ export default class Create extends Command {
     target: Flags.string({ description: 'target environment id', required: true }),
     space: Flags.string({ description: 'space id', required: true }),
     cmaToken: Flags.string({ description: 'cma token', required: false, env: 'CMA_TOKEN' }),
-    cdaToken: Flags.string({ description: 'cda token', required: false, env: 'CDA_TOKEN' }),
+    cdaToken: Flags.string({ description: 'cda token', required: true, env: 'CDA_TOKEN' }),
     light: Flags.boolean({ description: 'only creates link object for added entities', required: false }),
     limit: Flags.integer({ description: 'Limit parameter for collection endpoints', required: false, default: 200 }),
   }
@@ -71,9 +71,8 @@ export default class Create extends Command {
     const logger = new MemoryLogger('create-changeset')
     const logHandler = createTransformHandler(logger)
 
-    const client = createClient({
+    const cdaClient = createCDAClient({
       cdaToken: flags.cdaToken!,
-      cmaToken: flags.cmaToken!,
       space: flags.space,
       logHandler,
       sequenceKey,
@@ -81,7 +80,7 @@ export default class Create extends Command {
 
     const context: CreateChangesetContext = {
       logger,
-      client,
+      client: cdaClient,
       limit: flags.limit,
       accessToken: flags.token,
       spaceId: flags.space,
@@ -137,8 +136,7 @@ export default class Create extends Command {
     Sentry.setTag('added', context.ids.added.length)
     Sentry.setTag('removed', context.ids.removed.length)
     Sentry.setTag('maybeChanged', context.maybeChanged.length)
-    Sentry.setTag('cdaRequest', client.requestCounts().cda)
-    Sentry.setTag('cmaRequest', client.requestCounts().cma)
+    Sentry.setTag('cdaRequest', cdaClient.requestCounts())
     Sentry.setTag('memory', usedMemory.toFixed(2))
     Sentry.setTag('duration', `${duration}`)
     Sentry.setExtra('statistics', context.statistics)

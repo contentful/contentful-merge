@@ -1,4 +1,4 @@
-import { BaseContext, Changeset } from '../types'
+import { BaseContext, CDAClient, Changeset } from '../types'
 
 export interface Comparable {
   sys: {
@@ -14,7 +14,7 @@ export interface EnvironmentData {
 
 export type EnvironmentScope = 'source' | 'target'
 
-export interface CreateChangesetContext extends BaseContext {
+export interface CreateChangesetContext extends BaseContext<CDAClient> {
   sourceEnvironmentId: string
   targetEnvironmentId: string
   source: EnvironmentData
