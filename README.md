@@ -58,9 +58,9 @@ _____________________
 
 ### :warning: This project is still in beta :warning:
 This means:
-- Use at your own risk! It might still be a bit rough around the edges.
-- We want to know how people are using this tool, so that we can prioritize what to focus on next. We're therefore tracking some data, e.g. the number of entries present in the compared environments, the number of changes, how long the comparison took, if something failed, etc.
-- We would love your feedback! [Here](<TODO-add-link-to-feedback-form>) is a form where you can tell us about your experience and let us know which additional features you would like.
+- Use at your own risk! It might still be a bit rough around the edges, and we might introduce breaking changes.
+- We want to know how people are using this tool, so that we can prioritize what to focus on next. We therefore collect some [analytics](src/analytics/index.ts) data.
+- <b>We would love your feedback!</b> [Here](<TODO-add-link-to-feedback-form>) is a form where you can tell us about your experience and let us know which additional features you would like.
 
 _____________________
 
@@ -74,6 +74,9 @@ Takes a space id and two environment ids and creates a changest which details al
 - To identify <b>changed</b> entries, comparison happens in two steps:
   The initial step involves identifying potentially diverging entries by examining the `sys.changedAt` property of all entries present in both environments.
   Subsequently, for all entries with distinct `sys.changedAt` values, a more comprehensive comparison of their payload is performed. If any variations are found, a patch is generated to reflect the differences.
+
+><b>:bulb: Want to merge content types instead of entries? :bulb:</b>
+> We got you covered: Take a look at the [Merge App](https://www.contentful.com/marketplace/app/merge/) to your space, or, if you prefer the command line, check out the [Merge CLI](https://github.com/contentful/contentful-cli/tree/master/docs/merge).
 
 ## Installation
 
@@ -246,10 +249,10 @@ Currently, the `changeset.json` file is overwritten everytime you run the `creat
 ## What's next
 
 Are you wondering what to do with the created changeset?
-We got you covered! Our next step is to provide an `apply` command where you can apply the changeset to your target environment.
+Our next step is to provide an `apply` command where you can apply the changeset to your target environment.
 This will allow you to merge content from one environment to the other.
 
-Stay tuned for updates!
+Stay tuned for [updates](https://www.contentful.com/developers/changelog/)!
 
 ## Feedback
 
@@ -263,4 +266,4 @@ We want to provide a safe, inclusive, welcoming, and harassment-free space and e
 
 ## License
 
-This project is licensed under MIT license.
+This project is licensed under [MIT license](LICENSE).
