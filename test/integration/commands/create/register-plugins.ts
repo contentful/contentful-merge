@@ -54,9 +54,9 @@ export default fancy
               testContext.sourceEnvironment.sys.id,
               '--target',
               targetEnvironmentId,
-              '--cmaToken',
+              '--cma-token',
               cmaToken,
-              '--cdaToken',
+              '--cda-token',
               cdaToken || testContext.cdaToken,
             ],
             {} as unknown as Config // Runtime config, but not required for tests.
