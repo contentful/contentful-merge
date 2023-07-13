@@ -3,21 +3,22 @@ import { pluralizeContentType, pluralizeEntry } from '../utils/pluralize'
 import { icons } from '../utils/icons'
 import { entityStatRenderer } from '../utils/entity-stat-renderer'
 import { OutputFormatter } from '../utils/output-formatter'
+import { affectedEntitiesIds } from '../utils/affected-entities-ids'
+import chalk from 'chalk'
 
 const entryChangeRenderer = entityStatRenderer({
   icon: icons.bulletPoint,
   pluralizer: pluralizeEntry,
 })
 
-const contentTypeChangeRenderer = entityStatRenderer({
-  icon: icons.bulletPoint,
-  pluralizer: pluralizeContentType,
-})
-
 const successfulEntryChangeRenderer = entityStatRenderer({
   icon: icons.greenCheckmark,
   pluralizer: pluralizeEntry,
 })
+
+const renderDivergedContentTypes = (contentTypeIds: string[]) => {
+  return `${contentTypeIds.map((id) => chalk.italic.yellow(id)).join(', ')}`
+}
 
 export async function renderOutput(context: CreateChangesetContext, changesetFilePath: string, logFilePath: string) {
   let output = '\n'
@@ -27,16 +28,18 @@ export async function renderOutput(context: CreateChangesetContext, changesetFil
   const sourceEntriesLength = context.sourceData.entries.ids.length
   const targetEntriesLength = context.targetData.entries.ids.length
 
-  const contentTypesAddedLength = context.affectedEntities.contentTypes.added.length
-  const contentTypesRemovedLength = context.affectedEntities.contentTypes.removed.length
-  const contentTypesMaybeChangedLength = context.affectedEntities.contentTypes.maybeChanged.length
-
   const hasErrors = context.contentModelDiverged || context.exceedsLimits
+  let divergedContentTypeIds: string[] = []
 
   if (hasErrors) {
     let errorMessage = '\n'
     if (context.contentModelDiverged) {
       errorMessage += `The content model of the source and target environment are different. Before merging entries between environments, please make sure the content models are identical. We suggest using the Merge App to compare content models of different environments. Read more about the merge app here: https://www.contentful.com/marketplace/app/merge.`
+      divergedContentTypeIds = affectedEntitiesIds(context.affectedEntities.contentTypes, [
+        'added',
+        'removed',
+        'maybeChanged',
+      ])
     } else if (context.exceedsLimits) {
       errorMessage += `The detected number of entries to be compared, added or removed is too high.\nThe currently allowed limit is ${context.limits.all} entries.`
     }
@@ -50,10 +53,13 @@ export async function renderOutput(context: CreateChangesetContext, changesetFil
     output += `\n  ${entryChangeRenderer(entriesRemovedLength, 'removed')}`
     output += `\n  ${entryChangeRenderer(entriesMaybeChangedLength)} to be compared`
     output += '\n'
-    output += `\n  ${contentTypeChangeRenderer(contentTypesAddedLength, 'added')}`
-    output += `\n  ${contentTypeChangeRenderer(contentTypesRemovedLength, 'removed')}`
-    output += `\n  ${contentTypeChangeRenderer(contentTypesMaybeChangedLength)} to be compared`
-    output += '\n'
+
+    if (context.contentModelDiverged) {
+      output += `\nDiverged ${pluralizeContentType(divergedContentTypeIds.length)}: ${renderDivergedContentTypes(
+        divergedContentTypeIds
+      )}`
+      output += '\n'
+    }
   } else {
     output += OutputFormatter.headline('Changeset successfully created 🎉')
 

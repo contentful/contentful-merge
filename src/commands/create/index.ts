@@ -14,6 +14,7 @@ import { MemoryLogger } from '../../engine/logger/memory-logger'
 import { writeLog } from '../../engine/logger/write-log'
 import { createChangeset } from '../../engine/utils/create-changeset'
 import { renderOutput } from '../../engine/create-changeset/render-output'
+import { OutputFormatter } from '../../engine/utils/output-formatter'
 
 Sentry.init({
   dsn: 'https://5bc27276ac684a56bab07632be10a455@o2239.ingest.sentry.io/4505312653410304',
@@ -120,7 +121,7 @@ export default class Create extends Command {
     }
 
     console.log(
-      chalk.underline.bold(
+      OutputFormatter.headline(
         `\nStart changeset creation for ${chalk.yellow(flags.source)} => ${chalk.yellow(flags.target)} 🎬`
       )
     )

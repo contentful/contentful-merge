@@ -1,6 +1,7 @@
 import { CreateChangesetContext } from '../types'
 import { ListrTask } from 'listr2'
 import { LogLevel } from '../../logger/types'
+import { affectedEntitiesIds } from '../../utils/affected-entities-ids'
 
 export function createAffectedContentTypesDivergedTask(): ListrTask {
   return {
@@ -8,16 +9,12 @@ export function createAffectedContentTypesDivergedTask(): ListrTask {
     task: async (context: CreateChangesetContext) => {
       context.logger.log(LogLevel.INFO, `Start createAffectedContentTypesDivergedTask`)
 
-      const affectedContentTypeIds = [
-        ...context.affectedEntities.contentTypes.added,
-        ...context.affectedEntities.contentTypes.removed,
-        ...context.affectedEntities.contentTypes.maybeChanged.map((comparable) => comparable.sys.id),
-      ]
-
-      const affectedEntryIds = [
-        ...context.affectedEntities.entries.added,
-        ...context.affectedEntities.entries.maybeChanged.map((comparable) => comparable.sys.id),
-      ]
+      const affectedContentTypeIds = affectedEntitiesIds(context.affectedEntities.contentTypes, [
+        'added',
+        'removed',
+        'maybeChanged',
+      ])
+      const affectedEntryIds = affectedEntitiesIds(context.affectedEntities.entries, ['added', 'maybeChanged'])
 
       const contentTypeIdsOfAffectedEntries = [
         ...new Set<string>(

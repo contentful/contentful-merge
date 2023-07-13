@@ -26,6 +26,14 @@ export type EnvironmentData = Record<EntityType, EntityData>
 
 export type EnvironmentScope = 'source' | 'target'
 
+export type AffectedEntityData = {
+  added: Array<string>
+  removed: Array<string>
+  maybeChanged: Array<Comparable>
+}
+
+export type AffectedKeys = keyof AffectedEntityData
+
 export interface CreateChangesetContext extends BaseContext {
   sourceEnvironmentId: string
   targetEnvironmentId: string
@@ -33,14 +41,7 @@ export interface CreateChangesetContext extends BaseContext {
   sourceData: EnvironmentData
   targetData: EnvironmentData
 
-  affectedEntities: Record<
-    EntityType,
-    {
-      added: Array<string>
-      removed: Array<string>
-      maybeChanged: Array<Comparable>
-    }
-  >
+  affectedEntities: Record<EntityType, AffectedEntityData>
 
   changeset: Changeset
 
