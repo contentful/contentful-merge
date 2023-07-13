@@ -4,7 +4,7 @@ import { LogLevel } from '../../logger/types'
 
 export function createAffectedContentTypesDivergedTask(): ListrTask {
   return {
-    title: `Checking for diverged Content Types`,
+    title: `Checking for diverged content types`,
     task: async (context: CreateChangesetContext) => {
       context.logger.log(LogLevel.INFO, `Start createAffectedContentTypesDivergedTask`)
 
