@@ -183,7 +183,7 @@ The created changeset will be saved in JSON format in a file called `changeset.j
 ```
 
 The actual changes are in the `items` array. They have the following structure:
-```
+```javascript
 // deleted
 {
   "changeType": "deleted",
