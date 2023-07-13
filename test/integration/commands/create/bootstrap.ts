@@ -15,7 +15,7 @@ export type TestContext = {
 const waitForKeyReady = async (apiKey: ApiKey): Promise<void> => {
   const client = createClient({ accessToken: apiKey.accessToken, space: apiKey.sys.space!.sys.id })
 
-  const retries = 5
+  const retries = 6
   for (let i = 0; i < retries; i++)
     try {
       await client.getEntries()
