@@ -20,7 +20,7 @@ export async function renderOutput(context: CreateChangesetContext, changesetFil
   if (hasErrors) {
     let errorMessage = '\n'
     if (context.contentModelDiverged) {
-      errorMessage += `The content model of the source and target environment are different. Before merging entries between environments, please make sure the content models are identical. We suggest using the Merge App to compare content models of different environments. read more about the merge app here: https://www.contentful.com/marketplace/app/merge`
+      errorMessage += `The content model of the source and target environment are different. Before merging entries between environments, please make sure the content models are identical. We suggest using the Merge App to compare content models of different environments. Read more about the merge app here: https://www.contentful.com/marketplace/app/merge.
     } else if (context.exceedsLimits) {
       errorMessage += `The detected number of entries to be compared, added or removed is too high.\nThe currently allowed limit is ${context.limits.all} entries.`
     }
