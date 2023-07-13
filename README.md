@@ -154,7 +154,7 @@ COMMANDS
 > ⚠️ As this project is still in beta, the data structure might still change down the line ⚠️
 
 The created changeset will be saved in JSON format in a file called `changeset.json` in the directory that you run the command in. It has the following basic structure: 
-```
+```javascript
 {
   "sys": {
     "type": "Changeset",
