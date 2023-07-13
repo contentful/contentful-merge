@@ -2,29 +2,32 @@ import { Entry } from 'contentful'
 import { ListrTask } from 'listr2'
 import { chunk, pick } from 'lodash'
 import { LogLevel } from '../../logger/types'
-import { CreateChangesetContext } from '../types'
-import { pluralizeEntries } from '../../utils/pluralize-entries'
+import { CreateChangesetContext, SkipHandler } from '../types'
+import { pluralizeEntry } from '../../utils/pluralize'
+import { EntityType } from '../../types'
 
 export function cleanEntity(entry: Entry<any>): any {
   return { ...entry, sys: pick(entry.sys, ['id', 'type', 'contentType']) }
 }
 
-export function createFetchAddedEntitiesTask(): ListrTask {
+type FetchAddedEntitiesTaskProps = {
+  entityType: EntityType
+  skipHandler: SkipHandler
+}
+
+export function createFetchAddedEntitiesTask({ entityType, skipHandler }: FetchAddedEntitiesTaskProps): ListrTask {
   return {
     title: 'Fetching full payload for added entries',
-    skip: (context: CreateChangesetContext) => context.exceedsLimits === true,
+    skip: skipHandler,
     task: async (context: CreateChangesetContext, task) => {
-      const {
-        client,
-        ids: { added },
-        sourceEnvironmentId,
-        changeset,
-        limit,
-        logger,
-      } = context
+      const { client, affectedEntities, sourceEnvironmentId, changeset, limit, logger } = context
       logger.log(LogLevel.INFO, 'Start createFetchAddedEntitiesTask')
 
-      task.title = `Fetching full payload for ${added.length} added ${pluralizeEntries(added.length)}`
+      const {
+        [entityType]: { added },
+      } = affectedEntities
+
+      task.title = `Fetching full payload for ${added.length} added ${pluralizeEntry(added.length)}`
 
       // TODO: use pLimit
       const idChunks = chunk(added, limit)
