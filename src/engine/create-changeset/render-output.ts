@@ -34,7 +34,7 @@ export async function renderOutput(context: CreateChangesetContext, changesetFil
   if (hasErrors) {
     let errorMessage = '\n'
     if (context.contentModelDiverged) {
-      errorMessage += `The content model of the source and target environment are different. Before merging entries between environments, please make sure the content models are identical. We suggest using the Merge App to compare content models of different environments. Read more about the merge app here: https://www.contentful.com/marketplace/app/merge.`
+      errorMessage += `The content model of the source and target environment are different. Before merging entries between environments, please make sure the content models are identical. We suggest using the Merge App to compare content models of different environments. Read more about the Merge App here: https://www.contentful.com/marketplace/app/merge.`
       divergedContentTypeIds = affectedEntitiesIds(context.affectedEntities.contentTypes, [
         'added',
         'removed',

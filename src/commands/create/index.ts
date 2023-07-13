@@ -38,17 +38,24 @@ export default class Create extends Command {
   static description = 'Create Entries Changeset'
 
   static examples = [
-    './bin/dev create --space "<space-id>" --source "master>" --target "staging" --token "<cda-token>"',
-    'contentful-merge create --space "<space-id>" --source "master" --target "staging" --token "<cda-token>"',
+    'contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --cma-token <cma token>',
+    'contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --cma-token <cma token> --limit 100',
   ]
 
   static flags = {
-    source: Flags.string({ description: 'source environment id', required: true }),
-    target: Flags.string({ description: 'target environment id', required: true }),
-    space: Flags.string({ description: 'space id', required: true }),
-    cmaToken: Flags.string({ description: 'cma token', required: false, env: 'CMA_TOKEN' }),
-    cdaToken: Flags.string({ description: 'cda token', required: false, env: 'CDA_TOKEN' }),
-    light: Flags.boolean({ description: 'only creates link object for added entities', required: false }),
+    space: Flags.string({ description: 'Space id', required: true }),
+    source: Flags.string({ description: 'Source environment id', required: true }),
+    target: Flags.string({ description: 'Target environment id', required: true }),
+    'cda-token': Flags.string({
+      description: 'CDA token, defaults to env: $CDA_TOKEN',
+      required: true,
+      env: 'CDA_TOKEN',
+    }),
+    'cma-token': Flags.string({
+      description: 'CMA token, defaults to env: $CMA_TOKEN',
+      required: true,
+      env: 'CMA_TOKEN',
+    }),
     limit: Flags.integer({ description: 'Limit parameter for collection endpoints', required: false, default: 200 }),
   }
 
@@ -73,8 +80,8 @@ export default class Create extends Command {
     const logHandler = createTransformHandler(logger)
 
     const client = createClient({
-      cdaToken: flags.cdaToken!,
-      cmaToken: flags.cmaToken!,
+      cdaToken: flags['cda-token']!,
+      cmaToken: flags['cma-token']!,
       space: flags.space,
       logHandler,
       sequenceKey,
