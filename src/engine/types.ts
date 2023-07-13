@@ -80,3 +80,5 @@ export type BaseActionParams = {
 }
 
 export type CommandType = 'create-changeset' | 'apply-changeset'
+
+export type EntityType = Exclude<keyof ReturnType<typeof createClient>['cda'], 'requestCounts'>

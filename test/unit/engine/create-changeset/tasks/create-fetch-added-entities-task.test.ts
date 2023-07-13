@@ -1,68 +1,36 @@
 import { expect } from 'chai'
 import { Entry } from 'contentful'
-import { createStubInstance } from 'sinon'
-import { GetEntriesParams } from '../../../../../src/engine/client'
 import { initializeTask, matchChangeType } from '../../../test-utils'
-import { MemoryLogger } from '../../../../../src/engine/logger/memory-logger'
-import { sourceEntriesFixture, targetEntriesFixture } from '../../../fixtures/entries'
+import { sourceEntriesFixture } from '../../../fixtures/entries'
 import { CreateChangesetContext } from '../../../../../src/engine/create-changeset/types'
 import { AddedChangesetItem, ChangedChangesetItem, DeletedChangesetItem } from '../../../../../src/engine/types'
 import {
   cleanEntity,
   createFetchAddedEntitiesTask,
 } from '../../../../../src/engine/create-changeset/tasks/create-fetch-added-entities-task'
-
-const sourceEnvironmentId = 'staging'
-const targetEnvironmentId = 'qa'
-
-const mockClient = {
-  cma: {},
-  cda: {
-    entries: {
-      getMany: async ({ environment, query }: GetEntriesParams) => {
-        switch (environment) {
-          case sourceEnvironmentId:
-            return sourceEntriesFixture
-          case targetEnvironmentId:
-            return targetEntriesFixture
-        }
-      },
-    },
-  },
-}
+import { createCreateChangesetContext } from '../../../fixtures/create-changeset-context-fixture'
+import { createChangeset } from '../../../../../src/engine/utils/create-changeset'
+import { EnvironmentIdFixture } from '../../../fixtures/environment-id-fixtures'
 
 describe('createFetchAddedEntitiesTask', () => {
   let context: CreateChangesetContext
   beforeEach(() => {
-    context = {
-      sourceEnvironmentId,
-      logger: createStubInstance(MemoryLogger),
-      client: mockClient,
-      ids: {
-        added: ['3op5VIqGZiwoe06c8IQIMO', '6gFiJvssqQ62CMYqECOu2M'],
-        removed: ['34MlmiuMgU8wKCOOIkAuMy'],
-      },
-      maybeChanged: [
-        {
-          sys: {
-            id: '2uNOpLMJioKeoMq8W44uYc',
-            updatedAt: '2023-05-17T10:36:43.271Z',
-          },
+    context = createCreateChangesetContext({
+      affectedEntities: {
+        contentTypes: { added: [], removed: [], maybeChanged: [] },
+        entries: {
+          added: ['3op5VIqGZiwoe06c8IQIMO', '6gFiJvssqQ62CMYqECOu2M'],
+          removed: ['34MlmiuMgU8wKCOOIkAuMy'],
+          maybeChanged: [
+            {
+              sys: {
+                id: '2uNOpLMJioKeoMq8W44uYc',
+                updatedAt: '2023-05-17T10:36:43.271Z',
+              },
+            },
+          ],
         },
-      ],
-      statistics: {
-        added: 0,
-        changed: 0,
-        removed: 0,
-        nonChanged: 0,
       },
-      limits: {
-        all: 100,
-        changed: 100,
-        added: 100,
-        removed: 100,
-      },
-      exceedsLimits: false,
       changeset: {
         sys: {
           type: 'Changeset',
@@ -139,15 +107,24 @@ describe('createFetchAddedEntitiesTask', () => {
           },
         ],
       },
-    } as unknown as CreateChangesetContext
+    })
   })
   it('fetches the full payload of all added entries and adds it to the changeset', async () => {
-    const task = initializeTask(createFetchAddedEntitiesTask(), context)
+    context.changeset = createChangeset(EnvironmentIdFixture.source, EnvironmentIdFixture.target)
+
+    const task = initializeTask(
+      createFetchAddedEntitiesTask({
+        entityType: 'entries',
+        skipHandler: () => false,
+      }),
+      context
+    )
 
     const addedItems = context.changeset.items.filter(matchChangeType('added')) as AddedChangesetItem[]
 
     expect(addedItems).to.satisfy((items: AddedChangesetItem[]) => items.every((item) => item.data === undefined))
     await task.run()
+
     expect(addedItems).to.satisfy((items: AddedChangesetItem[]) =>
       items.every(
         (item) =>
@@ -159,7 +136,13 @@ describe('createFetchAddedEntitiesTask', () => {
     )
   })
   it('does not fetch anything for changed entries', async () => {
-    const task = initializeTask(createFetchAddedEntitiesTask(), context)
+    const task = initializeTask(
+      createFetchAddedEntitiesTask({
+        entityType: 'entries',
+        skipHandler: () => false,
+      }),
+      context
+    )
 
     const changedItems = context.changeset.items.filter(matchChangeType('changed'))
 
@@ -170,7 +153,13 @@ describe('createFetchAddedEntitiesTask', () => {
     expect(changedItems).to.satisfy((items: ChangedChangesetItem[]) => items.every((item) => item.data === undefined))
   })
   it('does not fetch anything for deleted entries', async () => {
-    const task = initializeTask(createFetchAddedEntitiesTask(), context)
+    const task = initializeTask(
+      createFetchAddedEntitiesTask({
+        entityType: 'entries',
+        skipHandler: () => false,
+      }),
+      context
+    )
 
     const deletedItems = context.changeset.items.filter(matchChangeType('deleted'))
 

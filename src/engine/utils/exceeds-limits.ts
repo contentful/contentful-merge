@@ -1,9 +1,10 @@
 import { CreateChangesetContext } from '../create-changeset/types'
+import { EntityType } from '../types'
 
-export const doesExceedLimits = (context: CreateChangesetContext) => {
-  const numberOfAdded = context.ids.added.length
-  const numberOfRemoved = context.ids.removed.length
-  const numberOfMaybeChanged = context.maybeChanged.length
+export const doesExceedLimits = (context: CreateChangesetContext, entityType: EntityType) => {
+  const numberOfAdded = context.affectedEntities[entityType].added.length
+  const numberOfRemoved = context.affectedEntities[entityType].removed.length
+  const numberOfMaybeChanged = context.affectedEntities[entityType].maybeChanged.length
 
   return (
     numberOfAdded + numberOfRemoved + numberOfMaybeChanged > context.limits.all ||

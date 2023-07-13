@@ -14,6 +14,7 @@ import { MemoryLogger } from '../../engine/logger/memory-logger'
 import { writeLog } from '../../engine/logger/write-log'
 import { createChangeset } from '../../engine/utils/create-changeset'
 import { renderOutput } from '../../engine/create-changeset/render-output'
+import { OutputFormatter } from '../../engine/utils/output-formatter'
 
 Sentry.init({
   dsn: 'https://5bc27276ac684a56bab07632be10a455@o2239.ingest.sentry.io/4505312653410304',
@@ -37,16 +38,17 @@ export default class Create extends Command {
   static description = 'Create Entries Changeset'
 
   static examples = [
-    'contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cdaToken <cda token> --cmaToken <cma token>',
-    'contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cdaToken <cda token> --cmaToken <cma token> --limit 100',
+    './bin/dev create --space "<space-id>" --source "master>" --target "staging" --token "<cda-token>"',
+    'contentful-merge create --space "<space-id>" --source "master" --target "staging" --token "<cda-token>"',
   ]
 
   static flags = {
-    space: Flags.string({ description: 'Space id', required: true }),
-    source: Flags.string({ description: 'Source environment id', required: true }),
-    target: Flags.string({ description: 'Target environment id', required: true }),
-    cdaToken: Flags.string({ description: 'CDA token', required: true, env: 'CDA_TOKEN' }),
-    cmaToken: Flags.string({ description: 'CMA token', required: true, env: 'CMA_TOKEN' }),
+    source: Flags.string({ description: 'source environment id', required: true }),
+    target: Flags.string({ description: 'target environment id', required: true }),
+    space: Flags.string({ description: 'space id', required: true }),
+    cmaToken: Flags.string({ description: 'cma token', required: false, env: 'CMA_TOKEN' }),
+    cdaToken: Flags.string({ description: 'cda token', required: false, env: 'CDA_TOKEN' }),
+    light: Flags.boolean({ description: 'only creates link object for added entities', required: false }),
     limit: Flags.integer({ description: 'Limit parameter for collection endpoints', required: false, default: 200 }),
   }
 
@@ -86,26 +88,40 @@ export default class Create extends Command {
       spaceId: flags.space,
       sourceEnvironmentId: flags.source,
       targetEnvironmentId: flags.target,
-      source: { comparables: [], ids: [] },
-      target: { comparables: [], ids: [] },
-      ids: {
-        added: [],
-        removed: [],
+      sourceData: {
+        entries: { comparables: [], ids: [] },
+        contentTypes: { comparables: [], ids: [] },
       },
-      maybeChanged: [],
+      targetData: {
+        entries: { comparables: [], ids: [] },
+        contentTypes: { comparables: [], ids: [] },
+      },
+      affectedEntities: {
+        entries: { added: [], removed: [], maybeChanged: [] },
+        contentTypes: { added: [], removed: [], maybeChanged: [] },
+      },
       statistics: {
-        added: 0,
-        changed: 0,
-        removed: 0,
-        nonChanged: 0,
+        entries: {
+          added: 0,
+          changed: 0,
+          removed: 0,
+          nonChanged: 0,
+        },
+        contentTypes: {
+          added: 0,
+          changed: 0,
+          removed: 0,
+          nonChanged: 0,
+        },
       },
       changeset: createChangeset(flags.source, flags.target),
       limits,
       exceedsLimits: false,
+      contentModelDiverged: false,
     }
 
     console.log(
-      chalk.underline.bold(
+      OutputFormatter.headline(
         `\nStart changeset creation for ${chalk.yellow(flags.source)} => ${chalk.yellow(flags.target)} 🎬`
       )
     )
@@ -132,9 +148,9 @@ export default class Create extends Command {
     const limitsExceeded = context.exceedsLimits
 
     Sentry.setTag('limitsExceeded', limitsExceeded)
-    Sentry.setTag('added', context.ids.added.length)
-    Sentry.setTag('removed', context.ids.removed.length)
-    Sentry.setTag('maybeChanged', context.maybeChanged.length)
+    Sentry.setTag('added', context.affectedEntities.entries.added.length)
+    Sentry.setTag('removed', context.affectedEntities.entries.removed.length)
+    Sentry.setTag('maybeChanged', context.affectedEntities.entries.maybeChanged.length)
     Sentry.setTag('cdaRequest', client.requestCounts().cda)
     Sentry.setTag('cmaRequest', client.requestCounts().cma)
     Sentry.setTag('memory', usedMemory.toFixed(2))
@@ -148,11 +164,11 @@ export default class Create extends Command {
       sequence_key: sequenceKey,
       duration: endTime - startTime,
       num_changeset_items: context.changeset.items.length,
-      num_added_items: context.ids.added.length,
-      num_removed_items: context.ids.removed.length,
-      num_changed_items: context.maybeChanged.length,
-      num_source_entries: context.source.ids.length,
-      num_target_entries: context.target.ids.length,
+      num_added_items: context.affectedEntities.entries.added.length,
+      num_removed_items: context.affectedEntities.entries.removed.length,
+      num_changed_items: context.affectedEntities.entries.maybeChanged.length,
+      num_source_entries: context.sourceData.entries.ids.length,
+      num_target_entries: context.targetData.entries.ids.length,
       num_changeset_items_exceeded: context.exceedsLimits,
     })
 

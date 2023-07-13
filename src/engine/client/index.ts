@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Entry, EntryCollection } from 'contentful'
+import { ContentTypeCollection, Entry, EntryCollection } from 'contentful'
 import { EntryProps } from 'contentful-management'
 import { createHttpClient, getUserAgentHeader } from 'contentful-sdk-core'
 import { pickBy } from 'lodash'
@@ -156,6 +156,15 @@ export const createClient = ({
             params: { ...cleanQuery(query) },
           })
           return result.data as Entry<any>
+        },
+      },
+      contentTypes: {
+        getMany: async ({ environment, query }: GetEntriesParams) => {
+          count.cda++
+          const result = await cdaClient.get(`${environment}/content_types`, {
+            params: { ...cleanQuery(query) },
+          })
+          return result.data as ContentTypeCollection
         },
       },
     },
