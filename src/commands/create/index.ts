@@ -100,10 +100,18 @@ export default class Create extends Command {
         contentTypes: { added: [], removed: [], maybeChanged: [] },
       },
       statistics: {
-        added: 0,
-        changed: 0,
-        removed: 0,
-        nonChanged: 0,
+        entries: {
+          added: 0,
+          changed: 0,
+          removed: 0,
+          nonChanged: 0,
+        },
+        contentTypes: {
+          added: 0,
+          changed: 0,
+          removed: 0,
+          nonChanged: 0,
+        },
       },
       changeset: createChangeset(flags.source, flags.target),
       limits,

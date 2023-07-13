@@ -13,7 +13,10 @@ export const createCreateChangesetContext = (context?: Partial<CreateChangesetCo
   spaceId: '<space-id>',
   sourceEnvironmentId: EnvironmentIdFixture.source,
   targetEnvironmentId: EnvironmentIdFixture.target,
-  statistics: { added: 0, removed: 0, changed: 0, nonChanged: 0 },
+  statistics: {
+    entries: { added: 0, removed: 0, changed: 0, nonChanged: 0 },
+    contentTypes: { added: 0, removed: 0, changed: 0, nonChanged: 0 },
+  },
   limit: 1000,
   exceedsLimits: false,
   logger: createStubInstance(MemoryLogger),

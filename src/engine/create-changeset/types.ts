@@ -15,6 +15,13 @@ export interface EntityData {
   comparables: Array<Comparable>
 }
 
+export interface EntityStatistics {
+  added: number
+  changed: number
+  removed: number
+  nonChanged: number
+}
+
 export type EnvironmentData = Record<EntityType, EntityData>
 
 export type EnvironmentScope = 'source' | 'target'
@@ -37,12 +44,7 @@ export interface CreateChangesetContext extends BaseContext {
 
   changeset: Changeset
 
-  statistics: {
-    added: number
-    changed: number
-    removed: number
-    nonChanged: number
-  }
+  statistics: Record<EntityType, EntityStatistics>
 
   limits: {
     all: number

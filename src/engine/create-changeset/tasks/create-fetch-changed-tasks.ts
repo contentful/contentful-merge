@@ -4,7 +4,7 @@ import { BaseContext, ChangedChangesetItem, EntityType } from '../../types'
 import { createLinkObject } from '../../utils/create-link-object'
 import type { CreateChangesetContext } from '../types'
 import { createPatch } from '../../utils/create-patch'
-import { pluralizeEntries } from '../../utils/pluralize-entries'
+import { pluralizeEntry } from '../../utils/pluralize'
 import { SkipHandler } from '../types'
 
 type GetEntryPatchParams = {
@@ -71,12 +71,14 @@ export const createFetchChangedTasks = ({ entityType, skipHandler }: FetchChange
     task: async (context: CreateChangesetContext, task) => {
       const { sourceEnvironmentId, affectedEntities, targetEnvironmentId, statistics, limit, changeset } = context
 
+      const entityTypeStatistics = statistics[entityType]
+
       const {
         [entityType]: { maybeChanged, added, removed },
       } = affectedEntities
 
       const numberOfMaybeChanged = maybeChanged.length
-      task.title = `Fetching full payload for ${numberOfMaybeChanged} ${pluralizeEntries(
+      task.title = `Fetching full payload for ${numberOfMaybeChanged} ${pluralizeEntry(
         numberOfMaybeChanged
       )} to be compared`
 
@@ -101,9 +103,9 @@ export const createFetchChangedTasks = ({ entityType, skipHandler }: FetchChange
 
         const withChange = changedObjects.filter((o) => o.patch.length > 0)
         // changed means: entries have actual changed content
-        statistics.changed += withChange.length
+        entityTypeStatistics.changed += withChange.length
         // nonChanged means: entries have different sys.updatedAt but identical content
-        statistics.nonChanged += changedObjects.length - withChange.length
+        entityTypeStatistics.nonChanged += changedObjects.length - withChange.length
         changeset.items.push(...withChange)
       }
 
@@ -112,8 +114,8 @@ export const createFetchChangedTasks = ({ entityType, skipHandler }: FetchChange
         ...added.map((item) => createLinkObject(item, 'added', EntityTypeMap[entityType]))
       )
 
-      statistics.added = added.length
-      statistics.removed = removed.length
+      entityTypeStatistics.added = added.length
+      entityTypeStatistics.removed = removed.length
 
       return Promise.resolve(context)
     },

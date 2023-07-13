@@ -3,7 +3,7 @@ import { ListrTask } from 'listr2'
 import { chunk, pick } from 'lodash'
 import { LogLevel } from '../../logger/types'
 import { CreateChangesetContext, SkipHandler } from '../types'
-import { pluralizeEntries } from '../../utils/pluralize-entries'
+import { pluralizeEntry } from '../../utils/pluralize'
 import { EntityType } from '../../types'
 
 export function cleanEntity(entry: Entry<any>): any {
@@ -27,7 +27,7 @@ export function createFetchAddedEntitiesTask({ entityType, skipHandler }: FetchA
         [entityType]: { added },
       } = affectedEntities
 
-      task.title = `Fetching full payload for ${added.length} added ${pluralizeEntries(added.length)}`
+      task.title = `Fetching full payload for ${added.length} added ${pluralizeEntry(added.length)}`
 
       // TODO: use pLimit
       const idChunks = chunk(added, limit)
