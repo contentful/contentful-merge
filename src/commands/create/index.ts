@@ -37,17 +37,16 @@ export default class Create extends Command {
   static description = 'Create Entries Changeset'
 
   static examples = [
-    './bin/dev create --space "<space-id>" --source "master>" --target "staging" --token "<cda-token>"',
-    'contentful-merge create --space "<space-id>" --source "master" --target "staging" --token "<cda-token>"',
+    'contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cdaToken <cda token> --cmaToken <cma token>',
+    'contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cdaToken <cda token> --cmaToken <cma token> --limit 100',
   ]
 
   static flags = {
-    source: Flags.string({ description: 'source environment id', required: true }),
-    target: Flags.string({ description: 'target environment id', required: true }),
-    space: Flags.string({ description: 'space id', required: true }),
-    cmaToken: Flags.string({ description: 'cma token', required: false, env: 'CMA_TOKEN' }),
-    cdaToken: Flags.string({ description: 'cda token', required: false, env: 'CDA_TOKEN' }),
-    light: Flags.boolean({ description: 'only creates link object for added entities', required: false }),
+    space: Flags.string({ description: 'Space id', required: true }),
+    source: Flags.string({ description: 'Source environment id', required: true }),
+    target: Flags.string({ description: 'Target environment id', required: true }),
+    cdaToken: Flags.string({ description: 'CDA token', required: true, env: 'CDA_TOKEN' }),
+    cmaToken: Flags.string({ description: 'CMA token', required: true, env: 'CMA_TOKEN' }),
     limit: Flags.integer({ description: 'Limit parameter for collection endpoints', required: false, default: 200 }),
   }
 
@@ -87,7 +86,6 @@ export default class Create extends Command {
       spaceId: flags.space,
       sourceEnvironmentId: flags.source,
       targetEnvironmentId: flags.target,
-      inline: !flags.light,
       source: { comparables: [], ids: [] },
       target: { comparables: [], ids: [] },
       ids: {

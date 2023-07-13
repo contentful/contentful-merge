@@ -23,7 +23,7 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
               createEntitiesTask('target', ctx.targetEnvironmentId),
               createComputeIdsTask(),
               createFetchChangedTasks(),
-              createFetchAddedEntitiesTask(context.inline),
+              createFetchAddedEntitiesTask(),
               createCallbackTask(() => performanceObserver.stop()),
             ],
             { concurrent: false }
