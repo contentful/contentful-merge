@@ -11,17 +11,14 @@ const sourceEnvironmentId = 'staging'
 const targetEnvironmentId = 'qa'
 
 const mockClient = {
-  cma: {},
-  cda: {
-    entries: {
-      getMany: async ({ environment, query }: GetEntriesParams) => {
-        switch (environment) {
-          case sourceEnvironmentId:
-            return sourceEntriesFixtureOnlySys
-          case targetEnvironmentId:
-            return targetEntriesFixtureOnlySys
-        }
-      },
+  entries: {
+    getMany: async ({ environment, query }: GetEntriesParams) => {
+      switch (environment) {
+        case sourceEnvironmentId:
+          return sourceEntriesFixtureOnlySys
+        case targetEnvironmentId:
+          return targetEntriesFixtureOnlySys
+      }
     },
   },
 }

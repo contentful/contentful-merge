@@ -15,11 +15,9 @@ type ExecuteParams = {
 }
 
 const execute = async ({ context, environmentId, scope, task }: ExecuteParams) => {
-  const {
-    client: { cda },
-  } = context
+  const { client } = context
 
-  const { total } = await cda.entries.getMany({ environment: environmentId, query: { limit: 0 } })
+  const { total } = await client.entries.getMany({ environment: environmentId, query: { limit: 0 } })
 
   const promises = []
   let requestsDone = 0
@@ -31,7 +29,7 @@ const execute = async ({ context, environmentId, scope, task }: ExecuteParams) =
   for (let i = 0; i < iterations; i++) {
     promises.push(
       limiter(async () => {
-        const response = await cda.entries.getMany({
+        const response = await client.entries.getMany({
           environment: environmentId,
           query: { select: ['sys.id', 'sys.updatedAt'], limit: LIMIT, skip: LIMIT * i },
         })

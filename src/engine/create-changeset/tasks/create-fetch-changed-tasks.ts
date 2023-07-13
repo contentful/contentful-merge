@@ -1,13 +1,13 @@
 import { ListrTask } from 'listr2'
 import { chunk } from 'lodash'
-import { BaseContext, ChangedChangesetItem } from '../../types'
+import { BaseContext, CDAClient, ChangedChangesetItem } from '../../types'
 import { createLinkObject } from '../../utils/create-link-object'
 import type { CreateChangesetContext } from '../types'
 import { createPatch } from '../../utils/create-patch'
 import { pluralizeEntries } from '../../utils/pluralize-entries'
 
 type GetEntryPatchParams = {
-  context: BaseContext
+  context: BaseContext<CDAClient>
   source: string
   target: string
   entryIds: string[]
@@ -19,13 +19,11 @@ async function getEntriesPatches({
   target,
   entryIds,
 }: GetEntryPatchParams): Promise<ChangedChangesetItem[]> {
-  const {
-    client: { cda },
-  } = context
+  const { client } = context
   const query = { 'sys.id[in]': entryIds.join(','), locale: '*' }
 
-  const sourceEntries = await cda.entries.getMany({ environment: source, query }).then((response) => response.items)
-  const targetEntries = await cda.entries.getMany({ environment: target, query }).then((response) => response.items)
+  const sourceEntries = await client.entries.getMany({ environment: source, query }).then((response) => response.items)
+  const targetEntries = await client.entries.getMany({ environment: target, query }).then((response) => response.items)
 
   const result: ChangedChangesetItem[] = []
 

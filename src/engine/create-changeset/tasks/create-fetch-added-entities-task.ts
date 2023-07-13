@@ -34,7 +34,7 @@ export function createFetchAddedEntitiesTask(shouldExecute: boolean): ListrTask 
         task.output = `Fetching ${limit} entities ${++iterator * limit}/${added.length}`
         const query = { 'sys.id[in]': chunk.join(','), locale: '*', limit }
         // eslint-disable-next-line no-await-in-loop
-        const entries = await client.cda.entries
+        const entries = await client.entries
           .getMany({
             environment: sourceEnvironmentId,
             query,
