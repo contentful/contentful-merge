@@ -228,7 +228,7 @@ There are three different change types: `added`, `changed`, `deleted`.
 
 - changes with change type <b>added</b> include an additional property `data` property with the usual Contentful entry payload.
 
-If you want to see the data structure in practice, run the `create` command and have a look at the generated `changeset.json` file.
+If you want to see the data structure in practice, run the `create` command and have a look at the generated `changeset.json` file, or look at the [type definitions](src/engine/types.ts).
 
 ## FAQ
 
