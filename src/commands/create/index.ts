@@ -15,14 +15,14 @@ import { writeLog } from '../../engine/logger/write-log'
 import { createChangeset } from '../../engine/utils/create-changeset'
 import { renderOutput } from '../../engine/create-changeset/render-output'
 import { OutputFormatter } from '../../engine/utils/output-formatter'
+import { config } from '../../config'
 
 Sentry.init({
   dsn: 'https://5bc27276ac684a56bab07632be10a455@o2239.ingest.sentry.io/4505312653410304',
   tracesSampleRate: 1.0,
   profilesSampleRate: 1.0,
   integrations: [new ProfilingIntegration()],
-  // TODO:  we should default to development and set production during a production build
-  environment: process.env.CI ? 'development' : 'production',
+  environment: config.environment,
 })
 
 const limits = {
