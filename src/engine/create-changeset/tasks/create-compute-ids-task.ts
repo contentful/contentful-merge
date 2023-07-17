@@ -3,6 +3,7 @@ import { LogLevel } from '../../logger/types'
 import { CreateChangesetContext, EnvironmentScope } from '../types'
 import { doesExceedLimits } from '../../utils/exceeds-limits'
 import { EntityType } from '../../types'
+import { createScopedLogger } from '../../logger/create-scoped-logger'
 type ComputeIdsTaskProps = {
   entityType: EntityType
 }
@@ -11,8 +12,9 @@ export const createComputeIdsTask = ({ entityType }: ComputeIdsTaskProps): Listr
   return {
     title: `Counting number of ${entityType} changes between environments`,
     task: async (context: CreateChangesetContext) => {
-      const { sourceData, targetData, logger } = context
-      logger.log(LogLevel.INFO, `Start computeIdsTask ${[entityType]}`)
+      const { sourceData, targetData } = context
+      const logger = createScopedLogger(context.logger, `CreateComputeIdsTask '${entityType}'`)
+      logger.startScope()
 
       const added = new Set(sourceData[entityType].ids.filter((item) => !targetData[entityType].ids.includes(item)))
       const removed = new Set(targetData[entityType].ids.filter((item) => !sourceData[entityType].ids.includes(item)))
@@ -33,7 +35,7 @@ export const createComputeIdsTask = ({ entityType }: ComputeIdsTaskProps): Listr
 
       const exceedsLimits = doesExceedLimits(context, entityType)
       context.exceedsLimits = exceedsLimits
-
+      logger.stopScope()
       return Promise.resolve(context)
     },
   }

@@ -2,13 +2,14 @@ import { CreateChangesetContext } from '../types'
 import { ListrTask } from 'listr2'
 import { LogLevel } from '../../logger/types'
 import { affectedEntitiesIds } from '../../utils/affected-entities-ids'
+import { createScopedLogger } from '../../logger/create-scoped-logger'
 
 export function createAffectedContentTypesDivergedTask(): ListrTask {
   return {
     title: `Checking for diverged content types`,
     task: async (context: CreateChangesetContext) => {
-      context.logger.log(LogLevel.INFO, `Start createAffectedContentTypesDivergedTask`)
-
+      const logger = createScopedLogger(context.logger, `CreateAffectedContentTypesDivergedTask`)
+      logger.startScope()
       const affectedContentTypeIds = affectedEntitiesIds(context.affectedEntities.contentTypes, [
         'added',
         'removed',
@@ -29,7 +30,7 @@ export function createAffectedContentTypesDivergedTask(): ListrTask {
       if (contentModelDiverged.length) {
         context.contentModelDiverged = true
       }
-
+      logger.stopScope()
       return context
     },
   }

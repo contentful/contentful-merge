@@ -6,6 +6,8 @@ import type { CreateChangesetContext } from '../types'
 import { createPatch } from '../../utils/create-patch'
 import { pluralizeEntry } from '../../utils/pluralize'
 import { SkipHandler } from '../types'
+import { createScopedLogger } from '../../logger/create-scoped-logger'
+import { ILogger } from '../../logger/types'
 
 type GetEntryPatchParams = {
   context: BaseContext
@@ -13,6 +15,7 @@ type GetEntryPatchParams = {
   target: string
   entryIds: string[]
   entityType: EntityType
+  logger: ILogger
 }
 
 const EntityTypeMap: Record<EntityType, 'Entry' | 'ContentType'> = {
@@ -26,6 +29,7 @@ async function getEntityPatches({
   target,
   entryIds,
   entityType,
+  logger,
 }: GetEntryPatchParams): Promise<ChangedChangesetItem[]> {
   const {
     client: { cda },
@@ -34,8 +38,8 @@ async function getEntityPatches({
 
   const api = cda[entityType]
 
-  const sourceEntries = await api.getMany({ environment: source, query }).then((response) => response.items)
-  const targetEntries = await api.getMany({ environment: target, query }).then((response) => response.items)
+  const sourceEntries = await api.getMany({ environment: source, query }, logger).then((response) => response.items)
+  const targetEntries = await api.getMany({ environment: target, query }, logger).then((response) => response.items)
 
   const result: ChangedChangesetItem[] = []
 
@@ -70,7 +74,8 @@ export const createFetchChangedTasks = ({ entityType, skipHandler }: FetchChange
     skip: skipHandler,
     task: async (context: CreateChangesetContext, task) => {
       const { sourceEnvironmentId, affectedEntities, targetEnvironmentId, statistics, limit, changeset } = context
-
+      const logger = createScopedLogger(context.logger, `CreateFetchChangedTasks '${entityType}'`)
+      logger.startScope()
       const entityTypeStatistics = statistics[entityType]
 
       const {
@@ -99,6 +104,7 @@ export const createFetchChangedTasks = ({ entityType, skipHandler }: FetchChange
           target: targetEnvironmentId,
           entryIds: chunk,
           entityType,
+          logger,
         })
 
         const withChange = changedObjects.filter((o) => o.patch.length > 0)
@@ -117,6 +123,7 @@ export const createFetchChangedTasks = ({ entityType, skipHandler }: FetchChange
       entityTypeStatistics.added = added.length
       entityTypeStatistics.removed = removed.length
 
+      logger.startScope()
       return Promise.resolve(context)
     },
   }

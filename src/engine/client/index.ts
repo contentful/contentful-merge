@@ -3,7 +3,7 @@ import { ContentTypeCollection, Entry, EntryCollection } from 'contentful'
 import { EntryProps } from 'contentful-management'
 import { createHttpClient, getUserAgentHeader } from 'contentful-sdk-core'
 import { pickBy } from 'lodash'
-import { ClientLogHandler } from '../logger/types'
+import { ClientLogHandler, ILogger, LogLevel } from '../logger/types'
 import { stripSys } from '../utils/strip-sys'
 
 import ContentfulSdkCorePKGJson from 'contentful-sdk-core/package.json'
@@ -89,30 +89,30 @@ export const createClient = ({
     cma: {
       requestCounts: () => count.cma,
       entries: {
-        getMany: async ({ environment, query }: GetEntriesParams) => {
+        getMany: async ({ environment, query }: GetEntriesParams, logger?: ILogger) => {
           count.cma++
           const result = await cmaClient.get(`${environment}/entries`, {
             params: { ...cleanQuery(query) },
           })
           return result.data as EntryCollection<any>
         },
-        get: async ({ environment, entryId, query }: GetEntryParams) => {
+        get: async ({ environment, entryId, query }: GetEntryParams, logger?: ILogger) => {
           count.cma++
           const result = await cmaClient.get(`${environment}/entries/${entryId}`, {
             params: { ...cleanQuery(query) },
           })
           return result.data as EntryProps<any>
         },
-        unpublish: async ({ environment, entryId }: DeleteEntryParams) => {
+        unpublish: async ({ environment, entryId }: DeleteEntryParams, logger?: ILogger) => {
           count.cma++
           const result = await cmaClient.delete(`${environment}/entries/${entryId}/published`)
           return result.data as EntryProps<any>
         },
-        delete: async ({ environment, entryId }: DeleteEntryParams) => {
+        delete: async ({ environment, entryId }: DeleteEntryParams, logger?: ILogger) => {
           count.cma++
           await cmaClient.delete(`${environment}/entries/${entryId}`)
         },
-        create: async ({ environment, entry, entryId, contentType }: CreateEntryParams) => {
+        create: async ({ environment, entry, entryId, contentType }: CreateEntryParams, logger?: ILogger) => {
           count.cma++
           const result = await cmaClient.put(`${environment}/entries/${entryId}`, stripSys(entry), {
             headers: {
@@ -121,7 +121,7 @@ export const createClient = ({
           })
           return result.data as EntryProps<any>
         },
-        update: async ({ environment, entry, entryId }: UpdateEntryParams) => {
+        update: async ({ environment, entry, entryId }: UpdateEntryParams, logger?: ILogger) => {
           count.cma++
           const result = await cmaClient.put(`${environment}/entries/${entryId}`, entry, {
             headers: {
@@ -130,7 +130,7 @@ export const createClient = ({
           })
           return result.data as EntryProps<any>
         },
-        publish: async ({ environment, entry, entryId }: PublishEntryParams) => {
+        publish: async ({ environment, entry, entryId }: PublishEntryParams, logger?: ILogger) => {
           count.cma++
           return cmaClient.put(`${environment}/entries/${entryId}/published`, entry, {
             headers: {
@@ -143,15 +143,17 @@ export const createClient = ({
     cda: {
       requestCounts: () => count.cda,
       entries: {
-        getMany: async ({ environment, query }: GetEntriesParams) => {
+        getMany: async ({ environment, query }: GetEntriesParams, logger?: ILogger) => {
           count.cda++
+          logger?.log(LogLevel.INFO, `"GET /${space}/${`${environment}/entries`} ${JSON.stringify(query)}"`)
           const result = await cdaClient.get(`${environment}/entries`, {
             params: { ...cleanQuery(query) },
           })
           return result.data as EntryCollection<any>
         },
-        get: async ({ environment, entryId, query }: GetEntryParams) => {
+        get: async ({ environment, entryId, query }: GetEntryParams, logger?: ILogger) => {
           count.cda++
+          logger?.log(LogLevel.INFO, `"GET /${space}/${environment}/entries/${entryId} ${JSON.stringify(query)}"`)
           const result = await cdaClient.get(`${environment}/entries/${entryId}`, {
             params: { ...cleanQuery(query) },
           })
@@ -159,8 +161,9 @@ export const createClient = ({
         },
       },
       contentTypes: {
-        getMany: async ({ environment, query }: GetEntriesParams) => {
+        getMany: async ({ environment, query }: GetEntriesParams, logger?: ILogger) => {
           count.cda++
+          logger?.log(LogLevel.INFO, `"GET ${`/${space}/${environment}/content_types`} ${JSON.stringify(query)}"`)
           const result = await cdaClient.get(`${environment}/content_types`, {
             params: { ...cleanQuery(query) },
           })
