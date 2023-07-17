@@ -1,9 +1,14 @@
 import { CreateChangesetContext } from './types'
-import { pluralizeContentType, pluralizeEntry } from '../utils/pluralize'
-import { icons } from '../utils/icons'
-import { entityStatRenderer } from '../utils/entity-stat-renderer'
-import { OutputFormatter } from '../utils/output-formatter'
-import { affectedEntitiesIds } from '../utils/affected-entities-ids'
+import {
+  icons,
+  pluralizeEntry,
+  OutputFormatter,
+  entityStatRenderer,
+  affectedEntitiesIds,
+  pluralizeContentType,
+  divergedContentTypeIdsOfAffectedEntries,
+} from '../utils'
+
 import chalk from 'chalk'
 
 const entryChangeRenderer = entityStatRenderer({
@@ -55,8 +60,13 @@ export async function renderOutput(context: CreateChangesetContext, changesetFil
     output += '\n'
 
     if (context.contentModelDiverged) {
+      const relevantDivergedContentTypeIds = divergedContentTypeIdsOfAffectedEntries(
+        context.affectedEntities,
+        context.targetData.entries.comparables
+      )
+
       output += `\nDiverged ${pluralizeContentType(divergedContentTypeIds.length)}: ${renderDivergedContentTypes(
-        divergedContentTypeIds
+        relevantDivergedContentTypeIds
       )}`
       output += '\n'
     }
