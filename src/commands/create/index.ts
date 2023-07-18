@@ -104,8 +104,8 @@ export default class Create extends Command {
         contentTypes: { comparables: [], ids: [] },
       },
       affectedEntities: {
-        entries: { added: [], removed: [], maybeChanged: [] },
-        contentTypes: { added: [], removed: [], maybeChanged: [] },
+        entries: { added: [], removed: [], maybeChanged: [], changed: [] },
+        contentTypes: { added: [], removed: [], maybeChanged: [], changed: [] },
       },
       statistics: {
         entries: {

@@ -74,7 +74,7 @@ export const createFetchChangedTasks = ({ entityType, skipHandler }: FetchChange
       const entityTypeStatistics = statistics[entityType]
 
       const {
-        [entityType]: { maybeChanged, added, removed },
+        [entityType]: { maybeChanged, added, removed, changed },
       } = affectedEntities
 
       const numberOfMaybeChanged = maybeChanged.length
@@ -106,6 +106,7 @@ export const createFetchChangedTasks = ({ entityType, skipHandler }: FetchChange
         entityTypeStatistics.changed += withChange.length
         // nonChanged means: entries have different sys.updatedAt but identical content
         entityTypeStatistics.nonChanged += changedObjects.length - withChange.length
+        changed.push(...withChange.map((item) => item.entity.sys.id))
         changeset.items.push(...withChange)
       }
 

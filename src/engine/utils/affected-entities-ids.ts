@@ -11,6 +11,10 @@ export const affectedEntitiesIds = (affectedEntities: AffectedEntityData, affect
     result.push(...affectedEntities.removed)
   }
 
+  if (affectedTypes.includes('changed')) {
+    result.push(...affectedEntities.changed)
+  }
+
   if (affectedTypes.includes('maybeChanged')) {
     result.push(...affectedEntities.maybeChanged.map((comparable) => comparable.sys.id))
   }
