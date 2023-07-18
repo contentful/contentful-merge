@@ -138,63 +138,67 @@ export default class Create extends Command {
       op: 'create',
       name: 'Create Changeset',
     })
-    const result = await createChangesetTask(context).run()
-    transaction?.finish()
 
-    const endTime = performance.now()
+    const createChangesetTaskInstance = createChangesetTask(context)
 
-    // TODO I don't think this will ever be true, we should collect errors some other way
-    if (result.errors) {
-      result.errors.map((error: Error) => Sentry.captureException(error))
+    try {
+      const result = await createChangesetTaskInstance.run()
+
+      transaction?.finish()
+
+      const endTime = performance.now()
+      const duration = ((endTime - startTime) / 1000).toFixed(1)
+      const usedMemory = process.memoryUsage().heapUsed / 1024 / 1024
+      const limitsExceeded = context.exceedsLimits
+
+      Sentry.setTag('limitsExceeded', limitsExceeded)
+      Sentry.setTag('added', context.affectedEntities.entries.added.length)
+      Sentry.setTag('removed', context.affectedEntities.entries.removed.length)
+      Sentry.setTag('maybeChanged', context.affectedEntities.entries.maybeChanged.length)
+      Sentry.setTag('cdaRequest', client.requestCounts().cda)
+      Sentry.setTag('cmaRequest', client.requestCounts().cma)
+      Sentry.setTag('memory', usedMemory.toFixed(2))
+      Sentry.setTag('duration', `${duration}`)
+      Sentry.setExtra('statistics', context.statistics)
+
+      trackCreateCommandCompleted({
+        space_key: flags.space,
+        target_environment_key: flags.target,
+        source_environment_key: flags.source,
+        sequence_key: sequenceKey,
+        duration: endTime - startTime,
+        num_changeset_items: context.changeset.items.length,
+        num_added_items: context.affectedEntities.entries.added.length,
+        num_removed_items: context.affectedEntities.entries.removed.length,
+        num_changed_items: context.affectedEntities.entries.maybeChanged.length,
+        num_source_entries: context.sourceData.entries.ids.length,
+        num_target_entries: context.targetData.entries.ids.length,
+        num_changeset_items_exceeded: context.exceedsLimits,
+      })
+
+      const changesetFilePath = path.join(process.cwd(), 'changeset.json')
+
+      const logFilePath = await writeLog(result.logger)
+
+      if (context.exceedsLimits) {
+        Sentry.captureMessage('Max allowed changes exceeded')
+      } else {
+        await fs.writeFile(changesetFilePath, JSON.stringify(context.changeset, null, 2))
+      }
+
+      const output = await renderOutput(context, changesetFilePath, logFilePath)
+      this.log(output)
+    } catch (error) {
+      // We can only access errors collected by ListR in this catch block, as our tasks are partly async
+      const taskErrors = createChangesetTaskInstance.errors
+      taskErrors.map((error: Error) => Sentry.captureException(error))
+      throw error
     }
-
-    const duration = ((endTime - startTime) / 1000).toFixed(1)
-
-    const usedMemory = process.memoryUsage().heapUsed / 1024 / 1024
-
-    const limitsExceeded = context.exceedsLimits
-
-    Sentry.setTag('limitsExceeded', limitsExceeded)
-    Sentry.setTag('added', context.affectedEntities.entries.added.length)
-    Sentry.setTag('removed', context.affectedEntities.entries.removed.length)
-    Sentry.setTag('maybeChanged', context.affectedEntities.entries.maybeChanged.length)
-    Sentry.setTag('cdaRequest', client.requestCounts().cda)
-    Sentry.setTag('cmaRequest', client.requestCounts().cma)
-    Sentry.setTag('memory', usedMemory.toFixed(2))
-    Sentry.setTag('duration', `${duration}`)
-    Sentry.setExtra('statistics', context.statistics)
-
-    trackCreateCommandCompleted({
-      space_key: flags.space,
-      target_environment_key: flags.target,
-      source_environment_key: flags.source,
-      sequence_key: sequenceKey,
-      duration: endTime - startTime,
-      num_changeset_items: context.changeset.items.length,
-      num_added_items: context.affectedEntities.entries.added.length,
-      num_removed_items: context.affectedEntities.entries.removed.length,
-      num_changed_items: context.affectedEntities.entries.maybeChanged.length,
-      num_source_entries: context.sourceData.entries.ids.length,
-      num_target_entries: context.targetData.entries.ids.length,
-      num_changeset_items_exceeded: context.exceedsLimits,
-    })
-
-    // const changesetFilePath = path.join(process.cwd(), `changeset-${new Date().toISOString()}-${flags.source}_${flags.target}.json`)
-    const changesetFilePath = path.join(process.cwd(), 'changeset.json')
-
-    const logFilePath = await writeLog(result.logger)
-
-    if (context.exceedsLimits) {
-      Sentry.captureMessage('Max allowed changes exceeded')
-    } else {
-      await fs.writeFile(changesetFilePath, JSON.stringify(context.changeset, null, 2))
-    }
-
-    const output = await renderOutput(context, changesetFilePath, logFilePath)
-    this.log(output)
   }
 
   async catch(error: any) {
+    // TODO Align on one place where all error handling happens instead of spreading it all over different methods
+
     if (error.response?.status == 404) {
       this.warn(
         'Environment not found. Please make sure the api key you are providing has access to all compared environments.'
