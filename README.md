@@ -227,7 +227,7 @@ There are three different change types: `added`, `changed`, `deleted`.
 
 - Changes of type `deleted` include `changeType` and `entity`, as seen above.
 
-- Changes of change type `changed` include an additional property `patch`, with an array of patch operations where content differs between environments.
+- Changes of type `changed` include an additional property `patch`, with an array of patch operations where content differs between environments.
 
 - Changes of change type `added` include an additional property `data` property with the usual Contentful entry payload.
 
