@@ -73,7 +73,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
         await task.run()
         expect(context.contentModelDiverged).to.true
       })
-      it('it ignores diverged content tyke for non-affected entry', async () => {
+      it('it ignores diverged content type for non-affected entry', async () => {
         context.affectedEntities.entries.added.push('added-entry')
         context.sourceData.entries.comparables.push({
           sys: {
