@@ -25,9 +25,9 @@ before(async () => {
   cdaTokenWithOnlyMasterAccess = await createCdaToken(testSpace, ['master'], 'Master Only CDA Key')
 })
 
-after(() => {
-  testContext.teardown()
-  cdaTokenWithOnlyMasterAccess.delete()
+after(async () => {
+  console.log('Deleting test environments and api keys ...')
+  await Promise.all([testContext.teardown(), cdaTokenWithOnlyMasterAccess.delete()])
 })
 
 afterEach(() => fs.promises.rm(changesetPath, { force: true }))
@@ -66,7 +66,7 @@ describe('create - happy path', () => {
     })
 })
 
-describe('create - fails', async () => {
+describe('create - fails', () => {
   fancy
     .stdout()
     .runCreateCommand(
