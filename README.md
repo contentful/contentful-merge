@@ -64,12 +64,12 @@ _____________________
 
 ## Features
 
-Takes a space id and two environment ids and creates a changest which details all entry changes between the two environments.
+Takes a space id and two environment ids and creates a changeset which details all entry differences between the two environments.
 - It uses the [Contentful Delivery API](https://www.contentful.com/developers/docs/references/content-delivery-api/) (CDA) to fetch all data.
 - A custom CDA client executes requests in the  different environments in parallel.
 - All requests are batched.
-- To identify <b>added</b> and <b>removed</b>, entry ids are compared in both environments.
-- To identify <b>changed</b> entries, comparison happens in two steps:
+- In order to identify <b>added</b> and <b>removed</b> entries, entry ids are compared in both environments.
+- In order to identify <b>changed</b> entries, comparison happens in two steps:
   The initial step involves identifying potentially diverging entries by examining the `sys.changedAt` property of all entries present in both environments.
   Subsequently, for all entries with distinct `sys.changedAt` values, a more comprehensive comparison of their payload is performed. If any variations are found, a patch is generated to reflect the differences.
 
@@ -225,11 +225,11 @@ The actual changes are in the `items` array. They have the following structure:
 ```
 There are three different change types: `added`, `changed`, `deleted`.
 
-- changes with type <b>deleted</b> include `changeType` and `entity`, as seen above.
+- Changes of type `deleted` include `changeType` and `entity`, as seen above.
 
-- changes with change type <b>changed</b> include an additional property `patch`, with an array of patch operations where content differs between environments.
+- Changes of change type `changed` include an additional property `patch`, with an array of patch operations where content differs between environments.
 
-- changes with change type <b>added</b> include an additional property `data` property with the usual Contentful entry payload.
+- Changes of change type `added` include an additional property `data` property with the usual Contentful entry payload.
 
 If you want to see the data structure in practice, run the `create` command and have a look at the generated `changeset.json` file, or look at the [type definitions](src/engine/types.ts).
 
@@ -239,7 +239,7 @@ If you want to see the data structure in practice, run the `create` command and 
 
 Make sure your CDA token has access to both environments, otherwise the CDA may respond with a 404.
 
-**I have made draft changes in my environment, but I don't see those in the changeset**
+**I have made draft changes in my environment, but I don't see those in the changeset.**
 
 As the CDA is used to fetch and compare entries, only published changes will be taken into account. Draft changes are not available via the CDA.
 
@@ -259,7 +259,7 @@ Stay tuned for [updates](https://www.contentful.com/developers/changelog/)!
 
 Want to report bugs, give feedback, request features? 
 - Found some bugs? Head over to https://support.contentful.com and open a support ticket.
-- Want to request a feature or tell us your overall experience with this CLI? Feel free to use [this form](<TODO-add-link-to-feedback-form>)
+- Want to request a feature or tell us your overall experience with this CLI? Feel free to use [this form](<TODO-add-link-to-feedback-form>).
 
 ## Code of Conduct
 
