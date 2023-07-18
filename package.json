@@ -77,7 +77,7 @@
     }
   },
   "scripts": {
-    "build": "shx rm -rf dist && tsc -b",
+    "build": "shx rm -rf dist && tsc -b && shx cp ./dist/config.production.js ./dist/config.js",
     "check-types": "tsc",
     "commitlint": "commitlint",
     "lint": "eslint src --ext '.ts,.js'",
