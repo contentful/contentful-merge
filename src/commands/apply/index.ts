@@ -84,5 +84,13 @@ export default class Apply extends Command {
 
     // console.log(responseCollector.toString())
   }
+
+  async catch(error: any) {
+    // Any additional error handling or related user warnings should
+    // go here if possible.
+
+    throw error
+  }
+
    */
 }

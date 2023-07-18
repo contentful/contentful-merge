@@ -16,6 +16,9 @@ import { createChangeset } from '../../engine/utils/create-changeset'
 import { renderOutput } from '../../engine/create-changeset/render-output'
 import { OutputFormatter } from '../../engine/utils/output-formatter'
 import { config } from '../../config'
+import { renderErrorOutput } from '../../engine/utils/render-error'
+import { AxiosError } from 'axios'
+import { AccessDeniedError, LimitsExceededError } from '../../engine/create-changeset/errors'
 
 Sentry.init({
   dsn: 'https://5bc27276ac684a56bab07632be10a455@o2239.ingest.sentry.io/4505312653410304',
@@ -149,9 +152,8 @@ export default class Create extends Command {
       const endTime = performance.now()
       const duration = ((endTime - startTime) / 1000).toFixed(1)
       const usedMemory = process.memoryUsage().heapUsed / 1024 / 1024
-      const limitsExceeded = context.exceedsLimits
 
-      Sentry.setTag('limitsExceeded', limitsExceeded)
+      Sentry.setTag('limitsExceeded', context.exceedsLimits)
       Sentry.setTag('added', context.affectedEntities.entries.added.length)
       Sentry.setTag('removed', context.affectedEntities.entries.removed.length)
       Sentry.setTag('maybeChanged', context.affectedEntities.entries.maybeChanged.length)
@@ -189,7 +191,7 @@ export default class Create extends Command {
       const output = await renderOutput(context, changesetFilePath, logFilePath)
       this.log(output)
     } catch (error) {
-      // We can only access errors collected by ListR in this catch block, as our tasks are partly async
+      // We can only access errors collected by ListR in this catch block, as our tasks are partly async.
       const taskErrors = createChangesetTaskInstance.errors
       taskErrors.map((error: Error) => Sentry.captureException(error))
       throw error
@@ -197,21 +199,27 @@ export default class Create extends Command {
   }
 
   async catch(error: any) {
-    // TODO Align on one place where all error handling happens instead of spreading it all over different methods
+    // Any additional error handling or related user warnings should
+    // go here if possible.
 
-    if (error.response?.status == 404) {
-      this.warn(
-        'Environment not found. Please make sure the api key you are providing has access to all compared environments.'
-      )
+    // TODO Move other errors to here as well, e.g. contentModelDiverged
+
+    Sentry.captureException(error)
+
+    if (error instanceof AxiosError && error.code === 'ERR_BAD_REQUEST') {
+      this.log(renderErrorOutput(new AccessDeniedError()))
+      this.exit()
+    } else if (error instanceof Error) {
+      this.log(renderErrorOutput(error))
+      this.exit()
+    } else {
+      throw error
     }
-
-    throw error
   }
 
   protected async finally(error: Error | undefined): Promise<any> {
-    if (error) {
-      Sentry.captureException(error)
-    }
+    // TODO analyticsCloseAndFlush triggers an ExperimentalWarning as it uses the Fetch API
+    // Ideally this should be fixed or suppressed for better UX.
     await Promise.allSettled([Sentry.close(2000), analyticsCloseAndFlush(2000)])
     return super.finally(error)
   }

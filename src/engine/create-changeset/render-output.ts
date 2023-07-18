@@ -22,9 +22,6 @@ const renderDivergedContentTypes = (contentTypeIds: string[]) => {
 
 export async function renderOutput(context: CreateChangesetContext, changesetFilePath: string, logFilePath: string) {
   let output = '\n'
-  const entriesAddedLength = context.affectedEntities.entries.added.length
-  const entriesRemovedLength = context.affectedEntities.entries.removed.length
-  const entriesMaybeChangedLength = context.affectedEntities.entries.maybeChanged.length
   const sourceEntriesLength = context.sourceData.entries.ids.length
   const targetEntriesLength = context.targetData.entries.ids.length
 
@@ -40,18 +37,11 @@ export async function renderOutput(context: CreateChangesetContext, changesetFil
         'removed',
         'maybeChanged',
       ])
-    } else if (context.exceedsLimits) {
-      errorMessage += `The detected number of entries to be compared, added or removed is too high.\nThe currently allowed limit is ${context.limits.all} entries.`
     }
+
     output += OutputFormatter.headline('Changeset could not be created 💔')
     output += '\n'
     output += OutputFormatter.error(errorMessage)
-    output += '\n'
-    output += `\nDetected number of changes:`
-    output += '\n'
-    output += `\n  ${entryChangeRenderer(entriesAddedLength, 'added')}`
-    output += `\n  ${entryChangeRenderer(entriesRemovedLength, 'removed')}`
-    output += `\n  ${entryChangeRenderer(entriesMaybeChangedLength)} to be compared`
     output += '\n'
 
     if (context.contentModelDiverged) {

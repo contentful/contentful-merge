@@ -3,6 +3,8 @@ import { LogLevel } from '../../logger/types'
 import { CreateChangesetContext, EnvironmentScope } from '../types'
 import { doesExceedLimits } from '../../utils/exceeds-limits'
 import { EntityType } from '../../types'
+import { LimitsExceededError } from '../errors'
+
 type ComputeIdsTaskProps = {
   entityType: EntityType
 }
@@ -32,7 +34,9 @@ export const createComputeIdsTask = ({ entityType }: ComputeIdsTaskProps): Listr
       context.affectedEntities[entityType] = { added: [...added], removed: [...removed], maybeChanged }
 
       const exceedsLimits = doesExceedLimits(context, entityType)
-      context.exceedsLimits = exceedsLimits
+      if (exceedsLimits) {
+        throw new LimitsExceededError(context)
+      }
 
       return Promise.resolve(context)
     },
