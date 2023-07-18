@@ -58,7 +58,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
     describe('and added entry', () => {
       it('it detects relevant diverged content type for affected entry', async () => {
         context.affectedEntities.entries.added.push('added-entry')
-        context.targetData.entries.comparables.push({
+        context.sourceData.entries.comparables.push({
           sys: {
             id: 'added-entry',
             updatedAt: '',
@@ -73,9 +73,9 @@ describe('createAffectedContentTypesDivergedTask', () => {
         await task.run()
         expect(context.contentModelDiverged).to.true
       })
-      it('it ignores diverged content type for non-affected entry', async () => {
+      it('it ignores diverged content tyke for non-affected entry', async () => {
         context.affectedEntities.entries.added.push('added-entry')
-        context.targetData.entries.comparables.push({
+        context.sourceData.entries.comparables.push({
           sys: {
             id: 'added-entry',
             updatedAt: '',
@@ -105,8 +105,8 @@ describe('createAffectedContentTypesDivergedTask', () => {
             },
           },
         }
-        context.affectedEntities.entries.maybeChanged.push(entry)
-        context.targetData.entries.comparables.push(entry)
+        context.affectedEntities.entries.changed.push(entry.sys.id)
+        context.sourceData.entries.comparables.push(entry)
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
         await task.run()
         expect(context.contentModelDiverged).to.true
@@ -124,8 +124,8 @@ describe('createAffectedContentTypesDivergedTask', () => {
             },
           },
         }
-        context.affectedEntities.entries.maybeChanged.push(entry)
-        context.targetData.entries.comparables.push(entry)
+        context.affectedEntities.entries.changed.push(entry.sys.id)
+        context.sourceData.entries.comparables.push(entry)
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
         await task.run()
         expect(context.contentModelDiverged).to.false
@@ -138,6 +138,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
       context.affectedEntities.contentTypes.removed.push(CONTENT_TYPE_ID)
     })
 
+    // for removed content type, only removed entries are possible (no added or changed)
     describe('and removed entry', () => {
       it('it ignores any content type changes for affected entries', async () => {
         context.affectedEntities.entries.removed.push('removed-entry')
@@ -169,83 +170,6 @@ describe('createAffectedContentTypesDivergedTask', () => {
             },
           },
         })
-        const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
-        await task.run()
-        expect(context.contentModelDiverged).to.false
-      })
-    })
-
-    describe('and added entry', () => {
-      it('it detects relevant diverged content type for affected entry', async () => {
-        context.affectedEntities.entries.added.push('added-entry')
-        context.targetData.entries.comparables.push({
-          sys: {
-            id: 'added-entry',
-            updatedAt: '',
-            contentType: {
-              sys: {
-                id: CONTENT_TYPE_ID,
-              },
-            },
-          },
-        })
-        const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
-        await task.run()
-        expect(context.contentModelDiverged).to.true
-      })
-      it('it ignores diverged content type for non-affected entry', async () => {
-        context.affectedEntities.entries.added.push('added-entry')
-        context.targetData.entries.comparables.push({
-          sys: {
-            id: 'added-entry',
-            updatedAt: '',
-            contentType: {
-              sys: {
-                id: 'added-content-type-2',
-              },
-            },
-          },
-        })
-        const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
-        await task.run()
-        expect(context.contentModelDiverged).to.false
-      })
-    })
-
-    describe('and changed entry', () => {
-      it('it detects relevant diverged content type for affected entry', async () => {
-        const entry = {
-          sys: {
-            id: 'changed-entry',
-            updatedAt: '',
-            contentType: {
-              sys: {
-                id: CONTENT_TYPE_ID,
-              },
-            },
-          },
-        }
-        context.affectedEntities.entries.maybeChanged.push(entry)
-        context.targetData.entries.comparables.push(entry)
-        const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
-        await task.run()
-        expect(context.contentModelDiverged).to.true
-      })
-
-      it('it ignores diverged content type for non-affected entry', async () => {
-        const entry = {
-          sys: {
-            id: 'changed-entry',
-            updatedAt: '',
-            contentType: {
-              sys: {
-                id: 'added-content-type-2',
-              },
-            },
-          },
-        }
-        context.affectedEntities.entries.maybeChanged.push(entry)
-        context.targetData.entries.comparables.push(entry)
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
         await task.run()
         expect(context.contentModelDiverged).to.false
@@ -255,9 +179,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
 
   describe('with changed content type', () => {
     beforeEach(() => {
-      context.affectedEntities.contentTypes.maybeChanged.push({
-        sys: { id: CONTENT_TYPE_ID, updatedAt: '' },
-      })
+      context.affectedEntities.contentTypes.changed.push(CONTENT_TYPE_ID)
     })
 
     describe('and removed entry', () => {
@@ -300,7 +222,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
     describe('and added entry', () => {
       it('it detects relevant diverged content type for affected entry', async () => {
         context.affectedEntities.entries.added.push('added-entry')
-        context.targetData.entries.comparables.push({
+        context.sourceData.entries.comparables.push({
           sys: {
             id: 'added-entry',
             updatedAt: '',
@@ -317,7 +239,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
       })
       it('it ignores diverged content type for non-affected entry', async () => {
         context.affectedEntities.entries.added.push('added-entry')
-        context.targetData.entries.comparables.push({
+        context.sourceData.entries.comparables.push({
           sys: {
             id: 'added-entry',
             updatedAt: '',
@@ -347,8 +269,8 @@ describe('createAffectedContentTypesDivergedTask', () => {
             },
           },
         }
-        context.affectedEntities.entries.maybeChanged.push(entry)
-        context.targetData.entries.comparables.push(entry)
+        context.affectedEntities.entries.changed.push(entry.sys.id)
+        context.sourceData.entries.comparables.push(entry)
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
         await task.run()
         expect(context.contentModelDiverged).to.true
@@ -366,8 +288,8 @@ describe('createAffectedContentTypesDivergedTask', () => {
             },
           },
         }
-        context.affectedEntities.entries.maybeChanged.push(entry)
-        context.targetData.entries.comparables.push(entry)
+        context.affectedEntities.entries.changed.push(entry.sys.id)
+        context.sourceData.entries.comparables.push(entry)
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
         await task.run()
         expect(context.contentModelDiverged).to.false

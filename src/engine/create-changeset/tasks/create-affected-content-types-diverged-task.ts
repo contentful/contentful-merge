@@ -11,7 +11,7 @@ export function createAffectedContentTypesDivergedTask(): ListrTask {
 
       const relevantDivergedContentTypeIds = divergedContentTypeIdsOfAffectedEntries(
         context.affectedEntities,
-        context.targetData.entries.comparables
+        context.sourceData.entries.comparables
       )
 
       if (relevantDivergedContentTypeIds.length) {
