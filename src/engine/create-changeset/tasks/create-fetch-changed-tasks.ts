@@ -107,13 +107,17 @@ export const createFetchChangedTasks = ({ entityType, skipHandler }: FetchChange
         // nonChanged means: entries have different sys.updatedAt but identical content
         entityTypeStatistics.nonChanged += changedObjects.length - withChange.length
         changed.push(...withChange.map((item) => item.entity.sys.id))
-        changeset.items.push(...withChange)
+        if (entityType === 'entries') {
+          changeset.items.push(...withChange)
+        }
       }
 
-      changeset.items.push(
-        ...removed.map((item) => createLinkObject(item, 'deleted', EntityTypeMap[entityType])),
-        ...added.map((item) => createLinkObject(item, 'added', EntityTypeMap[entityType]))
-      )
+      if (entityType === 'entries') {
+        changeset.items.push(
+          ...removed.map((item) => createLinkObject(item, 'deleted', EntityTypeMap[entityType])),
+          ...added.map((item) => createLinkObject(item, 'added', EntityTypeMap[entityType]))
+        )
+      }
 
       entityTypeStatistics.added = added.length
       entityTypeStatistics.removed = removed.length
