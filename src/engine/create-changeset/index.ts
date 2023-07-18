@@ -28,7 +28,7 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
           return task.newListr(
             [
               {
-                title: 'Content Types',
+                title: 'Checking content model',
                 task: (ctx, task): Listr => {
                   return task.newListr(
                     [
