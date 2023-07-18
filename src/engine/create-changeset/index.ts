@@ -45,6 +45,10 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
                       createComputeIdsTask({
                         entityType: 'contentTypes',
                       }),
+                      createFetchChangedTasks({
+                        entityType: 'contentTypes',
+                        skipHandler: () => false,
+                      }),
                     ],
                     subTaskOptions
                   )
@@ -69,13 +73,13 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
                       createComputeIdsTask({
                         entityType: 'entries',
                       }),
-                      createAffectedContentTypesDivergedTask(),
                       createFetchChangedTasks({
                         entityType: 'entries',
                         skipHandler: () => {
-                          return context.contentModelDiverged || context.exceedsLimits
+                          return context.exceedsLimits
                         },
                       }),
+                      createAffectedContentTypesDivergedTask(),
                       createFetchAddedEntitiesTask({
                         entityType: 'entries',
                         skipHandler: () => {
