@@ -35,7 +35,7 @@ afterEach(() => fs.promises.rm(changesetPath, { force: true }))
 describe('create - happy path', () => {
   fancy
     .stdout() // to print the output during testing use `.stdout({ print: true })`
-    .runCreateCommand(() => testContext, targetEnvironmentId, cmaToken)
+    .runCreateCommand(() => testContext, targetEnvironmentId)
     // TODO: When both environments are emtpy, we should either actually not create a changeset,
     // or change the name of this test
     .it('should not create a changeset when both environments are empty', (ctx) => {
@@ -51,7 +51,7 @@ describe('create - happy path', () => {
   fancy
     .stdout()
     .createTestData(() => testContext.sourceEnvironment)
-    .runCreateCommand(() => testContext, targetEnvironmentId, cmaToken)
+    .runCreateCommand(() => testContext, targetEnvironmentId)
     .finally(async (ctx) => {
       await ctx.deleteTestData()
     })
@@ -72,7 +72,6 @@ describe('create - fails', () => {
     .runCreateCommand(
       () => testContext,
       targetEnvironmentId,
-      cmaToken,
       () => 'invalid-cda-token'
     )
     .it('fails and informs on 401 (invalid token)', (ctx) => {
@@ -84,7 +83,6 @@ describe('create - fails', () => {
     .runCreateCommand(
       () => testContext,
       targetEnvironmentId,
-      cmaToken,
       () => cdaTokenWithOnlyMasterAccess.accessToken
     )
     .it('fails and informs on 404', (ctx) => {

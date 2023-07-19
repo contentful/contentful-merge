@@ -10,8 +10,8 @@ import ContentfulSdkCorePKGJson from 'contentful-sdk-core/package.json'
 
 type CreateClientParams = {
   space: string
-  cdaToken: string
-  cmaToken: string
+  cdaToken?: string
+  cmaToken?: string
   logHandler: ClientLogHandler
 }
 
@@ -46,8 +46,8 @@ const USER_AGENT = getUserAgentHeader(SDK, APPLICATION, INTEGRATION, FEATURE)
 
 export const createClient = ({
   space,
-  cdaToken,
-  cmaToken,
+  cdaToken = 'CDA_TOKEN_NOT_SET',
+  cmaToken = 'CMA_TOKEN_NOT_SET',
   logHandler,
   sequenceKey,
 }: CreateClientParams & { sequenceKey: string }) => {

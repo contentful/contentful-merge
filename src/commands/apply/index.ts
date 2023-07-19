@@ -25,7 +25,6 @@ export default class Apply extends Command {
     space: Flags.string({ description: 'Space id', required: true }),
     environment: Flags.string({ description: 'Target environment id', required: true }),
     "cma-token": Flags.string({ description: 'CMA token', required: true, env: 'CMA_TOKEN' }),
-    "cda-token": Flags.string({ description: 'CDA token', required: true, env: 'CDA_TOKEN' }),
     limit: Flags.integer({ description: 'Limit parameter for collection endpoints', required: false, default: 200 }),
   }
 
@@ -36,8 +35,7 @@ export default class Apply extends Command {
     const logHandler = createTransformHandler(logger)
 
     const client = createClient({
-      cdaToken: flags["cda-token"]!,
-      cmaToken: flags["cma-token"]!,
+      cmaToken: flags["cma-token"],
       space: flags.space,
       logHandler,
       sequenceKey,
