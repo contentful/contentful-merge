@@ -38,7 +38,7 @@ export default fancy
   })
   .register(
     'runCreateCommand',
-    (getTestContext: () => TestContext, targetEnvironmentId: string, cmaToken: string, getApiKey?: () => string) => {
+    (getTestContext: () => TestContext, targetEnvironmentId: string, getApiKey?: () => string) => {
       return {
         async run(ctx) {
           await new Promise((r) => setTimeout(r, 3000)) // Workaround: Give API changes time to settle
@@ -54,8 +54,6 @@ export default fancy
               testContext.sourceEnvironment.sys.id,
               '--target',
               targetEnvironmentId,
-              '--cma-token',
-              cmaToken,
               '--cda-token',
               cdaToken || testContext.cdaToken,
             ],
