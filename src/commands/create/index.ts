@@ -195,21 +195,25 @@ export default class Create extends Command {
     // Any additional error handling or related user warnings should
     // go here if possible.
 
+    // TODO Move other errors to here as well, e.g. contentModelDiverged
+
     Sentry.captureException(error)
 
-    // TODO analyticsCloseAndFlush triggers an ExperimentalWarning as it uses the Fetch API and the task list to be
-    // rendered twice. Ideally this should be fixed or suppressed for better UX.
-    await Promise.allSettled([Sentry.close(2000), analyticsCloseAndFlush(2000)])
-
-    // TODO Move other errors to here as well, e.g. contentModelDiverged
     if (error instanceof AxiosError && error.code === 'ERR_BAD_REQUEST') {
       this.log(renderErrorOutput(new AccessDeniedError()))
-      this.exit(1)
+      this.exit()
     } else if (error instanceof Error) {
       this.log(renderErrorOutput(error))
-      this.exit(1)
+      this.exit()
     } else {
       throw error
     }
+  }
+
+  protected async finally(error: Error | undefined): Promise<any> {
+    // TODO analyticsCloseAndFlush triggers an ExperimentalWarning as it uses the Fetch API
+    // Ideally this should be fixed or suppressed for better UX.
+    await Promise.allSettled([Sentry.close(2000), analyticsCloseAndFlush(2000)])
+    return super.finally(error)
   }
 }
