@@ -108,23 +108,22 @@ USAGE
 Create Entries Changeset
 
 USAGE
-  $ contentful-merge create --space <value> --source <value> --target <value> --cda-token <value> --cma-token <value> [--limit <value>]
+  $ contentful-merge create --space <value> --source <value> --target <value> --cda-token <value> [--limit <value>]
 
 FLAGS
   --space=<value>      [required] Space id
   --source=<value>     [required] Source environment id
   --target=<value>     [required] Target environment id
   --cda-token=<value>  [required, defaults to env: $CDA_TOKEN] CDA token
-  --cma-token=<value>  [required, defaults to env: $CMA_TOKEN] CMA token
   --limit=<value>      [default: 200] Limit parameter for collection endpoints
 
 DESCRIPTION
   Create Entries Changeset
 
 EXAMPLES
-  $ contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --cma-token <cma token>
+  $ contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token>
 
-  $ contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --cma-token <cma token> --limit 100
+  $ contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --limit 100
 ```
 
 
