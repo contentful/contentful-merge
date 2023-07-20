@@ -5,7 +5,7 @@ export function renderErrorOutput(error: Error) {
 
   let output = '\n'
 
-  output += OutputFormatter.headline('Something went wrong 💔')
+  output += OutputFormatter.headline('Changeset could not be created 💔')
 
   output += '\n'
   output += OutputFormatter.error(errorMessage)
