@@ -1,7 +1,7 @@
 import { CreateChangesetContext } from '../types'
 import { ListrTask } from 'listr2'
 import { LogLevel } from '../../logger/types'
-import { affectedEntitiesIds } from '../../utils/affected-entities-ids'
+import { divergedContentTypeIdsOfAffectedEntries } from '../../utils/diverged-content-type-ids-of-affected-entries'
 
 export function createAffectedContentTypesDivergedTask(): ListrTask {
   return {
@@ -9,24 +9,12 @@ export function createAffectedContentTypesDivergedTask(): ListrTask {
     task: async (context: CreateChangesetContext) => {
       context.logger.log(LogLevel.INFO, `Start createAffectedContentTypesDivergedTask`)
 
-      const affectedContentTypeIds = affectedEntitiesIds(context.affectedEntities.contentTypes, [
-        'added',
-        'removed',
-        'maybeChanged',
-      ])
-      const affectedEntryIds = affectedEntitiesIds(context.affectedEntities.entries, ['added', 'maybeChanged'])
+      const relevantDivergedContentTypeIds = divergedContentTypeIdsOfAffectedEntries(
+        context.affectedEntities,
+        context.sourceData.entries.comparables
+      )
 
-      const contentTypeIdsOfAffectedEntries = [
-        ...new Set<string>(
-          context.targetData.entries.comparables
-            .filter((comparable) => affectedEntryIds.includes(comparable.sys.id))
-            .map((comparable) => comparable.sys.contentType!.sys.id)
-        ),
-      ]
-
-      const contentModelDiverged = contentTypeIdsOfAffectedEntries.filter((id) => affectedContentTypeIds.includes(id))
-
-      if (contentModelDiverged.length) {
+      if (relevantDivergedContentTypeIds.length) {
         context.contentModelDiverged = true
       }
 

@@ -17,7 +17,7 @@ describe('createFetchAddedEntitiesTask', () => {
   beforeEach(() => {
     context = createCreateChangesetContext({
       affectedEntities: {
-        contentTypes: { added: [], removed: [], maybeChanged: [] },
+        contentTypes: { added: [], removed: [], maybeChanged: [], changed: [] },
         entries: {
           added: ['3op5VIqGZiwoe06c8IQIMO', '6gFiJvssqQ62CMYqECOu2M'],
           removed: ['34MlmiuMgU8wKCOOIkAuMy'],
@@ -29,6 +29,7 @@ describe('createFetchAddedEntitiesTask', () => {
               },
             },
           ],
+          changed: ['2uNOpLMJioKeoMq8W44uYc'],
         },
       },
       changeset: {

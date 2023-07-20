@@ -74,7 +74,7 @@ export const createFetchChangedTasks = ({ entityType, skipHandler }: FetchChange
       const entityTypeStatistics = statistics[entityType]
 
       const {
-        [entityType]: { maybeChanged, added, removed },
+        [entityType]: { maybeChanged, added, removed, changed },
       } = affectedEntities
 
       const numberOfMaybeChanged = maybeChanged.length
@@ -85,7 +85,7 @@ export const createFetchChangedTasks = ({ entityType, skipHandler }: FetchChange
       // TODO: use pLimit
       const idChunks = chunk(
         maybeChanged.map((c) => c.sys.id),
-        limit ?? 1000
+        limit
       )
 
       let iterator = 0
@@ -106,13 +106,18 @@ export const createFetchChangedTasks = ({ entityType, skipHandler }: FetchChange
         entityTypeStatistics.changed += withChange.length
         // nonChanged means: entries have different sys.updatedAt but identical content
         entityTypeStatistics.nonChanged += changedObjects.length - withChange.length
-        changeset.items.push(...withChange)
+        changed.push(...withChange.map((item) => item.entity.sys.id))
+        if (entityType === 'entries') {
+          changeset.items.push(...withChange)
+        }
       }
 
-      changeset.items.push(
-        ...removed.map((item) => createLinkObject(item, 'deleted', EntityTypeMap[entityType])),
-        ...added.map((item) => createLinkObject(item, 'added', EntityTypeMap[entityType]))
-      )
+      if (entityType === 'entries') {
+        changeset.items.push(
+          ...removed.map((item) => createLinkObject(item, 'deleted', EntityTypeMap[entityType])),
+          ...added.map((item) => createLinkObject(item, 'added', EntityTypeMap[entityType]))
+        )
+      }
 
       entityTypeStatistics.added = added.length
       entityTypeStatistics.removed = removed.length

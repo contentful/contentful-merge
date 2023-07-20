@@ -35,8 +35,8 @@ export const createCreateChangesetContext = (context?: Partial<CreateChangesetCo
     },
   },
   affectedEntities: {
-    entries: { added: [], removed: [], maybeChanged: [] },
-    contentTypes: { added: [], removed: [], maybeChanged: [] },
+    entries: { added: [], removed: [], maybeChanged: [], changed: [] },
+    contentTypes: { added: [], removed: [], maybeChanged: [], changed: [] },
   },
   limits: {
     all: 100,

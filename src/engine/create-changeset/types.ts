@@ -30,6 +30,7 @@ export type AffectedEntityData = {
   added: Array<string>
   removed: Array<string>
   maybeChanged: Array<Comparable>
+  changed: Array<string>
 }
 
 export type AffectedKeys = keyof AffectedEntityData
