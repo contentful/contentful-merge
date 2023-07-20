@@ -27,7 +27,7 @@ export class LimitsExceededError extends Error {
 export class AccessDeniedError extends Error {
   constructor() {
     const message =
-      'Access denied. Please make sure the api key you are providing has access to all compared environments.'
+      'An authorisation issue occurred. Please make sure the API key you provided has access to both environments.'
     super(message)
   }
 }

@@ -16,7 +16,7 @@ import { createChangeset } from '../../engine/utils/create-changeset'
 import { renderOutput } from '../../engine/create-changeset/render-output'
 import { OutputFormatter } from '../../engine/utils/output-formatter'
 import { config } from '../../config'
-import { renderErrorOutput } from '../../engine/utils/render-error'
+import { renderErrorOutput } from '../../engine/utils/render-error-output'
 import { AxiosError } from 'axios'
 import { AccessDeniedError } from '../../engine/create-changeset/errors'
 
