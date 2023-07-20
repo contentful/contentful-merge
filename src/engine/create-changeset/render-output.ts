@@ -10,11 +10,6 @@ import {
 
 import chalk from 'chalk'
 
-const entryChangeRenderer = entityStatRenderer({
-  icon: icons.bulletPoint,
-  pluralizer: pluralizeEntry,
-})
-
 const successfulEntryChangeRenderer = entityStatRenderer({
   icon: icons.greenCheckmark,
   pluralizer: pluralizeEntry,
@@ -26,8 +21,6 @@ const renderDivergedContentTypes = (contentTypeIds: string[]) => {
 
 export async function renderOutput(context: CreateChangesetContext, changesetFilePath: string, logFilePath: string) {
   let output = '\n'
-  const entriesAddedLength = context.affectedEntities.entries.added.length
-  const entriesRemovedLength = context.affectedEntities.entries.removed.length
   const sourceEntriesLength = context.sourceData.entries.ids.length
   const targetEntriesLength = context.targetData.entries.ids.length
 
@@ -35,39 +28,24 @@ export async function renderOutput(context: CreateChangesetContext, changesetFil
 
   if (hasErrors) {
     let errorMessage = '\n'
-    let entriesChangedMessage = ''
-    if (context.contentModelDiverged) {
-      errorMessage += `The content models of the source and target environment are different. Before merging entries between environments, please make sure the content models are identical. We suggest using the Merge App to compare content models of different environments. Read more about the Merge App here: https://www.contentful.com/marketplace/app/merge.`
-      const entriesChangedLength = context.affectedEntities.entries.changed.length
-      entriesChangedMessage = `${entryChangeRenderer(entriesChangedLength)} changed`
-    } else if (context.exceedsLimits) {
-      errorMessage += `The detected number of entries to be compared, added or removed is too high.\nThe currently allowed limit is ${context.limits.all} entries.`
-      const entriesMaybeChangedLength = context.affectedEntities.entries.maybeChanged.length
-      entriesChangedMessage = `${entryChangeRenderer(entriesMaybeChangedLength)} to be compared`
-    }
-
-    output += OutputFormatter.headline('Changeset could not be created 💔')
-    output += '\n'
-    output += OutputFormatter.error(errorMessage)
-    output += '\n'
-    output += `\nDetected number of changes:`
-    output += '\n'
-    output += `\n  ${entryChangeRenderer(entriesAddedLength, 'added')}`
-    output += `\n  ${entryChangeRenderer(entriesRemovedLength, 'removed')}`
-    output += `\n  ${entriesChangedMessage}`
-    output += '\n'
-
+    let errorDetails = '\n'
     if (context.contentModelDiverged) {
       const relevantDivergedContentTypeIds = divergedContentTypeIdsOfAffectedEntries(
         context.affectedEntities,
         context.sourceData.entries.comparables
       )
 
-      output += `\nDiverged ${pluralizeContentType(
+      errorMessage += `The content models of the source and target environment are different. Before merging entries between environments, please make sure the content models are identical. We suggest using the Merge App to compare content models of different environments. Read more about the Merge App here: https://www.contentful.com/marketplace/app/merge.`
+      errorDetails += `Diverged ${pluralizeContentType(
         relevantDivergedContentTypeIds.length
-      )}: ${renderDivergedContentTypes(relevantDivergedContentTypeIds)}`
-      output += '\n'
+      )}: ${renderDivergedContentTypes(relevantDivergedContentTypeIds)}\n`
     }
+
+    output += OutputFormatter.headline('Changeset could not be created 💔')
+    output += '\n'
+    output += OutputFormatter.error(errorMessage)
+    output += '\n'
+    output += errorDetails
   } else {
     output += OutputFormatter.headline('Changeset successfully created 🎉')
 
