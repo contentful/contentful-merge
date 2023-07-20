@@ -12,7 +12,7 @@ const subTaskOptions = {
   concurrent: false,
   rendererOptions: {
     timer: PRESET_TIMER,
-    collapseSubtasks: true,
+    collapseSubtasks: false,
   },
 }
 export const createChangesetTask = (context: CreateChangesetContext): Listr => {
@@ -50,7 +50,10 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
                         skipHandler: () => false,
                       }),
                     ],
-                    subTaskOptions
+                    {
+                      ...subTaskOptions,
+                      rendererOptions: { ...subTaskOptions.rendererOptions, collapseSubtasks: true },
+                    }
                   )
                 },
               },
