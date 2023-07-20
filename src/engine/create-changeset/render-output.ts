@@ -4,7 +4,6 @@ import {
   pluralizeEntry,
   OutputFormatter,
   entityStatRenderer,
-  affectedEntitiesIds,
   pluralizeContentType,
   divergedContentTypeIdsOfAffectedEntries,
 } from '../utils'
@@ -46,6 +45,7 @@ export async function renderOutput(context: CreateChangesetContext, changesetFil
       const entriesMaybeChangedLength = context.affectedEntities.entries.maybeChanged.length
       entriesChangedMessage = `${entryChangeRenderer(entriesMaybeChangedLength)} to be compared`
     }
+
     output += OutputFormatter.headline('Changeset could not be created 💔')
     output += '\n'
     output += OutputFormatter.error(errorMessage)
