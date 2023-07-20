@@ -193,10 +193,8 @@ export default class Create extends Command {
 
     if (error instanceof AxiosError && error.code === 'ERR_BAD_REQUEST') {
       this.log(renderErrorOutput(new AccessDeniedError()))
-      this.exit()
     } else if (error instanceof Error) {
       this.log(renderErrorOutput(error))
-      this.exit()
     } else {
       throw error
     }
@@ -206,9 +204,15 @@ export default class Create extends Command {
     if (error) {
       Sentry.captureException(error)
     }
+
     // analyticsCloseAndFlush has a very short timeout because it will
     // otherwise trigger a rerender of the listr tasks on error exits
     await Promise.allSettled([Sentry.close(2000), analyticsCloseAndFlush(1)])
+
+    if (error) {
+      this.exit(1)
+    }
+
     return super.finally(error)
   }
 }
