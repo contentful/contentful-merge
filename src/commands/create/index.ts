@@ -196,23 +196,23 @@ export default class Create extends Command {
     } else if (error instanceof Error) {
       this.log(renderErrorOutput(error))
     } else {
-      throw error
+      try {
+        const errorString = String(error)
+        this.log(renderErrorOutput(new Error(errorString)))
+      } catch (err) {
+        this.log(renderErrorOutput(new Error('Unknown Error')))
+        // Sentry.setTag('unknown_error', true)
+      }
     }
+
+    Sentry.captureException(error)
+
+    this.exit(1)
   }
 
-  protected async finally(error: Error | undefined): Promise<any> {
-    if (error) {
-      Sentry.captureException(error)
-    }
-
+  protected async finally(): Promise<any> {
     // analyticsCloseAndFlush has a very short timeout because it will
     // otherwise trigger a rerender of the listr tasks on error exits
     await Promise.allSettled([Sentry.close(2000), analyticsCloseAndFlush(1)])
-
-    if (error) {
-      this.exit(1)
-    }
-
-    return super.finally(error)
   }
 }
