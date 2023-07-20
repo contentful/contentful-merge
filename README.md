@@ -58,7 +58,7 @@ _____________________
 This means:
 - Use at your own risk! It might still be a bit rough around the edges, and we might introduce breaking changes.
 - We want to know how people are using this tool, so that we can prioritize what to focus on next. We therefore collect some [analytics](src/analytics/index.ts) data.
-- <b>We would love your feedback!</b> [Here](<TODO-add-link-to-feedback-form>) is a form where you can tell us about your experience and let us know which additional features you would like.
+- <b>We would love your feedback!</b> [Here](https://forms.gle/uVj4sG2jKmQHotRd6) is a form where you can tell us about your experience and let us know which additional features you would like.
 
 _____________________
 
@@ -258,7 +258,7 @@ Stay tuned for [updates](https://www.contentful.com/developers/changelog/)!
 
 Want to report bugs, give feedback, request features? 
 - Found some bugs? Head over to https://support.contentful.com and open a support ticket.
-- Want to request a feature or tell us your overall experience with this CLI? Feel free to use [this form](<TODO-add-link-to-feedback-form>).
+- Want to request a feature or tell us your overall experience with this CLI? Feel free to use [this form](https://forms.gle/uVj4sG2jKmQHotRd6).
 
 ## Code of Conduct
 
