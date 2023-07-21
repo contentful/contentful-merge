@@ -1,6 +1,4 @@
 import { Listr, PRESET_TIMER } from 'listr2'
-import { createCallbackTask } from '../callback-task'
-import { ClientPerformanceObserver } from '../client/client-performance-observer'
 import { createAddEntitiesTask } from './tasks/create-add-entities-task'
 import { createChangeEntitiesTask } from './tasks/create-change-entities-task'
 import { createLoadChangesetTask } from './tasks/create-load-changeset-task'
@@ -13,17 +11,12 @@ export const applyChangesetTask = (context: ApplyChangesetContext): Listr => {
       {
         title: 'Apply changeset',
         task: (ctx, task): Listr => {
-          const performanceObserver = new ClientPerformanceObserver(ctx.client)
-          performanceObserver.start((payload) => {
-            task.title = `Apply changeset (CMA: ${payload.cma}, CDA: ${payload.cda})`
-          })
           return task.newListr(
             [
               createLoadChangesetTask(),
               createRemoveEntitiesTask(),
               createAddEntitiesTask(),
               createChangeEntitiesTask(),
-              createCallbackTask(() => performanceObserver.stop()),
             ],
             { concurrent: false }
           )
