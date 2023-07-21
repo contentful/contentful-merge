@@ -40,7 +40,7 @@ const sequenceKey = crypto.randomUUID()
 export default class Create extends Command {
   static description = 'Create Entries Changeset'
 
-  private changesetFilePath: string | undefined
+  private changesetFilePath: string
 
   constructor(argv: string[], config: Config) {
     super(argv, config)
@@ -179,17 +179,15 @@ export default class Create extends Command {
       num_changeset_items_exceeded: context.exceedsLimits,
     })
 
-    const changesetFilePath = path.join(process.cwd(), 'changeset.json')
-
     const logFilePath = await writeLog(result.logger)
 
     if (context.exceedsLimits) {
       Sentry.captureMessage('Max allowed changes exceeded')
     } else {
-      await fs.writeFile(changesetFilePath, JSON.stringify(context.changeset, null, 2))
+      await fs.writeFile(this.changesetFilePath, JSON.stringify(context.changeset, null, 2))
     }
 
-    const output = await renderOutput(context, changesetFilePath, logFilePath)
+    const output = await renderOutput(context, this.changesetFilePath, logFilePath)
     this.log(output)
   }
 
