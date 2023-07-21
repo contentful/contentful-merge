@@ -1,15 +1,14 @@
 import { CreateChangesetContext } from './types'
-import { pluralizeContentType, pluralizeEntry } from '../utils/pluralize'
-import { icons } from '../utils/icons'
-import { entityStatRenderer } from '../utils/entity-stat-renderer'
-import { OutputFormatter } from '../utils/output-formatter'
-import { affectedEntitiesIds } from '../utils/affected-entities-ids'
-import chalk from 'chalk'
+import {
+  icons,
+  pluralizeEntry,
+  OutputFormatter,
+  entityStatRenderer,
+  pluralizeContentType,
+  divergedContentTypeIdsOfAffectedEntries,
+} from '../utils'
 
-const entryChangeRenderer = entityStatRenderer({
-  icon: icons.bulletPoint,
-  pluralizer: pluralizeEntry,
-})
+import chalk from 'chalk'
 
 const successfulEntryChangeRenderer = entityStatRenderer({
   icon: icons.greenCheckmark,
@@ -26,30 +25,27 @@ export async function renderOutput(context: CreateChangesetContext, changesetFil
   const targetEntriesLength = context.targetData.entries.ids.length
 
   const hasErrors = context.contentModelDiverged || context.exceedsLimits
-  let divergedContentTypeIds: string[] = []
 
   if (hasErrors) {
     let errorMessage = '\n'
+    let errorDetails = '\n'
     if (context.contentModelDiverged) {
-      errorMessage += `The content model of the source and target environment are different. Before merging entries between environments, please make sure the content models are identical. We suggest using the Merge App to compare content models of different environments. Read more about the Merge App here: https://www.contentful.com/marketplace/app/merge.`
-      divergedContentTypeIds = affectedEntitiesIds(context.affectedEntities.contentTypes, [
-        'added',
-        'removed',
-        'maybeChanged',
-      ])
+      const relevantDivergedContentTypeIds = divergedContentTypeIdsOfAffectedEntries(
+        context.affectedEntities,
+        context.sourceData.entries.comparables
+      )
+
+      errorMessage += `The content models of the source and target environment are different. Before merging entries between environments, please make sure the content models are identical. We suggest using the Merge App to compare content models of different environments. Read more about the Merge App here: https://www.contentful.com/marketplace/app/merge.`
+      errorDetails += `Diverged ${pluralizeContentType(
+        relevantDivergedContentTypeIds.length
+      )}: ${renderDivergedContentTypes(relevantDivergedContentTypeIds)}\n`
     }
 
     output += OutputFormatter.headline('Changeset could not be created 💔')
     output += '\n'
     output += OutputFormatter.error(errorMessage)
     output += '\n'
-
-    if (context.contentModelDiverged) {
-      output += `\nDiverged ${pluralizeContentType(divergedContentTypeIds.length)}: ${renderDivergedContentTypes(
-        divergedContentTypeIds
-      )}`
-      output += '\n'
-    }
+    output += errorDetails
   } else {
     output += OutputFormatter.headline('Changeset successfully created 🎉')
 

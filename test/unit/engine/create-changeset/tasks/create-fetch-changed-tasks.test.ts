@@ -12,7 +12,7 @@ describe('createFetchChangedTasks', () => {
   beforeEach(() => {
     context = createCreateChangesetContext({
       affectedEntities: {
-        contentTypes: { added: [], removed: [], maybeChanged: [] },
+        contentTypes: { added: [], removed: [], maybeChanged: [], changed: [] },
         entries: {
           added: ['3op5VIqGZiwoe06c8IQIMO', '6gFiJvssqQ62CMYqECOu2M'],
           removed: ['34MlmiuMgU8wKCOOIkAuMy', '1toEOumnkEksWakieoeC6M'],
@@ -42,6 +42,7 @@ describe('createFetchChangedTasks', () => {
               },
             },
           ],
+          changed: [],
         },
       },
     })
@@ -80,13 +81,27 @@ describe('createFetchChangedTasks', () => {
 
     expect(deletedItems.length).to.equal(2)
   })
-  it('adds 3 changed item to the changeset', async () => {
+  it('adds 3 changed items to the changeset', async () => {
     const task = initializeTask(createFetchChangedTasks({ entityType: 'entries', skipHandler: () => false }), context)
     await task.run()
 
     const changedItems = context.changeset.items.filter(matchChangeType('changed'))
 
     expect(changedItems.length).to.equal(3)
+  })
+  it('adds the ids of 3 changed item to the `changed` array', async () => {
+    const task = initializeTask(createFetchChangedTasks({ entityType: 'entries', skipHandler: () => false }), context)
+    const changedEntryIds = context.affectedEntities.entries.changed
+
+    expect(changedEntryIds).to.deep.equal([])
+
+    await task.run()
+
+    expect(changedEntryIds).to.deep.equal([
+      '2uNOpLMJioKeoMq8W44uYc',
+      '5mgMoU9aCWE88SIqSIMGYE',
+      '5p9qNpTOJaCE6ykC4a8Wqg',
+    ])
   })
   it.skip('TODO [skipped]: respects the limit parameter', async () => {
     /* TODO */

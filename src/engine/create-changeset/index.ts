@@ -12,7 +12,7 @@ const subTaskOptions = {
   concurrent: false,
   rendererOptions: {
     timer: PRESET_TIMER,
-    collapseSubtasks: true,
+    collapseSubtasks: false,
   },
 }
 export const createChangesetTask = (context: CreateChangesetContext): Listr => {
@@ -28,7 +28,7 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
           return task.newListr(
             [
               {
-                title: 'Content Types',
+                title: 'Check content model',
                 task: (ctx, task): Listr => {
                   return task.newListr(
                     [
@@ -45,8 +45,15 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
                       createComputeIdsTask({
                         entityType: 'contentTypes',
                       }),
+                      createFetchChangedTasks({
+                        entityType: 'contentTypes',
+                        skipHandler: () => false,
+                      }),
                     ],
-                    subTaskOptions
+                    {
+                      ...subTaskOptions,
+                      rendererOptions: { ...subTaskOptions.rendererOptions, collapseSubtasks: true },
+                    }
                   )
                 },
               },
@@ -69,13 +76,13 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
                       createComputeIdsTask({
                         entityType: 'entries',
                       }),
-                      createAffectedContentTypesDivergedTask(),
                       createFetchChangedTasks({
                         entityType: 'entries',
                         skipHandler: () => {
-                          return context.contentModelDiverged || context.exceedsLimits
+                          return context.exceedsLimits
                         },
                       }),
+                      createAffectedContentTypesDivergedTask(),
                       createFetchAddedEntitiesTask({
                         entityType: 'entries',
                         skipHandler: () => {
