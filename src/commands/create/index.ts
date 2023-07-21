@@ -18,7 +18,7 @@ import { OutputFormatter } from '../../engine/utils/output-formatter'
 import { config } from '../../config'
 import { renderErrorOutput } from '../../engine/utils/render-error'
 import { AxiosError } from 'axios'
-import { AccessDeniedError, LimitsExceededError } from '../../engine/create-changeset/errors'
+import { AccessDeniedError } from '../../engine/create-changeset/errors'
 
 Sentry.init({
   dsn: 'https://5bc27276ac684a56bab07632be10a455@o2239.ingest.sentry.io/4505312653410304',
@@ -191,23 +191,28 @@ export default class Create extends Command {
 
     // TODO Move other errors to here as well, e.g. contentModelDiverged
 
-    Sentry.captureException(error)
-
     if (error instanceof AxiosError && error.code === 'ERR_BAD_REQUEST') {
       this.log(renderErrorOutput(new AccessDeniedError()))
-      this.exit()
     } else if (error instanceof Error) {
       this.log(renderErrorOutput(error))
-      this.exit()
     } else {
-      throw error
+      try {
+        const errorString = String(error)
+        this.log(renderErrorOutput(new Error(errorString)))
+      } catch (err) {
+        this.log(renderErrorOutput(new Error('Unknown Error')))
+        // Sentry.setTag('unknown_error', true)
+      }
     }
+
+    Sentry.captureException(error)
+
+    this.exit(1)
   }
 
-  protected async finally(error: Error | undefined): Promise<any> {
-    // TODO analyticsCloseAndFlush triggers an ExperimentalWarning as it uses the Fetch API
-    // Ideally this should be fixed or suppressed for better UX.
-    await Promise.allSettled([Sentry.close(2000), analyticsCloseAndFlush(2000)])
-    return super.finally(error)
+  protected async finally(): Promise<any> {
+    // analyticsCloseAndFlush has a very short timeout because it will
+    // otherwise trigger a rerender of the listr tasks on error exits
+    await Promise.allSettled([Sentry.close(2000), analyticsCloseAndFlush(1)])
   }
 }
