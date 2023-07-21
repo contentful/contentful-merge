@@ -103,7 +103,6 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
         collapseSubtasks: false,
         collapseErrors: false,
       },
-      collectErrors: 'minimal',
     }
   )
 }

@@ -1,4 +1,4 @@
-import { Command, Flags } from '@oclif/core'
+import { Command, Config, Flags } from '@oclif/core'
 import * as Sentry from '@sentry/node'
 import { ProfilingIntegration } from '@sentry/profiling-node'
 import chalk from 'chalk'
@@ -18,7 +18,7 @@ import { OutputFormatter } from '../../engine/utils/output-formatter'
 import { config } from '../../config'
 import { renderErrorOutput } from '../../engine/utils/render-error-output'
 import { AxiosError } from 'axios'
-import { AccessDeniedError } from '../../engine/create-changeset/errors'
+import { CreateChangesetError } from '../../engine/create-changeset/errors'
 
 Sentry.init({
   dsn: 'https://5bc27276ac684a56bab07632be10a455@o2239.ingest.sentry.io/4505312653410304',
@@ -39,6 +39,14 @@ const sequenceKey = crypto.randomUUID()
 
 export default class Create extends Command {
   static description = 'Create Entries Changeset'
+
+  private changesetFilePath: string | undefined
+
+  constructor(argv: string[], config: Config) {
+    super(argv, config)
+
+    this.changesetFilePath = path.join(process.cwd(), 'changeset.json')
+  }
 
   static examples = [
     'contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token>',
@@ -190,18 +198,37 @@ export default class Create extends Command {
     // go here if possible.
 
     // TODO Move other errors to here as well, e.g. contentModelDiverged
+    let logFilePath: string | undefined
+
+    if (error instanceof CreateChangesetError) {
+      const context = error.context
+      logFilePath = await writeLog(context.logger)
+    }
+
+    const config = {
+      changesetFilePath: this.changesetFilePath,
+      logFilePath,
+    }
+
+    const createErrorHandler = (error: Error) => () => {
+      this.log(renderErrorOutput(error, config))
+    }
 
     if (error instanceof AxiosError && error.code === 'ERR_BAD_REQUEST') {
-      this.log(renderErrorOutput(new AccessDeniedError()))
+      // TODO Add different error messages for different axios errors.
+      createErrorHandler(
+        new Error(
+          'An authorisation issue occurred. Please make sure the API key you provided has access to both environments.'
+        )
+      )()
     } else if (error instanceof Error) {
-      this.log(renderErrorOutput(error))
+      createErrorHandler(error)()
     } else {
       try {
         const errorString = String(error)
-        this.log(renderErrorOutput(new Error(errorString)))
+        createErrorHandler(new Error(errorString))()
       } catch (err) {
-        this.log(renderErrorOutput(new Error('Unknown Error')))
-        // Sentry.setTag('unknown_error', true)
+        createErrorHandler(new Error('Unknown Error'))()
       }
     }
 

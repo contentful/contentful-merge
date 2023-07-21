@@ -3,6 +3,7 @@ import { ListrTaskWrapper } from 'listr2'
 import { createClient } from './client'
 import { ResponseStatusCollector } from './client/response-status-collector'
 import { ILogger } from './logger/types'
+import { MemoryLogger } from './logger/memory-logger'
 
 export type Client = ReturnType<typeof createClient>
 
@@ -65,7 +66,7 @@ export type Changeset = {
 
 export interface BaseContext {
   client: Client
-  logger: ILogger
+  logger: MemoryLogger
   accessToken: string
   spaceId: string
   limit: number
