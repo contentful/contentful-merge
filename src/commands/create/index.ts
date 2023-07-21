@@ -210,25 +210,25 @@ export default class Create extends Command {
       logFilePath,
     }
 
-    const createErrorHandler = (error: Error) => () => {
+    const renderErrorOutputWithContext = (error: Error) => {
       this.log(renderErrorOutput(error, config))
     }
 
     if (error instanceof AxiosError && error.code === 'ERR_BAD_REQUEST') {
       // TODO Add different error messages for different axios errors.
-      createErrorHandler(
+      renderErrorOutputWithContext(
         new Error(
           'An authorisation issue occurred. Please make sure the API key you provided has access to both environments.'
         )
-      )()
+      )
     } else if (error instanceof Error) {
-      createErrorHandler(error)()
+      renderErrorOutputWithContext(error)
     } else {
       try {
         const errorString = String(error)
-        createErrorHandler(new Error(errorString))()
+        renderErrorOutputWithContext(new Error(errorString))
       } catch (err) {
-        createErrorHandler(new Error('Unknown Error'))()
+        renderErrorOutputWithContext(new Error('Unknown Error'))
       }
     }
 
