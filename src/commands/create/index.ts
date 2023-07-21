@@ -238,6 +238,6 @@ export default class Create extends Command {
   protected async finally(): Promise<any> {
     // analyticsCloseAndFlush has a very short timeout because it will
     // otherwise trigger a rerender of the listr tasks on error exits
-    await Promise.allSettled([Sentry.close(2000), analyticsCloseAndFlush(1)])
+    await Promise.allSettled([Sentry.close(2000), analyticsCloseAndFlush(2000)])
   }
 }
