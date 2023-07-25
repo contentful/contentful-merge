@@ -48,13 +48,17 @@ describe('Create Command', () => {
     .do(() => {
       const mockContext: CreateChangesetContext = {
         limits: { all: 20 },
-      } as CreateChangesetContext
+        affectedEntities: { entries: { added: [], removed: [], maybeChanged: ['test-entry'] } },
+      } as unknown as CreateChangesetContext
       const mockError = new LimitsExceededError(mockContext)
       cmd.catch(mockError)
     })
-    .it('should inform on entry limit on LimitsExceeded Error', (ctx) => {
+    .it('should inform on entry limit and number of changes on LimitsExceeded Error', (ctx) => {
       expect(ctx.stdout).to.contain('Changeset could not be created 💔')
       expect(ctx.stdout).to.contain('allowed limit is 20 entries')
+      expect(ctx.stdout).to.contain('1 entry to be compared')
+      expect(ctx.stdout).to.contain('0 added entries')
+      expect(ctx.stdout).to.contain('0 removed entries')
     })
 
   fancy
