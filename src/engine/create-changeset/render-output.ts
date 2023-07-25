@@ -19,7 +19,7 @@ const renderDivergedContentTypes = (contentTypeIds: string[]) => {
   return `${contentTypeIds.map((id) => chalk.italic.yellow(id)).join(', ')}`
 }
 
-export async function renderOutput(context: CreateChangesetContext, changesetFilePath: string, logFilePath: string) {
+export async function renderOutput(context: CreateChangesetContext) {
   let output = '\n'
   const sourceEntriesLength = context.sourceData.entries.ids.length
   const targetEntriesLength = context.targetData.entries.ids.length
@@ -59,12 +59,7 @@ export async function renderOutput(context: CreateChangesetContext, changesetFil
     output += `\n  ${successfulEntryChangeRenderer(context.statistics.entries.added, 'added')}`
     output += `\n  ${successfulEntryChangeRenderer(context.statistics.entries.changed, 'changed')}`
     output += `\n  ${successfulEntryChangeRenderer(context.statistics.entries.removed, 'removed')}`
-    output += '\n'
-
-    output += `\n💾 ${changesetFilePath}`
   }
-
-  output += `\n📖 ${logFilePath}`
 
   return output
 }

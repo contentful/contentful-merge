@@ -1,4 +1,4 @@
-import { Command, Flags } from '@oclif/core'
+import { Command, Config, Flags } from '@oclif/core'
 import * as Sentry from '@sentry/node'
 import { ProfilingIntegration } from '@sentry/profiling-node'
 import chalk from 'chalk'
@@ -16,9 +16,10 @@ import { createChangeset } from '../../engine/utils/create-changeset'
 import { renderOutput } from '../../engine/create-changeset/render-output'
 import { OutputFormatter } from '../../engine/utils/output-formatter'
 import { config } from '../../config'
-import { renderErrorOutput } from '../../engine/utils/render-error'
+import { renderErrorOutput } from '../../engine/utils/render-error-output'
 import { AxiosError } from 'axios'
-import { AccessDeniedError } from '../../engine/create-changeset/errors'
+import { CreateChangesetError } from '../../engine/create-changeset/errors'
+import { renderFilePaths } from '../../engine/create-changeset/render-file-paths'
 
 Sentry.init({
   dsn: 'https://5bc27276ac684a56bab07632be10a455@o2239.ingest.sentry.io/4505312653410304',
@@ -40,6 +41,15 @@ const sequenceKey = crypto.randomUUID()
 export default class Create extends Command {
   static description = 'Create Entries Changeset'
 
+  private changesetFilePath: string
+  private logFilePath: string | undefined
+
+  constructor(argv: string[], config: Config) {
+    super(argv, config)
+
+    this.changesetFilePath = path.join(process.cwd(), 'changeset.json')
+  }
+
   static examples = [
     'contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token>',
     'contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --limit 100',
@@ -55,6 +65,10 @@ export default class Create extends Command {
       env: 'CDA_TOKEN',
     }),
     limit: Flags.integer({ description: 'Limit parameter for collection endpoints', required: false, default: 200 }),
+  }
+
+  async writeFileLog(logger: MemoryLogger) {
+    this.logFilePath = await writeLog(logger)
   }
 
   async run(): Promise<void> {
@@ -171,17 +185,15 @@ export default class Create extends Command {
       num_changeset_items_exceeded: context.exceedsLimits,
     })
 
-    const changesetFilePath = path.join(process.cwd(), 'changeset.json')
-
-    const logFilePath = await writeLog(result.logger)
+    await this.writeFileLog(result.logger)
 
     if (context.exceedsLimits) {
       Sentry.captureMessage('Max allowed changes exceeded')
     } else {
-      await fs.writeFile(changesetFilePath, JSON.stringify(context.changeset, null, 2))
+      await fs.writeFile(this.changesetFilePath, JSON.stringify(context.changeset, null, 2))
     }
 
-    const output = await renderOutput(context, changesetFilePath, logFilePath)
+    const output = await renderOutput(context)
     this.log(output)
   }
 
@@ -191,26 +203,40 @@ export default class Create extends Command {
 
     // TODO Move other errors to here as well, e.g. contentModelDiverged
 
+    if (error instanceof CreateChangesetError) {
+      const context = error.context
+      await this.writeFileLog(context.logger)
+    }
+
+    let output
+
     if (error instanceof AxiosError && error.code === 'ERR_BAD_REQUEST') {
-      this.log(renderErrorOutput(new AccessDeniedError()))
+      // TODO Add different error messages for different axios errors.
+      output = renderErrorOutput(
+        new Error(
+          'An authorisation issue occurred. Please make sure the API key you provided has access to both environments.'
+        )
+      )
     } else if (error instanceof Error) {
-      this.log(renderErrorOutput(error))
+      output = renderErrorOutput(error)
     } else {
       try {
         const errorString = String(error)
-        this.log(renderErrorOutput(new Error(errorString)))
+        output = renderErrorOutput(new Error(errorString))
       } catch (err) {
-        this.log(renderErrorOutput(new Error('Unknown Error')))
-        // Sentry.setTag('unknown_error', true)
+        output = renderErrorOutput(new Error('Unknown Error'))
       }
     }
 
     Sentry.captureException(error)
 
+    this.log(output)
     this.exit(1)
   }
 
   protected async finally(): Promise<any> {
+    this.log(renderFilePaths(this.changesetFilePath, this.logFilePath))
+
     // analyticsCloseAndFlush has a very short timeout because it will
     // otherwise trigger a rerender of the listr tasks on error exits
     await Promise.allSettled([Sentry.close(2000), analyticsCloseAndFlush(2000)])

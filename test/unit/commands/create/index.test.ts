@@ -3,6 +3,10 @@ import { Config } from '@oclif/core'
 import CreateCommand from '../../../../src/commands/create'
 import { fancy } from 'fancy-test'
 import { AxiosError } from 'axios'
+import { LimitsExceededError } from '../../../../src/engine/create-changeset/errors'
+import { CreateChangesetContext } from '../../../../src/engine/create-changeset/types'
+import { MemoryLogger } from '../../../../src/engine/logger/memory-logger'
+import sinon = require('sinon')
 
 const cmd = new CreateCommand(
   [],
@@ -19,9 +23,31 @@ describe('Create Command', () => {
       cmd.catch(mockError)
     })
     .it('should inform that api keys need access to all compared environmentsa', (ctx) => {
-      expect(ctx.stdout).to.contain('Something went wrong 💔')
+      expect(ctx.stdout).to.contain('Changeset could not be created 💔')
       expect(ctx.stdout).to.contain(
-        'Access denied. Please make sure the api key you are providing has access to all compared environments.'
+        'An authorisation issue occurred. Please make sure the API key you provided has access to both environments.'
       )
+    })
+
+  fancy
+    .stdout()
+    .do(() => {
+      const mockContext: CreateChangesetContext = {
+        limits: { all: 20 },
+        logger: { getType: () => 'create-changeset' } as MemoryLogger,
+      } as CreateChangesetContext
+      const mockError = new LimitsExceededError(mockContext)
+
+      const stub = sinon.stub(cmd, 'writeFileLog').callsFake(async () => {
+        return
+      })
+
+      cmd.catch(mockError)
+      expect(stub.calledOnce).to.be.true
+      stub.restore()
+    })
+    .it('should call writeFileLog and display output', (ctx) => {
+      expect(ctx.stdout).to.contain('Changeset could not be created 💔')
+      expect(ctx.stdout).to.contain('allowed limit is 20 entries')
     })
 })
