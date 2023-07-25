@@ -21,7 +21,7 @@
   "dependencies": {
     "@contentful/jsondiffpatch": "^1.4.1",
     "@oclif/core": "^2.9.4",
-    "@oclif/plugin-plugins": "^3.1.7",
+    "@oclif/plugin-plugins": "^3.1.8",
     "@segment/analytics-node": "^1.1.0",
     "@sentry/node": "^7.60.0",
     "@sentry/profiling-node": "^1.1.2",
