@@ -3,6 +3,10 @@ import { Config } from '@oclif/core'
 import CreateCommand from '../../../../src/commands/create'
 import { fancy } from 'fancy-test'
 import { AxiosError } from 'axios'
+import { LimitsExceededError } from '../../../../src/engine/create-changeset/errors'
+import { CreateChangesetContext } from '../../../../src/engine/create-changeset/types'
+import { MemoryLogger } from '../../../../src/engine/logger/memory-logger'
+import sinon = require('sinon')
 
 const cmd = new CreateCommand(
   [],
@@ -25,16 +29,26 @@ describe('Create Command', () => {
       )
     })
 
-  // TODO
-  // fancy
-  //   .stdout()
-  //   .do(() => {
-  //     const mockError = new AxiosError('Any Error')
-  //     mockError.response = { data: [], status: 404, statusText: 'mock status text', headers: {}, config: {} }
-  //     mockError.code = 'ERR_BAD_REQUEST'
-  //     cmd.(mockError)
-  //   })
-  //   .it('should show log file path', (ctx) => {
-  //     expect(ctx.stdout).to.contain('log-file-path')
-  //   })
+  fancy
+    .stdout()
+    .do(() => {
+      const mockContext: CreateChangesetContext = {
+        limits: { all: 20 },
+        logger: { getType: () => 'create-changeset' } as MemoryLogger,
+      } as CreateChangesetContext
+      const mockError = new LimitsExceededError(mockContext)
+
+      const stub = sinon.stub(cmd, 'writeFileLog').callsFake(async () => {
+        return 'log-file-name'
+      })
+
+      cmd.catch(mockError)
+      expect(stub.calledOnce).to.be.true
+      stub.restore()
+    })
+    .it('should call writeFileLog and display output', (ctx) => {
+      expect(ctx.stdout).to.contain('Changeset could not be created 💔')
+      expect(ctx.stdout).to.contain('log-file-name')
+      expect(ctx.stdout).to.contain('allowed limit is 20 entries')
+    })
 })
