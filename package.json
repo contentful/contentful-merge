@@ -42,7 +42,7 @@
     "@oclif/test": "^2.3.30",
     "@types/chai": "^4",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^20.4.2",
+    "@types/node": "^20.4.4",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "chai": "^4",
     "contentful-management": "^10.39.1",
