@@ -17,7 +17,6 @@ import { renderOutput } from '../../engine/create-changeset/render-output'
 import { OutputFormatter } from '../../engine/utils/output-formatter'
 import { config } from '../../config'
 import { renderErrorOutput } from '../../engine/utils/render-error-output'
-import { AxiosError } from 'axios'
 import { renderFilePaths } from '../../engine/create-changeset/render-file-paths'
 
 Sentry.init({
@@ -199,27 +198,7 @@ export default class Create extends Command {
     // Any additional error handling or related user warnings should
     // go here if possible.
 
-    // TODO Move other errors to here as well, e.g. contentModelDiverged
-
-    let output
-
-    if (error instanceof AxiosError && error.code === 'ERR_BAD_REQUEST') {
-      // TODO Add different error messages for different axios errors.
-      output = renderErrorOutput(
-        new Error(
-          'An authorisation issue occurred. Please make sure the API key you provided has access to both environments.'
-        )
-      )
-    } else if (error instanceof Error) {
-      output = renderErrorOutput(error)
-    } else {
-      try {
-        const errorString = String(error)
-        output = renderErrorOutput(new Error(errorString))
-      } catch (err) {
-        output = renderErrorOutput(new Error('Unknown Error'))
-      }
-    }
+    const output = renderErrorOutput(error)
 
     Sentry.captureException(error)
 

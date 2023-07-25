@@ -3,7 +3,7 @@ import { Config } from '@oclif/core'
 import CreateCommand from '../../../../src/commands/create'
 import { fancy } from 'fancy-test'
 import { AxiosError } from 'axios'
-import { LimitsExceededError } from '../../../../src/engine/create-changeset/errors'
+import { LimitsExceededContext, LimitsExceededError } from '../../../../src/engine/create-changeset/errors'
 import { CreateChangesetContext } from '../../../../src/engine/create-changeset/types'
 import { MemoryLogger } from '../../../../src/engine/logger/memory-logger'
 
@@ -46,15 +46,19 @@ describe('Create Command', () => {
   fancy
     .stdout()
     .do(() => {
-      const mockContext: CreateChangesetContext = {
-        limits: { all: 20 },
-      } as CreateChangesetContext
+      const mockContext: LimitsExceededContext = {
+        limit: 20,
+        affectedEntities: { entries: { added: [], removed: [], maybeChanged: ['test-entry'] } },
+      } as unknown as LimitsExceededContext
       const mockError = new LimitsExceededError(mockContext)
       cmd.catch(mockError)
     })
-    .it('should inform on entry limit on LimitsExceeded Error', (ctx) => {
+    .it('should inform on entry limit and number of changes on LimitsExceeded Error', (ctx) => {
       expect(ctx.stdout).to.contain('Changeset could not be created 💔')
       expect(ctx.stdout).to.contain('allowed limit is 20 entries')
+      expect(ctx.stdout).to.contain('1 entry to be compared')
+      expect(ctx.stdout).to.contain('0 added entries')
+      expect(ctx.stdout).to.contain('0 removed entries')
     })
 
   fancy
