@@ -18,7 +18,6 @@ import { OutputFormatter } from '../../engine/utils/output-formatter'
 import { config } from '../../config'
 import { renderErrorOutput } from '../../engine/utils/render-error-output'
 import { AxiosError } from 'axios'
-import { CreateChangesetError } from '../../engine/create-changeset/errors'
 import { renderFilePaths } from '../../engine/create-changeset/render-file-paths'
 
 Sentry.init({
@@ -43,11 +42,13 @@ export default class Create extends Command {
 
   private changesetFilePath: string
   private logFilePath: string | undefined
+  private logger: MemoryLogger
 
   constructor(argv: string[], config: Config) {
     super(argv, config)
 
     this.changesetFilePath = path.join(process.cwd(), 'changeset.json')
+    this.logger = new MemoryLogger('create-changeset')
   }
 
   static examples = [
@@ -67,8 +68,8 @@ export default class Create extends Command {
     limit: Flags.integer({ description: 'Limit parameter for collection endpoints', required: false, default: 200 }),
   }
 
-  async writeFileLog(logger: MemoryLogger) {
-    this.logFilePath = await writeLog(logger)
+  private async writeFileLog() {
+    this.logFilePath = await writeLog(this.logger)
   }
 
   async run(): Promise<void> {
@@ -88,8 +89,7 @@ export default class Create extends Command {
       sequence_key: sequenceKey,
     })
 
-    const logger = new MemoryLogger('create-changeset')
-    const logHandler = createTransformHandler(logger)
+    const logHandler = createTransformHandler(this.logger)
 
     const client = createClient({
       cdaToken: flags['cda-token'],
@@ -99,7 +99,7 @@ export default class Create extends Command {
     })
 
     const context: CreateChangesetContext = {
-      logger,
+      logger: this.logger,
       client,
       limit: flags.limit,
       accessToken: flags.token,
@@ -152,7 +152,7 @@ export default class Create extends Command {
 
     const createChangesetTaskInstance = createChangesetTask(context)
 
-    const result = await createChangesetTaskInstance.run()
+    await createChangesetTaskInstance.run()
 
     transaction?.finish()
 
@@ -185,8 +185,6 @@ export default class Create extends Command {
       num_changeset_items_exceeded: context.exceedsLimits,
     })
 
-    await this.writeFileLog(result.logger)
-
     if (context.exceedsLimits) {
       Sentry.captureMessage('Max allowed changes exceeded')
     } else {
@@ -202,11 +200,6 @@ export default class Create extends Command {
     // go here if possible.
 
     // TODO Move other errors to here as well, e.g. contentModelDiverged
-
-    if (error instanceof CreateChangesetError) {
-      const context = error.context
-      await this.writeFileLog(context.logger)
-    }
 
     let output
 
@@ -235,6 +228,7 @@ export default class Create extends Command {
   }
 
   protected async finally(): Promise<any> {
+    await this.writeFileLog()
     this.log(renderFilePaths(this.changesetFilePath, this.logFilePath))
 
     // analyticsCloseAndFlush has a very short timeout because it will
