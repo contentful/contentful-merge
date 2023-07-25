@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios'
 import { OutputFormatter } from './output-formatter'
-import { LimitsExceededError } from '../create-changeset/errors'
+import { ContentModelDivergedError, LimitsExceededError } from '../create-changeset/errors'
 import { entityStatRenderer } from './entity-stat-renderer'
 import { pluralizeEntry } from './pluralize'
 import { icons } from './icons'
@@ -53,6 +53,11 @@ export function renderErrorOutput(error: Error) {
     output += `\n  ${failedEntryChangeRenderer(entriesAddedLength, 'added')}`
     output += `\n  ${failedEntryChangeRenderer(entriesRemovedLength, 'removed')}`
     output += `\n  ${failedEntryChangeRenderer(entriesMaybeChangedLength)} to be compared`
+  }
+
+  if (error instanceof ContentModelDivergedError) {
+    // TODO 
+    // Add details on diverged Content Types
   }
 
   return output

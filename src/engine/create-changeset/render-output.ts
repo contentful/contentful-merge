@@ -24,7 +24,7 @@ export async function renderOutput(context: CreateChangesetContext) {
   const sourceEntriesLength = context.sourceData.entries.ids.length
   const targetEntriesLength = context.targetData.entries.ids.length
 
-  const hasErrors = context.contentModelDiverged || context.exceedsLimits
+  const hasErrors = context.contentModelDiverged
 
   if (hasErrors) {
     let errorMessage = '\n'
