@@ -6,7 +6,10 @@ import { AxiosError } from 'axios'
 import { LimitsExceededError } from '../../../../src/engine/create-changeset/errors'
 import { CreateChangesetContext } from '../../../../src/engine/create-changeset/types'
 import { MemoryLogger } from '../../../../src/engine/logger/memory-logger'
+
+import fs from 'node:fs/promises'
 import sinon = require('sinon')
+import { writeLog } from '../../../../src/engine/logger/write-log'
 
 const cmd = new CreateCommand(
   [],
@@ -14,6 +17,17 @@ const cmd = new CreateCommand(
 )
 
 describe('Create Command', () => {
+  let writeFileStub: sinon.SinonStub
+
+  // We need to mock fs so we don't write log files during test runs
+  beforeEach(() => {
+    writeFileStub = sinon.stub(fs, 'writeFile')
+  })
+
+  afterEach(() => {
+    writeFileStub.restore()
+  })
+
   fancy
     .stdout()
     .do(() => {
@@ -34,20 +48,30 @@ describe('Create Command', () => {
     .do(() => {
       const mockContext: CreateChangesetContext = {
         limits: { all: 20 },
-        logger: { getType: () => 'create-changeset' } as MemoryLogger,
       } as CreateChangesetContext
       const mockError = new LimitsExceededError(mockContext)
-
-      const stub = sinon.stub(cmd, 'writeFileLog').callsFake(async () => {
-        return
-      })
-
       cmd.catch(mockError)
-      expect(stub.calledOnce).to.be.true
-      stub.restore()
     })
-    .it('should call writeFileLog and display output', (ctx) => {
+    .it('should inform on entry limit on LimitsExceeded Error', (ctx) => {
       expect(ctx.stdout).to.contain('Changeset could not be created 💔')
       expect(ctx.stdout).to.contain('allowed limit is 20 entries')
     })
+
+  fancy
+    .stdout()
+    .do(() => {
+      const mockError = new Error('Unknown Error')
+      cmd.catch(mockError)
+    })
+    .it('should inform on Unknown Error', (ctx) => {
+      expect(ctx.stdout).to.contain('Changeset could not be created 💔')
+      expect(ctx.stdout).to.contain('Unknown Error')
+    })
+
+  it('writeLog triggers log file creation', async () => {
+    const logFileOutput = await writeLog({ getType: () => 'create-changeset' } as MemoryLogger)
+    expect(logFileOutput).to.contain('create-changeset')
+    expect(logFileOutput).to.contain('.log')
+    expect(writeFileStub.called).to.be.true
+  })
 })
