@@ -65,6 +65,10 @@ export default class Create extends Command {
     limit: Flags.integer({ description: 'Limit parameter for collection endpoints', required: false, default: 200 }),
   }
 
+  async writeFileLog(logger: MemoryLogger) {
+    return await writeLog(logger)
+  }
+
   async run(): Promise<void> {
     const { flags } = await this.parse(Create)
 
@@ -179,7 +183,7 @@ export default class Create extends Command {
       num_changeset_items_exceeded: context.exceedsLimits,
     })
 
-    const logFilePath = await writeLog(result.logger)
+    const logFilePath = await this.writeFileLog(result.logger)
 
     if (context.exceedsLimits) {
       Sentry.captureMessage('Max allowed changes exceeded')
@@ -200,7 +204,7 @@ export default class Create extends Command {
 
     if (error instanceof CreateChangesetError) {
       const context = error.context
-      logFilePath = await writeLog(context.logger)
+      logFilePath = await this.writeFileLog(context.logger)
     }
 
     const config = {
