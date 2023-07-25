@@ -1,18 +1,19 @@
-import { CreateChangesetContext } from '../create-changeset/types'
+import { EntityType } from '../types'
+import { AffectedEntityData } from './types'
 
-export class CreateChangesetError extends Error {
-  public context: CreateChangesetContext
-  constructor(message: string, context: CreateChangesetContext) {
+type AffectedEntities = Record<EntityType, AffectedEntityData>
+
+export interface LimitsExceededContext {
+  limit: number
+  affectedEntities: AffectedEntities
+}
+
+export class LimitsExceededError extends Error {
+  public affectedEntities: AffectedEntities
+
+  constructor(context: LimitsExceededContext) {
+    const message = `The detected number of entries to be compared, added or removed is too high.\nThe currently allowed limit is ${context.limit} entries.`
     super(message)
-    this.context = context
+    this.affectedEntities = context.affectedEntities
   }
 }
-
-export class LimitsExceededError extends CreateChangesetError {
-  constructor(context: CreateChangesetContext) {
-    const message = `The detected number of entries to be compared, added or removed is too high.\nThe currently allowed limit is ${context.limits.all} entries.`
-    super(message, context)
-  }
-}
-
-// TODO Add ContentModelDivergedError

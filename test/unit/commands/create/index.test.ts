@@ -3,7 +3,7 @@ import { Config } from '@oclif/core'
 import CreateCommand from '../../../../src/commands/create'
 import { fancy } from 'fancy-test'
 import { AxiosError } from 'axios'
-import { LimitsExceededError } from '../../../../src/engine/create-changeset/errors'
+import { LimitsExceededContext, LimitsExceededError } from '../../../../src/engine/create-changeset/errors'
 import { CreateChangesetContext } from '../../../../src/engine/create-changeset/types'
 import { MemoryLogger } from '../../../../src/engine/logger/memory-logger'
 
@@ -46,10 +46,10 @@ describe('Create Command', () => {
   fancy
     .stdout()
     .do(() => {
-      const mockContext: CreateChangesetContext = {
-        limits: { all: 20 },
+      const mockContext: LimitsExceededContext = {
+        limit: 20,
         affectedEntities: { entries: { added: [], removed: [], maybeChanged: ['test-entry'] } },
-      } as unknown as CreateChangesetContext
+      } as unknown as LimitsExceededContext
       const mockError = new LimitsExceededError(mockContext)
       cmd.catch(mockError)
     })

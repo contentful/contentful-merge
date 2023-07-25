@@ -10,6 +10,14 @@ const failedEntryChangeRenderer = entityStatRenderer({
   pluralizer: pluralizeEntry,
 })
 
+function stringifyError(err: any) {
+  const simpleObject: { [key: string]: any } = {}
+  Object.getOwnPropertyNames(err).forEach(function (key) {
+    simpleObject[key] = err[key]
+  })
+  return JSON.stringify(simpleObject)
+}
+
 export function renderErrorOutput(error: Error) {
   let output = '\n'
   let errorMessage = ''
@@ -25,7 +33,7 @@ export function renderErrorOutput(error: Error) {
     errorMessage += error.message
   } else {
     try {
-      const errorString = String(error)
+      const errorString = stringifyError(error)
       errorMessage += errorString
     } catch (err) {
       errorMessage += 'Unknown Error'
@@ -35,9 +43,9 @@ export function renderErrorOutput(error: Error) {
   output += OutputFormatter.error(errorMessage)
 
   if (error instanceof LimitsExceededError) {
-    const entriesAddedLength = error.context.affectedEntities.entries.added.length
-    const entriesRemovedLength = error.context.affectedEntities.entries.removed.length
-    const entriesMaybeChangedLength = error.context.affectedEntities.entries.maybeChanged.length
+    const entriesAddedLength = error.affectedEntities.entries.added.length
+    const entriesRemovedLength = error.affectedEntities.entries.removed.length
+    const entriesMaybeChangedLength = error.affectedEntities.entries.maybeChanged.length
 
     output += '\n'
     output += `\nDetected number of changes:`

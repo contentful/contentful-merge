@@ -1,6 +1,6 @@
 import { ListrTask } from 'listr2'
 import { LogLevel } from '../../logger/types'
-import { CreateChangesetContext, EnvironmentScope } from '../types'
+import { CreateChangesetContext } from '../types'
 import { doesExceedLimits } from '../../utils/exceeds-limits'
 import { EntityType } from '../../types'
 import { LimitsExceededError } from '../errors'
@@ -35,7 +35,7 @@ export const createComputeIdsTask = ({ entityType }: ComputeIdsTaskProps): Listr
 
       const exceedsLimits = doesExceedLimits(context, entityType)
       if (exceedsLimits) {
-        throw new LimitsExceededError(context)
+        throw new LimitsExceededError({ limit: context.limits.all, affectedEntities: context.affectedEntities })
       }
 
       return Promise.resolve(context)
