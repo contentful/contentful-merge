@@ -61,13 +61,11 @@ async function getEntityPatches({
 
 type FetchChangedTaskProps = {
   entityType: EntityType
-  skipHandler: SkipHandler
 }
 
-export const createFetchChangedTasks = ({ entityType, skipHandler }: FetchChangedTaskProps): ListrTask => {
+export const createFetchChangedTasks = ({ entityType }: FetchChangedTaskProps): ListrTask => {
   return {
     title: `Fetching full payload for ${entityType} to be compared`,
-    skip: skipHandler,
     task: async (context: CreateChangesetContext, task) => {
       const { sourceEnvironmentId, affectedEntities, targetEnvironmentId, statistics, limit, changeset } = context
 

@@ -41,7 +41,6 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
                       }),
                       createFetchChangedTasks({
                         entityType: 'contentTypes',
-                        skipHandler: () => false,
                       }),
                     ],
                     {
@@ -53,7 +52,6 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
               },
               {
                 title: 'Entries',
-                skip: (ctx: CreateChangesetContext) => ctx.contentModelDiverged,
                 task: (ctx, task): Listr => {
                   return task.newListr(
                     [
@@ -71,17 +69,11 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
                         entityType: 'entries',
                       }),
                       createFetchChangedTasks({
-                        entityType: 'entries',
-                        skipHandler: () => {
-                          return context.exceedsLimits
-                        },
+                        entityType: 'entries'
                       }),
                       createAffectedContentTypesDivergedTask(),
                       createFetchAddedEntitiesTask({
-                        entityType: 'entries',
-                        skipHandler: () => {
-                          return context.contentModelDiverged || context.exceedsLimits
-                        },
+                        entityType: 'entries'
                       }),
                     ],
                     subTaskOptions

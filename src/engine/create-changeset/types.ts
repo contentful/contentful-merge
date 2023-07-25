@@ -35,6 +35,8 @@ export type AffectedEntityData = {
 
 export type AffectedKeys = keyof AffectedEntityData
 
+export type AffectedEntities = Record<EntityType, AffectedEntityData>
+
 export interface CreateChangesetContext extends BaseContext {
   sourceEnvironmentId: string
   targetEnvironmentId: string
@@ -42,7 +44,7 @@ export interface CreateChangesetContext extends BaseContext {
   sourceData: EnvironmentData
   targetData: EnvironmentData
 
-  affectedEntities: Record<EntityType, AffectedEntityData>
+  affectedEntities: AffectedEntities
 
   changeset: Changeset
 

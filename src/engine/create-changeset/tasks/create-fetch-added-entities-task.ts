@@ -12,13 +12,11 @@ export function cleanEntity(entry: Entry<any>): any {
 
 type FetchAddedEntitiesTaskProps = {
   entityType: EntityType
-  skipHandler: SkipHandler
 }
 
-export function createFetchAddedEntitiesTask({ entityType, skipHandler }: FetchAddedEntitiesTaskProps): ListrTask {
+export function createFetchAddedEntitiesTask({ entityType }: FetchAddedEntitiesTaskProps): ListrTask {
   return {
     title: 'Fetching full payload for added entries',
-    skip: skipHandler,
     task: async (context: CreateChangesetContext, task) => {
       const { client, affectedEntities, sourceEnvironmentId, changeset, limit, logger } = context
       logger.log(LogLevel.INFO, 'Start createFetchAddedEntitiesTask')

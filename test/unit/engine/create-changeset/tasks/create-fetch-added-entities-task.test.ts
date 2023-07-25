@@ -116,7 +116,6 @@ describe('createFetchAddedEntitiesTask', () => {
     const task = initializeTask(
       createFetchAddedEntitiesTask({
         entityType: 'entries',
-        skipHandler: () => false,
       }),
       context
     )
@@ -140,7 +139,6 @@ describe('createFetchAddedEntitiesTask', () => {
     const task = initializeTask(
       createFetchAddedEntitiesTask({
         entityType: 'entries',
-        skipHandler: () => false,
       }),
       context
     )
@@ -157,7 +155,6 @@ describe('createFetchAddedEntitiesTask', () => {
     const task = initializeTask(
       createFetchAddedEntitiesTask({
         entityType: 'entries',
-        skipHandler: () => false,
       }),
       context
     )
