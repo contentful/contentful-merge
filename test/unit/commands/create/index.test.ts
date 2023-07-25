@@ -39,7 +39,7 @@ describe('Create Command', () => {
       const mockError = new LimitsExceededError(mockContext)
 
       const stub = sinon.stub(cmd, 'writeFileLog').callsFake(async () => {
-        return 'log-file-name'
+        return
       })
 
       cmd.catch(mockError)
@@ -48,7 +48,6 @@ describe('Create Command', () => {
     })
     .it('should call writeFileLog and display output', (ctx) => {
       expect(ctx.stdout).to.contain('Changeset could not be created 💔')
-      expect(ctx.stdout).to.contain('log-file-name')
       expect(ctx.stdout).to.contain('allowed limit is 20 entries')
     })
 })
