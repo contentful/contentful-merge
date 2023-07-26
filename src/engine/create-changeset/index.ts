@@ -69,11 +69,11 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
                         entityType: 'entries',
                       }),
                       createFetchChangedTasks({
-                        entityType: 'entries'
+                        entityType: 'entries',
                       }),
                       createAffectedContentTypesDivergedTask(),
                       createFetchAddedEntitiesTask({
-                        entityType: 'entries'
+                        entityType: 'entries',
                       }),
                     ],
                     subTaskOptions

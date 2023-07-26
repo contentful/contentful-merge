@@ -8,7 +8,6 @@ import {
   LimitsExceededContext,
   LimitsExceededError,
 } from '../../../../src/engine/create-changeset/errors'
-import { CreateChangesetContext } from '../../../../src/engine/create-changeset/types'
 import { MemoryLogger } from '../../../../src/engine/logger/memory-logger'
 
 import fs from 'node:fs/promises'
@@ -68,8 +67,7 @@ describe('Create Command', () => {
   fancy
     .stdout()
     .do(() => {
-      // const mockContext: CreateChangesetContext = {} as unknown as CreateChangesetContext
-      const mockError = new ContentModelDivergedError(['test-content-type'])
+      const mockError = new ContentModelDivergedError(['test-content-type', 'test-content-type-2'])
       cmd.catch(mockError)
     })
     .it('should inform on diverged content models', (ctx) => {
@@ -77,6 +75,7 @@ describe('Create Command', () => {
       expect(ctx.stdout).to.contain(
         'The content models of the source and target environment are different. Before merging entries between environments, please make sure the content models are identical. We suggest using the Merge App to compare content models of different environments. Read more about the Merge App here: https://www.contentful.com/marketplace/app/merge.'
       )
+      expect(ctx.stdout).to.contain(`Diverged content types: test-content-type, test-content-type-2`)
     })
 
   fancy

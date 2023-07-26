@@ -133,8 +133,6 @@ export default class Create extends Command {
       },
       changeset: createChangeset(flags.source, flags.target),
       limits,
-      exceedsLimits: false,
-      contentModelDiverged: false,
     }
 
     console.log(
@@ -159,7 +157,6 @@ export default class Create extends Command {
     const duration = ((endTime - startTime) / 1000).toFixed(1)
     const usedMemory = process.memoryUsage().heapUsed / 1024 / 1024
 
-    Sentry.setTag('limitsExceeded', context.exceedsLimits)
     Sentry.setTag('added', context.affectedEntities.entries.added.length)
     Sentry.setTag('removed', context.affectedEntities.entries.removed.length)
     Sentry.setTag('maybeChanged', context.affectedEntities.entries.maybeChanged.length)
@@ -181,14 +178,9 @@ export default class Create extends Command {
       num_changed_items: context.affectedEntities.entries.maybeChanged.length,
       num_source_entries: context.sourceData.entries.ids.length,
       num_target_entries: context.targetData.entries.ids.length,
-      num_changeset_items_exceeded: context.exceedsLimits,
     })
 
-    if (context.exceedsLimits) {
-      Sentry.captureMessage('Max allowed changes exceeded')
-    } else {
-      await fs.writeFile(this.changesetFilePath, JSON.stringify(context.changeset, null, 2))
-    }
+    await fs.writeFile(this.changesetFilePath, JSON.stringify(context.changeset, null, 2))
 
     const output = await renderOutput(context)
     this.log(output)

@@ -56,9 +56,6 @@ export interface CreateChangesetContext extends BaseContext {
     added: number
     removed: number
   }
-
-  exceedsLimits: boolean
-  contentModelDiverged: boolean
 }
 
 export type SkipHandler = (context: CreateChangesetContext) => boolean

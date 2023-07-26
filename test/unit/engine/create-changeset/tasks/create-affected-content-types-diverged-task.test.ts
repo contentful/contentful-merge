@@ -4,6 +4,7 @@ import { expect } from 'chai'
 import { createAffectedContentTypesDivergedTask } from '../../../../../src/engine/create-changeset/tasks/create-affected-content-types-diverged-task'
 import { createCreateChangesetContext } from '../../../fixtures/create-changeset-context-fixture'
 import { beforeEach } from 'mocha'
+import { ContentModelDivergedError } from '../../../../../src/engine/create-changeset/errors'
 
 const CONTENT_TYPE_ID = 'affected-content-type'
 
@@ -33,8 +34,14 @@ describe('createAffectedContentTypesDivergedTask', () => {
           },
         })
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
-        await task.run()
-        expect(context.contentModelDiverged).to.false
+        let error = null
+        try {
+          await task.run()
+        } catch (err) {
+          error = err
+        }
+
+        expect(error).to.be.null
       })
       it('it ignores non relevant content type changes for affected entries', async () => {
         context.affectedEntities.entries.removed.push('removed-entry')
@@ -50,8 +57,14 @@ describe('createAffectedContentTypesDivergedTask', () => {
           },
         })
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
-        await task.run()
-        expect(context.contentModelDiverged).to.false
+        let error = null
+        try {
+          await task.run()
+        } catch (err) {
+          error = err
+        }
+
+        expect(error).to.be.null
       })
     })
 
@@ -70,8 +83,14 @@ describe('createAffectedContentTypesDivergedTask', () => {
           },
         })
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
-        await task.run()
-        expect(context.contentModelDiverged).to.true
+        let error = null
+        try {
+          await task.run()
+        } catch (err) {
+          error = err
+        }
+
+        expect(error).to.be.instanceOf(ContentModelDivergedError)
       })
       it('it ignores diverged content type for non-affected entry', async () => {
         context.affectedEntities.entries.added.push('added-entry')
@@ -87,8 +106,14 @@ describe('createAffectedContentTypesDivergedTask', () => {
           },
         })
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
-        await task.run()
-        expect(context.contentModelDiverged).to.false
+        let error = null
+        try {
+          await task.run()
+        } catch (err) {
+          error = err
+        }
+
+        expect(error).to.be.null
       })
     })
 
@@ -108,8 +133,14 @@ describe('createAffectedContentTypesDivergedTask', () => {
         context.affectedEntities.entries.changed.push(entry.sys.id)
         context.sourceData.entries.comparables.push(entry)
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
-        await task.run()
-        expect(context.contentModelDiverged).to.true
+        let error = null
+        try {
+          await task.run()
+        } catch (err) {
+          error = err
+        }
+
+        expect(error).to.be.instanceOf(ContentModelDivergedError)
       })
 
       it('it ignores diverged content type for non-affected entry', async () => {
@@ -127,8 +158,14 @@ describe('createAffectedContentTypesDivergedTask', () => {
         context.affectedEntities.entries.changed.push(entry.sys.id)
         context.sourceData.entries.comparables.push(entry)
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
-        await task.run()
-        expect(context.contentModelDiverged).to.false
+        let error = null
+        try {
+          await task.run()
+        } catch (err) {
+          error = err
+        }
+
+        expect(error).to.be.null
       })
     })
   })
@@ -154,8 +191,14 @@ describe('createAffectedContentTypesDivergedTask', () => {
           },
         })
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
-        await task.run()
-        expect(context.contentModelDiverged).to.false
+        let error = null
+        try {
+          await task.run()
+        } catch (err) {
+          error = err
+        }
+
+        expect(error).to.be.null
       })
       it('it ignores non relevant content type changes for affected entries', async () => {
         context.affectedEntities.entries.removed.push('removed-entry')
@@ -171,8 +214,14 @@ describe('createAffectedContentTypesDivergedTask', () => {
           },
         })
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
-        await task.run()
-        expect(context.contentModelDiverged).to.false
+        let error = null
+        try {
+          await task.run()
+        } catch (err) {
+          error = err
+        }
+
+        expect(error).to.be.null
       })
     })
   })
@@ -197,8 +246,14 @@ describe('createAffectedContentTypesDivergedTask', () => {
           },
         })
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
-        await task.run()
-        expect(context.contentModelDiverged).to.false
+        let error = null
+        try {
+          await task.run()
+        } catch (err) {
+          error = err
+        }
+
+        expect(error).to.be.null
       })
       it('it ignores non relevant content type changes for affected entries', async () => {
         context.affectedEntities.entries.removed.push('removed-entry')
@@ -214,8 +269,14 @@ describe('createAffectedContentTypesDivergedTask', () => {
           },
         })
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
-        await task.run()
-        expect(context.contentModelDiverged).to.false
+        let error = null
+        try {
+          await task.run()
+        } catch (err) {
+          error = err
+        }
+
+        expect(error).to.be.null
       })
     })
 
@@ -234,8 +295,14 @@ describe('createAffectedContentTypesDivergedTask', () => {
           },
         })
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
-        await task.run()
-        expect(context.contentModelDiverged).to.true
+        let error = null
+        try {
+          await task.run()
+        } catch (err) {
+          error = err
+        }
+
+        expect(error).to.be.instanceOf(ContentModelDivergedError)
       })
       it('it ignores diverged content type for non-affected entry', async () => {
         context.affectedEntities.entries.added.push('added-entry')
@@ -251,8 +318,14 @@ describe('createAffectedContentTypesDivergedTask', () => {
           },
         })
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
-        await task.run()
-        expect(context.contentModelDiverged).to.false
+        let error = null
+        try {
+          await task.run()
+        } catch (err) {
+          error = err
+        }
+
+        expect(error).to.be.null
       })
     })
 
@@ -272,8 +345,14 @@ describe('createAffectedContentTypesDivergedTask', () => {
         context.affectedEntities.entries.changed.push(entry.sys.id)
         context.sourceData.entries.comparables.push(entry)
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
-        await task.run()
-        expect(context.contentModelDiverged).to.true
+        let error = null
+        try {
+          await task.run()
+        } catch (err) {
+          error = err
+        }
+
+        expect(error).to.be.instanceOf(ContentModelDivergedError)
       })
 
       it('it ignores diverged content type for non-affected entry', async () => {
@@ -291,8 +370,14 @@ describe('createAffectedContentTypesDivergedTask', () => {
         context.affectedEntities.entries.changed.push(entry.sys.id)
         context.sourceData.entries.comparables.push(entry)
         const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
-        await task.run()
-        expect(context.contentModelDiverged).to.false
+        let error = null
+        try {
+          await task.run()
+        } catch (err) {
+          error = err
+        }
+
+        expect(error).to.be.null
       })
     })
   })
