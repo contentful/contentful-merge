@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Contentful CLI to diff and merge entries across environments",
   "author": "Contentful <opensource@contentful.com>",
-  "private": true,
+  "private": false,
   "bin": {
     "contentful-merge": "./bin/run",
     "contentful-merge-dev": "./bin/dev"
