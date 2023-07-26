@@ -3,8 +3,11 @@ import { Config } from '@oclif/core'
 import CreateCommand from '../../../../src/commands/create'
 import { fancy } from 'fancy-test'
 import { AxiosError } from 'axios'
-import { LimitsExceededContext, LimitsExceededError } from '../../../../src/engine/create-changeset/errors'
-import { CreateChangesetContext } from '../../../../src/engine/create-changeset/types'
+import {
+  ContentModelDivergedError,
+  LimitsExceededContext,
+  LimitsExceededError,
+} from '../../../../src/engine/create-changeset/errors'
 import { MemoryLogger } from '../../../../src/engine/logger/memory-logger'
 
 import fs from 'node:fs/promises'
@@ -59,6 +62,20 @@ describe('Create Command', () => {
       expect(ctx.stdout).to.contain('1 entry to be compared')
       expect(ctx.stdout).to.contain('0 added entries')
       expect(ctx.stdout).to.contain('0 removed entries')
+    })
+
+  fancy
+    .stdout()
+    .do(() => {
+      const mockError = new ContentModelDivergedError(['test-content-type', 'test-content-type-2'])
+      cmd.catch(mockError)
+    })
+    .it('should inform on diverged content models', (ctx) => {
+      expect(ctx.stdout).to.contain('Changeset could not be created 💔')
+      expect(ctx.stdout).to.contain(
+        'The content models of the source and target environment are different. Before merging entries between environments, please make sure the content models are identical. We suggest using the Merge App to compare content models of different environments. Read more about the Merge App here: https://www.contentful.com/marketplace/app/merge.'
+      )
+      expect(ctx.stdout).to.contain(`Diverged content types: test-content-type, test-content-type-2`)
     })
 
   fancy

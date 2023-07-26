@@ -1,5 +1,5 @@
 export function renderFilePaths(changesetFilePath: string | undefined, logFilePath: string | undefined) {
-  let output = '\n'
+  let output = ''
 
   if (changesetFilePath) {
     output += `\n💾 ${changesetFilePath}`

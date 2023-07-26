@@ -1,9 +1,10 @@
 import { AxiosError } from 'axios'
 import { OutputFormatter } from './output-formatter'
-import { LimitsExceededError } from '../create-changeset/errors'
+import { ContentModelDivergedError, LimitsExceededError } from '../create-changeset/errors'
 import { entityStatRenderer } from './entity-stat-renderer'
-import { pluralizeEntry } from './pluralize'
+import { pluralizeContentType, pluralizeEntry } from './pluralize'
 import { icons } from './icons'
+import chalk from 'chalk'
 
 const failedEntryChangeRenderer = entityStatRenderer({
   icon: icons.bulletPoint,
@@ -16,6 +17,10 @@ function stringifyError(err: any) {
     simpleObject[key] = err[key]
   })
   return JSON.stringify(simpleObject)
+}
+
+const renderDivergedContentTypes = (contentTypeIds: string[]) => {
+  return `${contentTypeIds.map((id) => chalk.italic.yellow(id)).join(', ')}`
 }
 
 export function renderErrorOutput(error: Error) {
@@ -46,13 +51,24 @@ export function renderErrorOutput(error: Error) {
     const entriesAddedLength = error.affectedEntities.entries.added.length
     const entriesRemovedLength = error.affectedEntities.entries.removed.length
     const entriesMaybeChangedLength = error.affectedEntities.entries.maybeChanged.length
+    let errorDetails = '\n'
 
-    output += '\n'
-    output += `\nDetected number of changes:`
-    output += '\n'
-    output += `\n  ${failedEntryChangeRenderer(entriesAddedLength, 'added')}`
-    output += `\n  ${failedEntryChangeRenderer(entriesRemovedLength, 'removed')}`
-    output += `\n  ${failedEntryChangeRenderer(entriesMaybeChangedLength)} to be compared`
+    errorDetails += `\nDetected number of changes:`
+    errorDetails += '\n'
+    errorDetails += `\n  ${failedEntryChangeRenderer(entriesAddedLength, 'added')}`
+    errorDetails += `\n  ${failedEntryChangeRenderer(entriesRemovedLength, 'removed')}`
+    errorDetails += `\n  ${failedEntryChangeRenderer(entriesMaybeChangedLength)} to be compared`
+
+    output += errorDetails
+  }
+
+  if (error instanceof ContentModelDivergedError) {
+    let errorDetails = '\n\n'
+    errorDetails += `Diverged ${pluralizeContentType(
+      error.divergedContentTypeIds.length
+    )}: ${renderDivergedContentTypes(error.divergedContentTypeIds)}\n`
+
+    output += errorDetails
   }
 
   return output
