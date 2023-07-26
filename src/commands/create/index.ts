@@ -39,14 +39,14 @@ const sequenceKey = crypto.randomUUID()
 export default class Create extends Command {
   static description = 'Create Entries Changeset'
 
-  private changesetFilePath: string
+  private changesetFilePath: string | undefined
   private logFilePath: string | undefined
   private logger: MemoryLogger
 
   constructor(argv: string[], config: Config) {
     super(argv, config)
 
-    this.changesetFilePath = path.join(process.cwd(), 'changeset.json')
+    this.changesetFilePath
     this.logger = new MemoryLogger('create-changeset')
   }
 
@@ -178,8 +178,10 @@ export default class Create extends Command {
       num_changed_items: context.affectedEntities.entries.maybeChanged.length,
       num_source_entries: context.sourceData.entries.ids.length,
       num_target_entries: context.targetData.entries.ids.length,
+      num_changeset_items_exceeded: false,
     })
 
+    this.changesetFilePath = path.join(process.cwd(), 'changeset.json')
     await fs.writeFile(this.changesetFilePath, JSON.stringify(context.changeset, null, 2))
 
     const output = await renderOutput(context)

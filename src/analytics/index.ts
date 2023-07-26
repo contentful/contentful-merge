@@ -54,6 +54,7 @@ type CreateCommandCompleted = {
   num_changed_items: number
   num_source_entries: number
   num_target_entries: number
+  num_changeset_items_exceeded: boolean
 } & Context
 
 export function trackCreateCommandCompleted(properties: CreateCommandCompleted) {
