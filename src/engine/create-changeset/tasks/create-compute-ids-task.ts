@@ -34,7 +34,9 @@ export const createComputeIdsTask = ({ entityType }: ComputeIdsTaskProps): Listr
       context.affectedEntities[entityType] = { added: [...added], removed: [...removed], maybeChanged, changed: [] }
 
       const exceedsLimits = doesExceedLimits(context, entityType)
-      if (exceedsLimits) {
+
+      // We are only enforcing limits for entries atm as we do not create changesets for content types
+      if (exceedsLimits && entityType == 'entries') {
         throw new LimitsExceededError({ limit: context.limits.all, affectedEntities: context.affectedEntities })
       }
 
