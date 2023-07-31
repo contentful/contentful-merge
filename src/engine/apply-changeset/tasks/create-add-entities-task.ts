@@ -11,7 +11,7 @@ export const createAddEntitiesTask = (): ListrTask => {
     task: async (context: ApplyChangesetContext, task) => {
       const { client, changeset, environmentId, logger, responseCollector } = context
       logger.log(LogLevel.INFO, 'Start createAddEntitiesTask')
-      const entries = changeset.items.filter((item) => item.changeType === 'added') as AddedChangesetItem[]
+      const entries = changeset.items.filter((item) => item.changeType === 'add') as AddedChangesetItem[]
       const entityCount = entries.length
 
       task.title = `Add ${entityCount} entities`

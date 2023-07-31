@@ -68,8 +68,8 @@ Takes a space id and two environment ids and creates a changeset which details a
 - It uses the [Contentful Delivery API](https://www.contentful.com/developers/docs/references/content-delivery-api/) (CDA) to fetch all data.
 - A custom CDA client executes requests in the  different environments in parallel.
 - All requests are batched.
-- In order to identify <b>added</b> and <b>removed</b> entries, entry ids are compared in both environments.
-- In order to identify <b>changed</b> entries, comparison happens in two steps:
+- In order to identify <b>added</b> and <b>deleted</b> entries, entry ids are compared in both environments.
+- In order to identify <b>updated</b> entries, comparison happens in two steps:
   The initial step involves identifying potentially diverging entries by examining the `sys.changedAt` property of all entries present in both environments.
   Subsequently, for all entries with distinct `sys.changedAt` values, a more comprehensive comparison of their payload is performed. If any variations are found, a patch is generated to reflect the differences.
 
@@ -154,9 +154,7 @@ The created changeset will be saved in JSON format in a file called `changeset.j
 {
   "sys": {
     "type": "Changeset",
-    "entityType": "Entry",
     "createdAt": "<date of changeset creation>",
-    "version": 1,
     "source": {
       "sys": {
         "id": "<source environment id>",
@@ -180,9 +178,9 @@ The created changeset will be saved in JSON format in a file called `changeset.j
 
 The actual changes are in the `items` array. They have the following structure:
 ```javascript
-// deleted
+// delete
 {
-  "changeType": "deleted",
+  "changeType": "delete",
   "entity": {
     "sys": {
       "type": "Link",
@@ -192,9 +190,9 @@ The actual changes are in the `items` array. They have the following structure:
   }
 }
 
-// added
+// add
 {
-  "changeType": "added",
+  "changeType": "add",
   "entity": {
     "sys": {
       "type": "Link",
@@ -207,9 +205,9 @@ The actual changes are in the `items` array. They have the following structure:
   }
 }
 
-// changed
+// update
 {
-  "changeType": "changed",
+  "changeType": "update",
   "entity": {
     "sys": {
       "type": "Link",
@@ -222,13 +220,13 @@ The actual changes are in the `items` array. They have the following structure:
   ]
 }
 ```
-There are three different change types: `added`, `changed`, `deleted`.
+There are three different change types: `add`, `update`, `delete`.
 
-- Changes of type `deleted` include `changeType` and `entity`, as seen above.
+- Changes of type `delete` include `changeType` and `entity`, as seen above.
 
-- Changes of type `changed` include an additional property `patch`, with an array of patch operations where content differs between environments.
+- Changes of type `update` include an additional property `patch`, with an array of patch operations where content differs between environments.
 
-- Changes of type `added` include an additional property `data` property with the usual Contentful entry payload.
+- Changes of type `add` include an additional property `data` property with the usual Contentful entry payload.
 
 If you want to see the data structure in practice, run the `create` command and have a look at the generated `changeset.json` file, or look at the [type definitions](src/engine/types.ts).
 

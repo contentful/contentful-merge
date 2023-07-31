@@ -1,7 +1,7 @@
 import { ListrTask } from 'listr2'
 import pLimit from 'p-limit'
 import { LogLevel } from '../../logger/types'
-import { ChangedChangesetItem } from '../../types'
+import { UpdatedChangesetItem } from '../../types'
 import { updateEntity } from '../actions/update-entity'
 import { ApplyChangesetContext } from '../types'
 
@@ -11,7 +11,7 @@ export const createChangeEntitiesTask = (): ListrTask => {
     task: async (context: ApplyChangesetContext, task) => {
       const { client, changeset, environmentId, logger, responseCollector } = context
       logger.log(LogLevel.INFO, 'Start createChangeEntitiesTask')
-      const items = changeset.items.filter((item) => item.changeType === 'changed') as ChangedChangesetItem[]
+      const items = changeset.items.filter((item) => item.changeType === 'update') as UpdatedChangesetItem[]
       const entityCount = items.length
 
       task.title = `Change ${entityCount} entities`

@@ -69,14 +69,14 @@ describe('createFetchChangedTasks', () => {
   it('adds 2 added items to the changeset', async () => {
     const task = initializeTask(createFetchChangedTasks({ entityType: 'entries' }), context)
     await task.run()
-    const addedItems = context.changeset.items.filter(matchChangeType('added'))
+    const addedItems = context.changeset.items.filter(matchChangeType('add'))
 
     expect(addedItems.length).to.equal(2)
   })
   it('adds 2 deleted items to the changeset', async () => {
     const task = initializeTask(createFetchChangedTasks({ entityType: 'entries' }), context)
     await task.run()
-    const deletedItems = context.changeset.items.filter(matchChangeType('deleted'))
+    const deletedItems = context.changeset.items.filter(matchChangeType('delete'))
 
     expect(deletedItems.length).to.equal(2)
   })
@@ -84,7 +84,7 @@ describe('createFetchChangedTasks', () => {
     const task = initializeTask(createFetchChangedTasks({ entityType: 'entries' }), context)
     await task.run()
 
-    const changedItems = context.changeset.items.filter(matchChangeType('changed'))
+    const changedItems = context.changeset.items.filter(matchChangeType('update'))
 
     expect(changedItems.length).to.equal(3)
   })

@@ -10,7 +10,7 @@ export const createRemoveEntitiesTask = (): ListrTask => {
     task: async (context: ApplyChangesetContext, task) => {
       const { client, changeset, environmentId, logger, responseCollector } = context
       logger.log(LogLevel.INFO, 'Start createRemoveEntitiesTask')
-      const ids = changeset.items.filter((item) => item.changeType === 'deleted').map((item) => item.entity.sys.id)
+      const ids = changeset.items.filter((item) => item.changeType === 'delete').map((item) => item.entity.sys.id)
       const entityCount = ids.length
 
       task.title = `Delete ${entityCount} entities`

@@ -7,8 +7,8 @@ import { MemoryLogger } from './logger/memory-logger'
 
 export type Client = ReturnType<typeof createClient>
 
-export type ChangesetChangeType = 'deleted' | 'added' | 'changed'
-type ChangesetItemType = 'Entry' | 'Asset' | 'ContentType' | 'EditorInterface'
+export type ChangesetChangeType = 'add' | 'delete' | 'update'
+type ChangesetItemType = 'Entry' | 'ContentType'
 
 export interface EntityLink {
   type: 'Link'
@@ -26,26 +26,24 @@ export type ChangesetEntityLink = {
   }
 }
 
-export type DeletedChangesetItem = BaseChangesetItem<'deleted'> & ChangesetEntityLink
+export type DeletedChangesetItem = BaseChangesetItem<'delete'> & ChangesetEntityLink
 
-export type AddedChangesetItem = BaseChangesetItem<'added'> &
+export type AddedChangesetItem = BaseChangesetItem<'add'> &
   ChangesetEntityLink & {
     data?: any
   }
 
-export type ChangedChangesetItem = BaseChangesetItem<'changed'> &
+export type UpdatedChangesetItem = BaseChangesetItem<'update'> &
   ChangesetEntityLink & {
     patch: Patch
   }
 
-export type ChangesetItem = DeletedChangesetItem | AddedChangesetItem | ChangedChangesetItem
+export type ChangesetItem = DeletedChangesetItem | AddedChangesetItem | UpdatedChangesetItem
 
 export type Changeset = {
   sys: {
     type: 'Changeset'
-    version: 1
     createdAt: string
-    entityType: ChangesetItemType | 'Mixed'
     source: {
       sys: {
         type: 'Link'

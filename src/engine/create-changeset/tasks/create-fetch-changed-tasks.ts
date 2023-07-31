@@ -1,11 +1,10 @@
 import { ListrTask } from 'listr2'
 import { chunk } from 'lodash'
-import { BaseContext, ChangedChangesetItem, EntityType } from '../../types'
+import { BaseContext, UpdatedChangesetItem, EntityType } from '../../types'
 import { createLinkObject } from '../../utils/create-link-object'
 import type { CreateChangesetContext } from '../types'
 import { createPatch } from '../../utils/create-patch'
 import { pluralizeEntry } from '../../utils/pluralize'
-import { SkipHandler } from '../types'
 
 type GetEntryPatchParams = {
   context: BaseContext
@@ -26,7 +25,7 @@ async function getEntityPatches({
   target,
   entryIds,
   entityType,
-}: GetEntryPatchParams): Promise<ChangedChangesetItem[]> {
+}: GetEntryPatchParams): Promise<UpdatedChangesetItem[]> {
   const {
     client: { cda },
   } = context
@@ -37,7 +36,7 @@ async function getEntityPatches({
   const sourceEntries = await api.getMany({ environment: source, query }).then((response) => response.items)
   const targetEntries = await api.getMany({ environment: target, query }).then((response) => response.items)
 
-  const result: ChangedChangesetItem[] = []
+  const result: UpdatedChangesetItem[] = []
 
   for (const entryId of entryIds) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -50,7 +49,7 @@ async function getEntityPatches({
     if (sourceEntry && targetEntry) {
       const patch = createPatch({ targetEntry, sourceEntry })
       result.push({
-        ...createLinkObject(entryId, 'changed', EntityTypeMap[entityType]),
+        ...createLinkObject(entryId, 'update', EntityTypeMap[entityType]),
         patch,
       })
     }
@@ -112,8 +111,8 @@ export const createFetchChangedTasks = ({ entityType }: FetchChangedTaskProps): 
 
       if (entityType === 'entries') {
         changeset.items.push(
-          ...removed.map((item) => createLinkObject(item, 'deleted', EntityTypeMap[entityType])),
-          ...added.map((item) => createLinkObject(item, 'added', EntityTypeMap[entityType]))
+          ...removed.map((item) => createLinkObject(item, 'delete', EntityTypeMap[entityType])),
+          ...added.map((item) => createLinkObject(item, 'add', EntityTypeMap[entityType]))
         )
       }
 
