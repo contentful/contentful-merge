@@ -48,9 +48,9 @@ export function renderErrorOutput(error: Error) {
   output += OutputFormatter.error(errorMessage)
 
   if (error instanceof LimitsExceededError) {
-    const entriesAddedLength = error.affectedEntities.entries.added.length
-    const entriesRemovedLength = error.affectedEntities.entries.removed.length
-    const entriesMaybeChangedLength = error.affectedEntities.entries.maybeChanged.length
+    const entriesAddedLength = error.details.amount.added
+    const entriesRemovedLength = error.details.amount.removed
+    const entriesMaybeChangedLength = error.details.amount.maybeChanged
     let errorDetails = '\n'
 
     errorDetails += `\nDetected number of changes:`
@@ -64,9 +64,9 @@ export function renderErrorOutput(error: Error) {
 
   if (error instanceof ContentModelDivergedError) {
     let errorDetails = '\n\n'
-    errorDetails += `Diverged ${pluralizeContentType(
-      error.divergedContentTypeIds.length
-    )}: ${renderDivergedContentTypes(error.divergedContentTypeIds)}\n`
+    errorDetails += `Diverged ${pluralizeContentType(error.details.amount)}: ${renderDivergedContentTypes(
+      error.divergedContentTypeIds
+    )}\n`
 
     output += errorDetails
   }
