@@ -9,7 +9,7 @@ export class LimitsExceededError extends Error {
   public affectedEntities: AffectedEntities
 
   constructor(context: LimitsExceededContext) {
-    const message = `The detected number of entries to be compared, added or removed is too high.\nThe currently allowed limit is ${context.limit} entries.`
+    const message = `The detected number of entries to be compared, added or deleted is too high.\nThe currently allowed limit is ${context.limit} entries.`
     super(message)
     this.affectedEntities = context.affectedEntities
   }

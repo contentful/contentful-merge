@@ -3,7 +3,7 @@ import { Entry } from 'contentful'
 import { initializeTask, matchChangeType } from '../../../test-utils'
 import { sourceEntriesFixture } from '../../../fixtures/entries'
 import { CreateChangesetContext } from '../../../../../src/engine/create-changeset/types'
-import { AddedChangesetItem, ChangedChangesetItem, DeletedChangesetItem } from '../../../../../src/engine/types'
+import { AddedChangesetItem, UpdatedChangesetItem, DeletedChangesetItem } from '../../../../../src/engine/types'
 import {
   cleanEntity,
   createFetchAddedEntitiesTask,
@@ -35,9 +35,7 @@ describe('createFetchAddedEntitiesTask', () => {
       changeset: {
         sys: {
           type: 'Changeset',
-          entityType: 'Entry',
           createdAt: '1687163005535',
-          version: 1,
           source: {
             sys: {
               id: 'staging',
@@ -55,7 +53,7 @@ describe('createFetchAddedEntitiesTask', () => {
         },
         items: [
           {
-            changeType: 'changed',
+            changeType: 'update',
             entity: {
               sys: {
                 type: 'Link',
@@ -77,7 +75,7 @@ describe('createFetchAddedEntitiesTask', () => {
             ],
           },
           {
-            changeType: 'deleted',
+            changeType: 'delete',
             entity: {
               sys: {
                 type: 'Link',
@@ -87,7 +85,7 @@ describe('createFetchAddedEntitiesTask', () => {
             },
           },
           {
-            changeType: 'added',
+            changeType: 'add',
             entity: {
               sys: {
                 type: 'Link',
@@ -97,7 +95,7 @@ describe('createFetchAddedEntitiesTask', () => {
             },
           },
           {
-            changeType: 'added',
+            changeType: 'add',
             entity: {
               sys: {
                 type: 'Link',
@@ -120,7 +118,7 @@ describe('createFetchAddedEntitiesTask', () => {
       context
     )
 
-    const addedItems = context.changeset.items.filter(matchChangeType('added')) as AddedChangesetItem[]
+    const addedItems = context.changeset.items.filter(matchChangeType('add')) as AddedChangesetItem[]
 
     expect(addedItems).to.satisfy((items: AddedChangesetItem[]) => items.every((item) => item.data === undefined))
     await task.run()
@@ -143,13 +141,13 @@ describe('createFetchAddedEntitiesTask', () => {
       context
     )
 
-    const changedItems = context.changeset.items.filter(matchChangeType('changed'))
+    const changedItems = context.changeset.items.filter(matchChangeType('update'))
 
     // @ts-expect-error: asserting that a property does not exist
-    expect(changedItems).to.satisfy((items: ChangedChangesetItem[]) => items.every((item) => item.data === undefined))
+    expect(changedItems).to.satisfy((items: UpdatedChangesetItem[]) => items.every((item) => item.data === undefined))
     await task.run()
     // @ts-expect-error: asserting that a property does not exist
-    expect(changedItems).to.satisfy((items: ChangedChangesetItem[]) => items.every((item) => item.data === undefined))
+    expect(changedItems).to.satisfy((items: UpdatedChangesetItem[]) => items.every((item) => item.data === undefined))
   })
   it('does not fetch anything for deleted entries', async () => {
     const task = initializeTask(
@@ -159,7 +157,7 @@ describe('createFetchAddedEntitiesTask', () => {
       context
     )
 
-    const deletedItems = context.changeset.items.filter(matchChangeType('deleted'))
+    const deletedItems = context.changeset.items.filter(matchChangeType('delete'))
 
     // @ts-expect-error: asserting that a property does not exist
     expect(deletedItems).to.satisfy((items: DeletedChangesetItem[]) => items.every((item) => item.data === undefined))

@@ -21,8 +21,8 @@ export async function renderOutput(context: CreateChangesetContext) {
   }"`
   output += '\n'
   output += `\n  ${successfulEntryChangeRenderer(context.statistics.entries.added, 'added')}`
-  output += `\n  ${successfulEntryChangeRenderer(context.statistics.entries.changed, 'changed')}`
-  output += `\n  ${successfulEntryChangeRenderer(context.statistics.entries.removed, 'removed')}`
+  output += `\n  ${successfulEntryChangeRenderer(context.statistics.entries.changed, 'updated')}`
+  output += `\n  ${successfulEntryChangeRenderer(context.statistics.entries.removed, 'deleted')}`
 
   return output
 }

@@ -3,9 +3,7 @@ import { Changeset } from '../types'
 export const createChangeset = (source: string, target: string): Changeset => ({
   sys: {
     type: 'Changeset',
-    entityType: 'Entry',
     createdAt: Date.now().toString(),
-    version: 1,
     source: {
       sys: {
         id: source,

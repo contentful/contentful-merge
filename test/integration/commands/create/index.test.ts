@@ -40,8 +40,8 @@ describe('create - happy path', () => {
       expect(ctx.stdout).to.contain('0 entries detected in the source environment')
       expect(ctx.stdout).to.contain('0 entries detected in the target environment')
       expect(ctx.stdout).to.contain('0 added entries')
-      expect(ctx.stdout).to.contain('0 changed entries')
-      expect(ctx.stdout).to.contain('0 removed entries')
+      expect(ctx.stdout).to.contain('0 updated entries')
+      expect(ctx.stdout).to.contain('0 deleted entries')
       expect(fs.existsSync(changesetPath)).to.be.true
     })
 
@@ -58,8 +58,8 @@ describe('create - happy path', () => {
       expect(ctx.stdout).to.contain('1 entry detected in the source environment')
       expect(ctx.stdout).to.contain('0 entries detected in the target environment')
       expect(ctx.stdout).to.contain('1 added entry')
-      expect(ctx.stdout).to.contain('0 changed entries')
-      expect(ctx.stdout).to.contain('0 removed entries')
+      expect(ctx.stdout).to.contain('0 updated entries')
+      expect(ctx.stdout).to.contain('0 deleted entries')
       expect(fs.existsSync(changesetPath)).to.be.true
     })
 })

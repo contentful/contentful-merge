@@ -2,7 +2,7 @@ import { Entry } from 'contentful'
 import { ListrTask } from 'listr2'
 import { chunk, pick } from 'lodash'
 import { LogLevel } from '../../logger/types'
-import { CreateChangesetContext, SkipHandler } from '../types'
+import { CreateChangesetContext } from '../types'
 import { pluralizeEntry } from '../../utils/pluralize'
 import { EntityType } from '../../types'
 
@@ -44,7 +44,7 @@ export function createFetchAddedEntitiesTask({ entityType }: FetchAddedEntitiesT
 
         for (const entry of entries) {
           const item = changeset.items.find((item) => item.entity.sys.id === entry.sys.id)
-          if (item && item.changeType === 'added') {
+          if (item && item.changeType === 'add') {
             item.data = cleanEntity(entry)
           }
         }

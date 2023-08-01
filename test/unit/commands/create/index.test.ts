@@ -39,7 +39,7 @@ describe('Create Command', () => {
       mockError.code = 'ERR_BAD_REQUEST'
       cmd.catch(mockError)
     })
-    .it('should inform that api keys need access to all compared environmentsa', (ctx) => {
+    .it('should inform that api keys need access to all compared environments', (ctx) => {
       expect(ctx.stdout).to.contain('Changeset could not be created 💔')
       expect(ctx.stdout).to.contain(
         'An authorisation issue occurred. Please make sure the API key you provided has access to both environments.'

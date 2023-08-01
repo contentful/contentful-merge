@@ -19,12 +19,12 @@ describe('createAffectedContentTypesDivergedTask', () => {
       context.affectedEntities.contentTypes.added.push(CONTENT_TYPE_ID)
     })
 
-    describe('and removed entry', () => {
+    describe('and deleted entry', () => {
       it('it ignores any content type changes for affected entries', async () => {
-        context.affectedEntities.entries.removed.push('removed-entry')
+        context.affectedEntities.entries.removed.push('deleted-entry')
         context.targetData.entries.comparables.push({
           sys: {
-            id: 'removed-entry',
+            id: 'deleted-entry',
             updatedAt: '',
             contentType: {
               sys: {
@@ -44,10 +44,10 @@ describe('createAffectedContentTypesDivergedTask', () => {
         expect(error).to.be.null
       })
       it('it ignores non relevant content type changes for affected entries', async () => {
-        context.affectedEntities.entries.removed.push('removed-entry')
+        context.affectedEntities.entries.removed.push('deleted-entry')
         context.targetData.entries.comparables.push({
           sys: {
-            id: 'removed-entry',
+            id: 'deleted-entry',
             updatedAt: '',
             contentType: {
               sys: {
@@ -117,11 +117,11 @@ describe('createAffectedContentTypesDivergedTask', () => {
       })
     })
 
-    describe('and changed entry', () => {
+    describe('and updated entry', () => {
       it('it detects relevant diverged content type for affected entry', async () => {
         const entry = {
           sys: {
-            id: 'changed-entry',
+            id: 'updated-entry',
             updatedAt: '',
             contentType: {
               sys: {
@@ -146,7 +146,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
       it('it ignores diverged content type for non-affected entry', async () => {
         const entry = {
           sys: {
-            id: 'changed-entry',
+            id: 'updated-entry',
             updatedAt: '',
             contentType: {
               sys: {
@@ -170,18 +170,18 @@ describe('createAffectedContentTypesDivergedTask', () => {
     })
   })
 
-  describe('with removed content type', () => {
+  describe('with deleted content type', () => {
     beforeEach(() => {
       context.affectedEntities.contentTypes.removed.push(CONTENT_TYPE_ID)
     })
 
-    // for removed content type, only removed entries are possible (no added or changed)
-    describe('and removed entry', () => {
+    // for deleted content type, only deleted entries are possible (no added or changed)
+    describe('and deleted entry', () => {
       it('it ignores any content type changes for affected entries', async () => {
-        context.affectedEntities.entries.removed.push('removed-entry')
+        context.affectedEntities.entries.removed.push('deleted-entry')
         context.targetData.entries.comparables.push({
           sys: {
-            id: 'removed-entry',
+            id: 'deleted-entry',
             updatedAt: '',
             contentType: {
               sys: {
@@ -201,10 +201,10 @@ describe('createAffectedContentTypesDivergedTask', () => {
         expect(error).to.be.null
       })
       it('it ignores non relevant content type changes for affected entries', async () => {
-        context.affectedEntities.entries.removed.push('removed-entry')
+        context.affectedEntities.entries.removed.push('deleted-entry')
         context.targetData.entries.comparables.push({
           sys: {
-            id: 'removed-entry',
+            id: 'deleted-entry',
             updatedAt: '',
             contentType: {
               sys: {
@@ -231,12 +231,12 @@ describe('createAffectedContentTypesDivergedTask', () => {
       context.affectedEntities.contentTypes.changed.push(CONTENT_TYPE_ID)
     })
 
-    describe('and removed entry', () => {
+    describe('and deleted entry', () => {
       it('it ignores any content type changes for affected entries', async () => {
-        context.affectedEntities.entries.removed.push('removed-entry')
+        context.affectedEntities.entries.removed.push('deleted-entry')
         context.targetData.entries.comparables.push({
           sys: {
-            id: 'removed-entry',
+            id: 'deleted-entry',
             updatedAt: '',
             contentType: {
               sys: {
@@ -256,10 +256,10 @@ describe('createAffectedContentTypesDivergedTask', () => {
         expect(error).to.be.null
       })
       it('it ignores non relevant content type changes for affected entries', async () => {
-        context.affectedEntities.entries.removed.push('removed-entry')
+        context.affectedEntities.entries.removed.push('deleted-entry')
         context.targetData.entries.comparables.push({
           sys: {
-            id: 'removed-entry',
+            id: 'deleted-entry',
             updatedAt: '',
             contentType: {
               sys: {
@@ -329,7 +329,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
       })
     })
 
-    describe('and changed entry', () => {
+    describe('and updated entry', () => {
       it('it detects relevant diverged content type for affected entry', async () => {
         const entry = {
           sys: {
