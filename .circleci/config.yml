@@ -56,7 +56,7 @@ jobs:
       - node/install:
           node-version: '18.15'
       - node/install-packages
-      - run: npm run build
+      - run: npm run prepack
       - run: npm publish
 workflows:
   version: 2
@@ -71,5 +71,4 @@ workflows:
             - vault
           requires:
             - unit
-            - integration
 

@@ -1,6 +1,6 @@
 {
   "name": "contentful-merge",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Contentful CLI to diff and merge entries across environments",
   "author": "Contentful <opensource@contentful.com>",
   "private": false,
