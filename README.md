@@ -108,22 +108,19 @@ USAGE
 Create Entries Changeset
 
 USAGE
-  $ contentful-merge create --space <value> --source <value> --target <value> --cda-token <value> [--limit <value>]
+  $ contentful-merge create --space <value> --source <value> --target <value> --cda-token <value>
 
 FLAGS
   --space=<value>      [required] Space id
   --source=<value>     [required] Source environment id
   --target=<value>     [required] Target environment id
   --cda-token=<value>  [required, defaults to env: $CDA_TOKEN] CDA token
-  --limit=<value>      [default: 200] Limit parameter for collection endpoints
 
 DESCRIPTION
   Create Entries Changeset
 
 EXAMPLES
   $ contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token>
-
-  $ contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --limit 100
 ```
 
 
@@ -149,7 +146,7 @@ COMMANDS
 
 > ⚠️ As this project is still in beta, the data structure might still change down the line ⚠️
 
-The created changeset will be saved in JSON format in a file called `changeset.json` in the directory that you run the command in. It has the following basic structure: 
+The created changeset will be saved in JSON format in a file called `changeset.json` in the directory that you run the command in. It has the following basic structure:
 ```javascript
 {
   "sys": {
