@@ -57,7 +57,6 @@ export default class Create extends Command {
 
   static examples = [
     'contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token>',
-    'contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --limit 100',
   ]
 
   static flags = {
@@ -69,7 +68,6 @@ export default class Create extends Command {
       required: true,
       env: 'CDA_TOKEN',
     }),
-    limit: Flags.integer({ description: 'Limit parameter for collection endpoints', required: false, default: 200 }),
   }
 
   private async writeFileLog() {
@@ -105,7 +103,7 @@ export default class Create extends Command {
     const context: CreateChangesetContext = {
       logger: this.logger,
       client,
-      limit: flags.limit,
+      limit: 200,
       accessToken: flags.token,
       spaceId: flags.space,
       sourceEnvironmentId: flags.source,
