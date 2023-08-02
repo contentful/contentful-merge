@@ -5,7 +5,12 @@ import chalk from 'chalk'
 import crypto from 'crypto'
 import * as fs from 'node:fs/promises'
 import path from 'node:path'
-import { analyticsCloseAndFlush, trackCreateCommandCompleted, trackCreateCommandStarted } from '../../analytics'
+import {
+  analyticsCloseAndFlush,
+  trackCreateCommandCompleted,
+  trackCreateCommandStarted,
+  trackCreateCommandFailed,
+} from '../../analytics'
 import { createClient } from '../../engine/client'
 import { createChangesetTask } from '../../engine/create-changeset'
 import { CreateChangesetContext } from '../../engine/create-changeset/types'
@@ -160,6 +165,7 @@ export default class Create extends Command {
     Sentry.setTag('added', context.affectedEntities.entries.added.length)
     Sentry.setTag('removed', context.affectedEntities.entries.removed.length)
     Sentry.setTag('maybeChanged', context.affectedEntities.entries.maybeChanged.length)
+    Sentry.setTag('changed', context.affectedEntities.entries.changed.length)
     Sentry.setTag('cdaRequest', client.requestCounts().cda)
     Sentry.setTag('cmaRequest', client.requestCounts().cma)
     Sentry.setTag('memory', usedMemory.toFixed(2))
@@ -175,7 +181,7 @@ export default class Create extends Command {
       num_changeset_items: context.changeset.items.length,
       num_added_items: context.affectedEntities.entries.added.length,
       num_removed_items: context.affectedEntities.entries.removed.length,
-      num_changed_items: context.affectedEntities.entries.maybeChanged.length,
+      num_changed_items: context.affectedEntities.entries.changed.length,
       num_source_entries: context.sourceData.entries.ids.length,
       num_target_entries: context.targetData.entries.ids.length,
       num_changeset_items_exceeded: false,
@@ -189,8 +195,17 @@ export default class Create extends Command {
   }
 
   async catch(error: any) {
-    // Any additional error handling or related user warnings should
-    // go here if possible.
+    const { flags } = await this.parse(Create)
+
+    trackCreateCommandFailed({
+      space_key: flags.space,
+      target_environment_key: flags.target,
+      source_environment_key: flags.source,
+      sequence_key: sequenceKey,
+      error_name: error.name,
+      error_message: error.message,
+      ...(error.details ? { error_details: JSON.stringify(error.details) } : {}),
+    })
 
     const output = renderErrorOutput(error)
 

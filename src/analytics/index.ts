@@ -39,6 +39,7 @@ type Context = {
 }
 
 type CreateCommandStarted = Context
+
 export function trackCreateCommandStarted(properties: CreateCommandStarted) {
   trackEvent({
     event: 'changeset_creation_started',
@@ -60,6 +61,19 @@ type CreateCommandCompleted = {
 export function trackCreateCommandCompleted(properties: CreateCommandCompleted) {
   trackEvent({
     event: 'changeset_creation_completed',
+    properties,
+  })
+}
+
+type CreateCommandFailed = {
+  error_name: string
+  error_message: string
+  error_details?: string
+} & Context
+
+export function trackCreateCommandFailed(properties: CreateCommandFailed) {
+  trackEvent({
+    event: 'changeset_creation_failed',
     properties,
   })
 }

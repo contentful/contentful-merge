@@ -11,7 +11,7 @@ import {
 import { MemoryLogger } from '../../../../src/engine/logger/memory-logger'
 
 import fs from 'node:fs/promises'
-import sinon = require('sinon')
+import sinon from 'sinon'
 import { writeLog } from '../../../../src/engine/logger/write-log'
 
 const cmd = new CreateCommand(
@@ -21,14 +21,21 @@ const cmd = new CreateCommand(
 
 describe('Create Command', () => {
   let writeFileStub: sinon.SinonStub
+  let parseStub: sinon.SinonStub
 
   // We need to mock fs so we don't write log files during test runs
   beforeEach(() => {
     writeFileStub = sinon.stub(fs, 'writeFile')
+    // @ts-expect-error: type error, but stubbing works fine
+    parseStub = sinon.stub(cmd, 'parse')
+    parseStub.resolves({
+      flags: { space: '<space-id>', source: '<source-env>', target: '<target-env>' },
+    })
   })
 
   afterEach(() => {
     writeFileStub.restore()
+    parseStub.restore()
   })
 
   fancy
