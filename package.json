@@ -1,9 +1,9 @@
 {
   "name": "contentful-merge",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Contentful CLI to diff and merge entries across environments",
   "author": "Contentful <opensource@contentful.com>",
-  "private": true,
+  "private": false,
   "bin": {
     "contentful-merge": "./bin/run",
     "contentful-merge-dev": "./bin/dev"
@@ -101,7 +101,9 @@
   },
   "bugs": "https://github.com/contentful/contentful-merge/issues",
   "keywords": [
-    "oclif"
+    "contentful",
+    "merge",
+    "cli"
   ],
   "types": "dist/index.d.ts"
 }

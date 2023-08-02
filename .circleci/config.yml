@@ -44,6 +44,20 @@ jobs:
           path: reports
       - store_artifacts:
           path: ./reports/integration-results.xml
+
+  publish:
+    docker:
+      - image: cimg/node:lts
+    steps:
+      - checkout
+      - vault/get-secrets:
+          template-preset: 'semantic-release-ecosystem'
+      - run: echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
+      - node/install:
+          node-version: '18.15'
+      - node/install-packages
+      - run: npm run build
+      - run: npm publish
 workflows:
   version: 2
   build_and_test:
@@ -52,3 +66,10 @@ workflows:
       - unit
       - integration:
           context: dev-workflows-test-orgs
+      - publish:
+          context:
+            - vault
+          requires:
+            - unit
+            - integration
+

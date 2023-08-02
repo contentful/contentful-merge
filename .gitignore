@@ -18,3 +18,4 @@ changeset-*.json
 reports
 build
 .DS_Store
+.env
