@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Contentful CLI to diff and merge entries across environments",
   "author": "Contentful <opensource@contentful.com>",
-  "private": true,
+  "private": false,
   "bin": {
     "contentful-merge": "./bin/run",
     "contentful-merge-dev": "./bin/dev"
@@ -34,13 +34,19 @@
     "fast-json-patch": "^3.1.1",
     "listr2": "^6.6.1",
     "lodash": "^4.17.21",
-    "p-limit": "^3.1.0"
+    "p-limit": "^3.1.0",
+    "semantic-release": "^21.0.7"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.6.7",
     "@commitlint/config-conventional": "^17.6.7",
     "@contentful/integration-test-utils": "^2.0.1",
     "@oclif/test": "^2.4.2",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^10.0.1",
+    "@semantic-release/github": "^9.0.4",
+    "@semantic-release/npm": "^10.0.4",
+    "@semantic-release/release-notes-generator": "^11.0.4",
     "@types/chai": "^4",
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.4.6",
@@ -95,14 +101,45 @@
     "test-unit": "mocha test/unit/**/*.test.ts",
     "test-unit-watch": "npm run test-unit -- -w --watch-files '**/*.ts'",
     "test-unit-with-reports": "npm run test-unit -- --reporter mocha-junit-reporter --reporter-options mochaFile=reports/unit-results.xml",
-    "version": "oclif readme && git add README.md"
+    "version": "oclif readme && git add README.md",
+    "semantic-release": "semantic-release"
   },
   "engines": {
     "node": ">=12.0.0"
   },
   "bugs": "https://github.com/contentful/contentful-merge/issues",
   "keywords": [
-    "oclif"
+    "contentful",
+    "merge",
+    "cli"
   ],
-  "types": "dist/index.d.ts"
+  "types": "dist/index.d.ts",
+  "release": {
+    "branches": [
+      "main",
+      {
+        "name": "next",
+        "channel": "next",
+        "prerelease": true
+      }
+    ],
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "releaseRules": [
+            {
+              "type": "build",
+              "scope": "deps",
+              "release": "patch"
+            }
+          ]
+        }
+      ],
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/npm",
+      "@semantic-release/changelog",
+      "@semantic-release/github"
+    ]
+  }
 }
