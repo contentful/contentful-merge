@@ -58,6 +58,16 @@ jobs:
       - run: npm run build
       - run: npm run semantic-release
 
+  unpublish:
+    docker:
+      - image: cimg/node:lts
+    steps:
+      - checkout
+      - vault/get-secrets:
+          template-preset: 'semantic-release-ecosystem'
+      - run: echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
+      - run: npm unpublish contentful-merge@1.0.0
+
 workflows:
   version: 2
   build_and_test:
@@ -66,9 +76,5 @@ workflows:
       - unit
       - integration:
           context: dev-workflows-test-orgs
-      - release:
+      - unpublish:
           context: vault
-          requires:
-            - lint
-            - unit
-            - integration
