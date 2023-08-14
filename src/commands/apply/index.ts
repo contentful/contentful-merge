@@ -1,17 +1,23 @@
-import { Command } from '@oclif/core'
+import { Command, Args, Flags } from '@oclif/core'
+import { MemoryLogger } from '../../engine/logger/memory-logger'
+import { createTransformHandler } from '../../engine/logger/create-transform-handler'
+import { createClient } from '../../engine/client'
+import { ResponseStatusCollector } from '../../engine/client/response-status-collector'
+import { createChangeset } from '../../engine/utils/create-changeset'
+import { ApplyChangesetContext } from '../../engine/apply-changeset/types'
+import chalk from 'chalk'
+import { applyChangesetTask } from '../../engine/apply-changeset'
+import { writeLog } from '../../engine/logger/write-log'
+import { OutputFormatter } from '../../engine/utils'
+import { renderErrorOutput } from '../../engine/utils/render-error-output'
 
-// const sequenceKey = crypto.randomUUID()
+const sequenceKey = crypto.randomUUID()
 
 export default class Apply extends Command {
   static description = 'Apply Changeset'
 
   static hidden = true
 
-  async run(): Promise<void> {
-    this.log('The apply command is not implemented yet.')
-  }
-
-  /*
   static examples = [
     './bin/dev apply changeset.json --space "<space-id>" --environment "staging"',
     'contentful-merge apply changeset.json --space "<space-id>" --environment "staging"',
@@ -24,7 +30,7 @@ export default class Apply extends Command {
   static flags = {
     space: Flags.string({ description: 'Space id', required: true }),
     environment: Flags.string({ description: 'Target environment id', required: true }),
-    "cma-token": Flags.string({ description: 'CMA token', required: true, env: 'CMA_TOKEN' }),
+    'cma-token': Flags.string({ description: 'CMA token', required: true, env: 'CMA_TOKEN' }),
     limit: Flags.integer({ description: 'Limit parameter for collection endpoints', required: false, default: 200 }),
   }
 
@@ -35,7 +41,7 @@ export default class Apply extends Command {
     const logHandler = createTransformHandler(logger)
 
     const client = createClient({
-      cmaToken: flags["cma-token"],
+      cmaToken: flags['cma-token'],
       space: flags.space,
       logHandler,
       sequenceKey,
@@ -84,11 +90,9 @@ export default class Apply extends Command {
   }
 
   async catch(error: any) {
-    // Any additional error handling or related user warnings should
-    // go here if possible.
+    const output = renderErrorOutput(error)
 
-    throw error
+    this.log(output)
+    this.exit(1)
   }
-
-   */
 }
