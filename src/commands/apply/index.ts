@@ -10,6 +10,7 @@ import { applyChangesetTask } from '../../engine/apply-changeset'
 import { writeLog } from '../../engine/logger/write-log'
 import { OutputFormatter } from '../../engine/utils'
 import { renderErrorOutput } from '../../engine/utils/render-error-output'
+import crypto from 'crypto'
 
 const sequenceKey = crypto.randomUUID()
 
