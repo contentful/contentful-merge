@@ -81,7 +81,7 @@ Takes a space id and two environment ids and creates a changeset which details a
 Prerequisite: node v18
 
 ```bash
-npm install contentful-merge
+npm install -g contentful-merge
 ```
 
 ## Usage
