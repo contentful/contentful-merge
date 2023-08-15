@@ -34,7 +34,7 @@ export const updateEntity = async ({
       entryId: updatedEntry.sys.id,
       entry: updatedEntry,
     })
-    task.output = `✨ successfully deleted ${item.entity.sys.id}`
+    task.output = `✨ successfully updated ${item.entity.sys.id}`
     logger.log(LogLevel.INFO, `entry ${item.entity.sys.id} successfully updated on environment: ${environmentId}`)
   } catch (error: any) {
     task.output = `🚨 failed to update ${item.entity.sys.id}`
