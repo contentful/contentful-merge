@@ -1,8 +1,9 @@
 import { Config } from '@oclif/core'
 import type { ContentType, Entry, Environment } from 'contentful-management/types'
 import { fancy } from 'fancy-test'
-import CreateCommand from '../../../../src/commands/create'
-import { TestContext } from './bootstrap'
+import CreateCommand from '../../../src/commands/create'
+import ApplyCommand from '../../../src/commands/apply'
+import { ApplyTestContext, TestContext } from './bootstrap'
 
 const createTestContentType = async (env: Environment): Promise<ContentType> => {
   const contentTypeId = 'testType'
@@ -78,6 +79,31 @@ export default fancy
             testContext.targetEnvironment.sys.id,
             '--cda-token',
             cdaToken || testContext.cdaToken,
+          ],
+          {} as unknown as Config // Runtime config, but not required for tests.
+        )
+        try {
+          await cmd.run()
+        } catch (e) {
+          console.log(e)
+        }
+      },
+    }
+  })
+  .register('runApplyCommand', (getTestContext: () => ApplyTestContext) => {
+    return {
+      async run(ctx) {
+        const testContext = getTestContext()
+
+        const cmd = new ApplyCommand(
+          [
+            testContext.changesetFilePath,
+            '--space',
+            testContext.spaceId,
+            '--environment',
+            testContext.environmentId,
+            '--cma-token',
+            testContext.cmaToken,
           ],
           {} as unknown as Config // Runtime config, but not required for tests.
         )

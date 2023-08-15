@@ -1,8 +1,8 @@
 import { expect } from '@oclif/test'
 import { ApiKey, Space, createClient } from 'contentful-management'
 import fs from 'fs'
-import { TestContext, createCdaToken, createEnvironments } from './bootstrap'
-import fancy from './register-plugins'
+import { TestContext, createCdaToken, createEnvironments } from './../bootstrap'
+import fancy from './../register-plugins'
 
 const spaceId = process.env.CONTENTFUL_SPACE_ID!
 if (!spaceId) {
