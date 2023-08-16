@@ -24,6 +24,7 @@ export default class Apply extends Command {
     'contentful-merge apply changeset.json --space "<space-id>" --environment "staging"',
   ]
 
+  // How are args being passed into fancy?
   static args = {
     input: Args.string({ required: false, default: 'changeset.json' }),
   }

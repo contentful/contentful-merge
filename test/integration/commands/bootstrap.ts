@@ -13,6 +13,16 @@ export type TestContext = {
   teardown: () => Promise<void>
 }
 
+export type ApplyTestContext = {
+  environmentId: string
+  spaceId: string
+  cmaToken: string
+  changesetFilePath: string
+  teardown: () => Promise<void>
+}
+
+export type CreateEnvironmentReturn = Pick<ApplyTestContext, 'teardown' | 'environmentId'>
+
 const waitForKeyReady = async (apiKey: ApiKey): Promise<void> => {
   const client = createClient({
     accessToken: apiKey.accessToken,
@@ -55,13 +65,13 @@ export const createCdaToken = async (
   return apiKey
 }
 
-const teardown = async ({ apiKey, environments }: { apiKey: ApiKey; environments: Environment[] }): Promise<void> => {
-  await Promise.allSettled([apiKey.delete(), ...environments.map((env) => env.delete())])
+const teardown = async ({ apiKey, environments }: { apiKey?: ApiKey; environments: Environment[] }): Promise<void> => {
+  await Promise.allSettled([apiKey && apiKey.delete(), ...environments.map((env) => env.delete())])
 }
 
 export const createEnvironments = async (testSpace: Space): Promise<TestContext> => {
-  const sourceEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + 'source')
-  const targetEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + 'target')
+  const sourceEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + 'source_for_create')
+  const targetEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + 'target_for_create')
   const apiKey = await createCdaToken(testSpace, [targetEnvironment.sys.id, sourceEnvironment.sys.id])
 
   return {
@@ -70,5 +80,13 @@ export const createEnvironments = async (testSpace: Space): Promise<TestContext>
     cdaToken: apiKey.accessToken,
     spaceId: testSpace.sys.id,
     teardown: () => teardown({ apiKey, environments: [sourceEnvironment, targetEnvironment] }),
+  }
+}
+
+export const createEnvironment = async (testSpace: Space): Promise<CreateEnvironmentReturn> => {
+  const environment = await testUtils.createTestEnvironment(testSpace, randomId + 'target_for_apply')
+  return {
+    teardown: () => teardown({ environments: [environment] }),
+    environmentId: environment.sys.id,
   }
 }
