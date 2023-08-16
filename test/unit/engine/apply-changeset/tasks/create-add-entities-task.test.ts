@@ -39,7 +39,23 @@ describe('createAddEntitiesTask', () => {
       },
     }
 
-    context.client.cma.entries.create = sinon.stub().resolves(createdEntry)
+    class Spy {
+      called = 0
+
+      call = (args: any): any => {
+        expect(args.environment).to.be.equal('qa')
+        expect(args.entryId).to.be.equal('added-entry')
+        expect(args.contentType).to.be.equal('lesson')
+
+        this.called++
+
+        return createdEntry
+      }
+    }
+
+    const spy = new Spy()
+
+    context.client.cma.entries.create = spy.call
     context.changeset.items.push(addedChangesetItem)
 
     const task = initializeTask(createAddEntitiesTask(), context)
@@ -52,5 +68,6 @@ describe('createAddEntitiesTask', () => {
 
     expect(error).to.be.null
     expect(task.tasks[0].output).to.be.equal('✨ successfully created added-entry')
+    expect(spy.called).to.be.equal(1)
   })
 })

@@ -28,5 +28,6 @@ describe('createLoadChangesetTask', () => {
 
     expect(error).to.be.null
     expect(task.tasks[0].output).to.be.equal(`Loading data from ${path.resolve(__dirname, './test-loading-changeset')}`)
+    expect(context.changeset).to.deep.equal({ test: true })
   })
 })

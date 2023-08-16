@@ -21,7 +21,7 @@ import { createChangeset } from '../../engine/utils/create-changeset'
 import { renderOutput } from '../../engine/create-changeset/render-output'
 import { OutputFormatter } from '../../engine/utils/output-formatter'
 import { config } from '../../config'
-import { renderErrorOutput } from '../../engine/utils/render-error-output'
+import { renderErrorOutputForCreate } from '../../engine/utils/render-error-output'
 import { renderFilePaths } from '../../engine/create-changeset/render-file-paths'
 
 Sentry.init({
@@ -205,7 +205,7 @@ export default class Create extends Command {
       ...(error.details ? { error_details: JSON.stringify(error.details) } : {}),
     })
 
-    const output = renderErrorOutput(error)
+    const output = renderErrorOutputForCreate(error)
 
     Sentry.captureException(error)
 
