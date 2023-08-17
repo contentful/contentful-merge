@@ -9,7 +9,7 @@ import chalk from 'chalk'
 import { applyChangesetTask } from '../../engine/apply-changeset'
 import { writeLog } from '../../engine/logger/write-log'
 import { OutputFormatter } from '../../engine/utils'
-import { renderErrorOutput } from '../../engine/utils/render-error-output'
+import { renderErrorOutputForApply } from '../../engine/utils/render-error-output'
 import crypto from 'crypto'
 
 const sequenceKey = crypto.randomUUID()
@@ -92,7 +92,7 @@ export default class Apply extends Command {
   }
 
   async catch(error: any) {
-    const output = renderErrorOutput(error)
+    const output = renderErrorOutputForApply(error)
 
     this.log(output)
     this.exit(1)

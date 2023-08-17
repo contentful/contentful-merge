@@ -35,8 +35,23 @@ describe('createChangeEntitiesTask', () => {
       fields: {},
     }
 
-    context.client.cma.entries.update = sinon.stub().resolves(updatedEntry)
-    context.client.cma.entries.get = sinon.stub().resolves(updatedEntry)
+    class Spy {
+      called = 0
+
+      call = (args: any): any => {
+        expect(args.environment).to.be.equal('qa')
+        expect(args.entryId).to.be.equal('update-entry')
+
+        this.called++
+
+        return updatedEntry
+      }
+    }
+
+    const spy = new Spy()
+
+    context.client.cma.entries.update = spy.call
+    context.client.cma.entries.get = spy.call
 
     context.changeset.items.push(updatedChangesetItem)
 
@@ -50,5 +65,6 @@ describe('createChangeEntitiesTask', () => {
 
     expect(error).to.be.null
     expect(task.tasks[0].output).to.be.equal('✨ successfully updated update-entry')
+    expect(spy.called).to.be.equal(2)
   })
 })

@@ -42,10 +42,8 @@ describe('Apply Command', () => {
       cmd.catch(mockError)
     })
     .it('should inform that api keys need access to all compared environments', (ctx) => {
-      expect(ctx.stdout).to.contain('Changeset could not be created 💔')
-      expect(ctx.stdout).to.contain(
-        'An authorisation issue occurred. Please make sure the API key you provided has access to both environments.'
-      )
+      expect(ctx.stdout).to.contain('Merge was unsuccessful 💔')
+      expect(ctx.stdout).to.contain('An authorization issue occurred. Please make sure the CMA token is correct.')
     })
 
   fancy
@@ -55,7 +53,7 @@ describe('Apply Command', () => {
       cmd.catch(mockError)
     })
     .it('should inform on Unknown Error', (ctx) => {
-      expect(ctx.stdout).to.contain('Changeset could not be created 💔')
+      expect(ctx.stdout).to.contain('Merge was unsuccessful 💔')
       expect(ctx.stdout).to.contain('Unknown Error')
     })
 

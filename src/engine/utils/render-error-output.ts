@@ -23,7 +23,33 @@ const renderDivergedContentTypes = (contentTypeIds: string[]) => {
   return `${contentTypeIds.map((id) => chalk.italic.yellow(id)).join(', ')}`
 }
 
-export function renderErrorOutput(error: Error) {
+export function renderErrorOutputForApply(error: Error) {
+  let output = '\n'
+  let errorMessage = ''
+
+  output += OutputFormatter.headline('Merge was unsuccessful 💔')
+  output += '\n'
+
+  if (error instanceof AxiosError && error.code === 'ERR_BAD_REQUEST') {
+    // TODO Add different error messages for different axios errors.
+    errorMessage += 'An authorization issue occurred. Please make sure the CMA token is correct.'
+  } else if (error instanceof Error) {
+    errorMessage += error.message
+  } else {
+    try {
+      const errorString = stringifyError(error)
+      errorMessage += errorString
+    } catch (err) {
+      errorMessage += 'Unknown Error'
+    }
+  }
+
+  output += OutputFormatter.error(errorMessage)
+
+  return output
+}
+
+export function renderErrorOutputForCreate(error: Error) {
   let output = '\n'
   let errorMessage = ''
 
