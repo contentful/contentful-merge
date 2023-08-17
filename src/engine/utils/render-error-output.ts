@@ -32,7 +32,7 @@ export function renderErrorOutputForApply(error: Error) {
 
   if (error instanceof AxiosError && error.code === 'ERR_BAD_REQUEST') {
     // TODO Add different error messages for different axios errors.
-    errorMessage += 'An authorisation issue occurred. Please make sure the CMA token is correct.'
+    errorMessage += 'An authorization issue occurred. Please make sure the CMA token is correct.'
   } else if (error instanceof Error) {
     errorMessage += error.message
   } else {
