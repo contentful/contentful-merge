@@ -43,7 +43,7 @@ describe('Apply Command', () => {
     })
     .it('should inform that api keys need access to all compared environments', (ctx) => {
       expect(ctx.stdout).to.contain('Merge was unsuccessful 💔')
-      expect(ctx.stdout).to.contain('An authorisation issue occurred. Please make sure the CMA token is correct.')
+      expect(ctx.stdout).to.contain('An authorization issue occurred. Please make sure the CMA token is correct.')
     })
 
   fancy
