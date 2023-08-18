@@ -48,7 +48,7 @@ describe('create - happy path', () => {
   fancy
     .stdout()
     .createTestContentType(() => testContext.targetEnvironment)
-    .createTestData(() => testContext.sourceEnvironment)
+    .createTestData(() => testContext.sourceEnvironment, 'new-entry')
     .runCreateCommand(() => testContext)
     .finally(async (ctx) => {
       await ctx.deleteTestData()
