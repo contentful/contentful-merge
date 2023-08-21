@@ -3,8 +3,6 @@ import { createClient } from 'contentful'
 import { ApiKey, Environment } from 'contentful-management'
 import { CreateApiKeyProps, Space } from 'contentful-management/types'
 
-const randomId = Math.floor(Math.random() * 100000).toString() // used to prevent concurrency issues
-
 export type TestContext = {
   sourceEnvironment: Environment
   targetEnvironment: Environment
@@ -50,7 +48,7 @@ export const createCdaToken = async (
   customAppendix?: string
 ): Promise<ApiKey> => {
   const apiKeyData: CreateApiKeyProps = {
-    name: `CDA Token ${randomId} ${customAppendix ? customAppendix : ''}`,
+    name: `CDA Token ${customAppendix ? customAppendix : ''}`,
     environments: environmentIds.map((envId) => ({
       sys: {
         type: 'Link',
@@ -70,6 +68,7 @@ const teardown = async ({ apiKey, environments }: { apiKey?: ApiKey; environment
 }
 
 export const createEnvironments = async (testSpace: Space): Promise<TestContext> => {
+  const randomId = Math.floor(Math.random() * 10000).toString() // used to prevent concurrency issues
   const sourceEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + '_source_environment')
   const targetEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + '_target_environment')
   const apiKey = await createCdaToken(testSpace, [targetEnvironment.sys.id, sourceEnvironment.sys.id])
@@ -84,6 +83,7 @@ export const createEnvironments = async (testSpace: Space): Promise<TestContext>
 }
 
 export const createEnvironment = async (testSpace: Space): Promise<CreateEnvironmentReturn> => {
+  const randomId = Math.floor(Math.random() * 10000).toString() // used to prevent concurrency issues
   const environment = await testUtils.createTestEnvironment(testSpace, randomId + 'target_for_apply')
   return {
     teardown: () => teardown({ environments: [environment] }),
