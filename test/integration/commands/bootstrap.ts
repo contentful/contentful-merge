@@ -3,7 +3,7 @@ import { createClient } from 'contentful'
 import { ApiKey, Environment } from 'contentful-management'
 import { CreateApiKeyProps, Space } from 'contentful-management/types'
 
-const randomId = Math.floor(Math.random() * 10000).toString() // used to prevent concurrency issues
+const randomId = Math.floor(Math.random() * 100000).toString() // used to prevent concurrency issues
 
 export type TestContext = {
   sourceEnvironment: Environment
@@ -70,8 +70,8 @@ const teardown = async ({ apiKey, environments }: { apiKey?: ApiKey; environment
 }
 
 export const createEnvironments = async (testSpace: Space): Promise<TestContext> => {
-  const sourceEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + 'source_for_create')
-  const targetEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + 'target_for_create')
+  const sourceEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + '_source_environment')
+  const targetEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + '_target_environment')
   const apiKey = await createCdaToken(testSpace, [targetEnvironment.sys.id, sourceEnvironment.sys.id])
 
   return {
