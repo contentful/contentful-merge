@@ -36,7 +36,7 @@ before(async () => {
 
 after(async () => {
   console.log('Deleting test environments ...')
-  await Promise.all([applyTestContext.teardown()])
+  await Promise.all([applyTestContext.teardown(), createTestContext.teardown()])
 })
 
 describe('Apply command flow', () => {
