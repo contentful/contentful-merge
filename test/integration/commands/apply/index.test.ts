@@ -21,7 +21,6 @@ describe('Apply command flow', () => {
   let createTestContext: TestContext
 
   before(async () => {
-    console.log('before hook: apply command: starting')
     const client = createClient({ accessToken: cmaToken })
     testSpace = await client.getSpace(spaceId)
     const environmentsContext = await createEnvironments(testSpace)
@@ -36,12 +35,10 @@ describe('Apply command flow', () => {
       changesetFilePath,
       cmaToken,
     }
-    console.log('before hook: apply command: ready')
   })
 
   after(async () => {
     await Promise.all([createTestContext.teardown()])
-    console.log('before hook: apply command: ready')
   })
   // create changeset flow
   // to print the output during testing use `.stdout({ print: true })`

@@ -26,18 +26,23 @@ describe('create - happy path', () => {
     if (!environmentsContext) {
       throw new Error('Environments were not created successfully')
     }
+
+    testContext = environmentsContext
     // cdaTokenWithOnlyMasterAccess = await createCdaToken(testSpace, ['master', 'another'])
-    console.log('before hook: create command: finished')
+    console.log('[CREATE COMMAND] (BEFORE) Finished')
   })
 
   after(async () => {
-    console.log('Deleting test environments and api keys ...')
+    console.log('[CREATE COMMAND] Deleting test environments and api keys ...')
     await Promise.all([testContext.teardown()])
   })
 
   afterEach(() => fs.promises.rm(changesetPath, { force: true }))
+
   fancy
     .stdout({ print: true }) // to print the output during testing use `.stdout({ print: true })`
+    .createTestContentType(() => testContext.targetEnvironment)
+    .createTestContentType(() => testContext.sourceEnvironment)
     .runCreateCommand(() => testContext)
     .it('should create an empty changeset when both environments are empty', (ctx) => {
       console.log(ctx.stdout)
@@ -52,12 +57,8 @@ describe('create - happy path', () => {
 
   fancy
     .stdout()
-    .createTestContentType(() => testContext.targetEnvironment)
     .createTestData(() => testContext.sourceEnvironment, 'new-entry')
     .runCreateCommand(() => testContext)
-    .finally(async (ctx) => {
-      await ctx.deleteTestData()
-    })
     .it('should create a changeset when environment has additions', (ctx) => {
       expect(ctx.stdout).to.contain('Changeset successfully created 🎉')
       expect(ctx.stdout).to.contain('1 entry detected in the source environment')

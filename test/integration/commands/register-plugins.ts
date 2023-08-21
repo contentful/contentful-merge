@@ -36,6 +36,7 @@ const createTestEntry = async (env: Environment, entryId: string, title = 'defau
 
 const createTestData = async (env: Environment, entryId: string, title?: string): Promise<() => Promise<unknown>> => {
   const entry = await createTestEntry(env, entryId, title)
+  console.log('entry created', entryId)
 
   return () => Promise.allSettled([entry.unpublish(), entry.delete()])
 }
