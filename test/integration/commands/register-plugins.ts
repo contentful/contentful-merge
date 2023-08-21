@@ -100,7 +100,7 @@ export default fancy
             '--space',
             testContext.spaceId,
             '--environment',
-            testContext.environmentId,
+            testContext.targetEnvironmentId,
             '--cma-token',
             testContext.cmaToken,
           ],
