@@ -4,39 +4,38 @@ import fs from 'fs'
 import { TestContext, createEnvironments } from './../bootstrap'
 import fancy from './../register-plugins'
 
-const spaceId = process.env.CONTENTFUL_SPACE_ID!
-if (!spaceId) {
-  throw new Error('Please provide a `CONTENTFUL_SPACE_ID`')
-}
-const cmaToken = process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN!
-if (!cmaToken) {
-  throw new Error('Please provide a `CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN`')
-}
-
-const changesetPath = './changeset.json'
-let testContext: TestContext
-let testSpace: Space
-// let cdaTokenWithOnlyMasterAccess: ApiKey
-before(async () => {
-  console.log('before hook: create command: starting')
-  const client = createClient({ accessToken: cmaToken })
-  testSpace = await client.getSpace(spaceId)
-  const environmentsContext = await createEnvironments(testSpace)
-  if (!environmentsContext) {
-    throw new Error('Environments were not created successfully')
-  }
-  // cdaTokenWithOnlyMasterAccess = await createCdaToken(testSpace, ['master', 'another'])
-  console.log('before hook: create command: finished')
-})
-
-after(async () => {
-  console.log('Deleting test environments and api keys ...')
-  await Promise.all([testContext.teardown()])
-})
-
-afterEach(() => fs.promises.rm(changesetPath, { force: true }))
-
 describe('create - happy path', () => {
+  const spaceId = process.env.CONTENTFUL_SPACE_ID!
+  if (!spaceId) {
+    throw new Error('Please provide a `CONTENTFUL_SPACE_ID`')
+  }
+  const cmaToken = process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN!
+  if (!cmaToken) {
+    throw new Error('Please provide a `CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN`')
+  }
+
+  const changesetPath = './create-changeset.json'
+  let testContext: TestContext
+  let testSpace: Space
+  // let cdaTokenWithOnlyMasterAccess: ApiKey
+  before(async () => {
+    console.log('before hook: create command: starting')
+    const client = createClient({ accessToken: cmaToken })
+    testSpace = await client.getSpace(spaceId)
+    const environmentsContext = await createEnvironments(testSpace)
+    if (!environmentsContext) {
+      throw new Error('Environments were not created successfully')
+    }
+    // cdaTokenWithOnlyMasterAccess = await createCdaToken(testSpace, ['master', 'another'])
+    console.log('before hook: create command: finished')
+  })
+
+  after(async () => {
+    console.log('Deleting test environments and api keys ...')
+    await Promise.all([testContext.teardown()])
+  })
+
+  afterEach(() => fs.promises.rm(changesetPath, { force: true }))
   fancy
     .stdout({ print: true }) // to print the output during testing use `.stdout({ print: true })`
     .runCreateCommand(() => testContext)
