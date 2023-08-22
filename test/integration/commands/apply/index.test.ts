@@ -56,7 +56,7 @@ describe('Apply command flow', () => {
     })
 
   fancy
-    .stdout({ print: true })
+    .stdout()
     .runApplyCommand(() => applyTestContext)
     .it('should add new entries to environment if specified in changeset', (ctx) => {
       expect(ctx.stdout).to.contain('Changeset successfully applied 🎉')
