@@ -109,7 +109,6 @@ export default fancy
         )
         try {
           await cmd.run()
-          await new Promise((r) => setTimeout(r, 1000))
         } catch (e) {
           console.log(e)
         }
