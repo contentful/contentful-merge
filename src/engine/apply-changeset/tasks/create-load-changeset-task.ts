@@ -5,11 +5,14 @@ import { ApplyChangesetContext } from '../types'
 
 export const createLoadChangesetTask = (): ListrTask => {
   return {
-    title: 'load changeset data',
+    title: 'Load changeset data',
     task: async (context: ApplyChangesetContext, task) => {
       task.output = `Loading data from ${context.inputPath}`
       context.logger.log(LogLevel.INFO, 'Start createLoadChangesetTask')
-      context.changeset = await fs.readFile(context.inputPath, 'utf8').then((rawJson) => JSON.parse(rawJson))
+
+      const changeset = await fs.readFile(context.inputPath, 'utf8').then((rawJson) => JSON.parse(rawJson))
+
+      context.changeset = changeset
     },
   }
 }

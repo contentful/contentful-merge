@@ -25,6 +25,7 @@ export const createEntity = async ({
 
     task.output = `✨ successfully created ${createdEntry.sys.id}`
     logger.log(LogLevel.INFO, `entry ${item.entity.sys.id} successfully published on environment: ${environmentId}`)
+    return item.entity.sys.id
   } catch (error: any) {
     task.output = `🚨 failed to create ${item.entity.sys.id}`
     logger.log(LogLevel.ERROR, `add entry ${item.entity.sys.id} failed with ${error}`)

@@ -32,6 +32,7 @@ export const deleteEntity = async ({
     })
     task.output = `✨ successfully deleted ${id}`
     logger.log(LogLevel.INFO, `entry ${id} successfully deleted on environment: ${environmentId}`)
+    return id
   } catch (error: any) {
     task.output = `🚨 failed to delete ${id}`
     logger.log(LogLevel.ERROR, `delete entry ${id} failed with ${error}`)

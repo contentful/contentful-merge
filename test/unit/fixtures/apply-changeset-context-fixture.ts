@@ -16,5 +16,8 @@ export const createApplyChangesetContext = (context?: Partial<ApplyChangesetCont
   responseCollector: new ResponseStatusCollector(),
   limit: 1000,
   logger: createStubInstance(MemoryLogger),
+  processedEntities: {
+    entries: { added: [], deleted: [], updated: [] },
+  },
   ...context,
 })
