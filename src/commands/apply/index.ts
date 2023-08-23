@@ -1,4 +1,4 @@
-import { Command, Args, Flags } from '@oclif/core'
+import { Command, Config, Args, Flags } from '@oclif/core'
 import { MemoryLogger } from '../../engine/logger/memory-logger'
 import { createTransformHandler } from '../../engine/logger/create-transform-handler'
 import { createClient } from '../../engine/client'
@@ -8,14 +8,23 @@ import { ApplyChangesetContext } from '../../engine/apply-changeset/types'
 import chalk from 'chalk'
 import { applyChangesetTask } from '../../engine/apply-changeset'
 import { writeLog } from '../../engine/logger/write-log'
-import { OutputFormatter } from '../../engine/utils'
+import { OutputFormatter, renderFilePaths } from '../../engine/utils'
 import { renderErrorOutputForApply } from '../../engine/utils/render-error-output'
 import crypto from 'crypto'
+import { renderOutput } from '../../engine/apply-changeset/render-output'
 
 const sequenceKey = crypto.randomUUID()
 
 export default class Apply extends Command {
   static description = 'Apply Changeset'
+  private logFilePath: string | undefined
+  private logger: MemoryLogger
+
+  constructor(argv: string[], config: Config) {
+    super(argv, config)
+
+    this.logger = new MemoryLogger('apply-changeset')
+  }
 
   static hidden = true
 
@@ -36,11 +45,14 @@ export default class Apply extends Command {
     limit: Flags.integer({ description: 'Limit parameter for collection endpoints', required: false, default: 200 }),
   }
 
+  private async writeFileLog() {
+    this.logFilePath = await writeLog(this.logger)
+  }
+
   async run(): Promise<void> {
     const { flags, args } = await this.parse(Apply)
 
-    const logger = new MemoryLogger('apply-changeset')
-    const logHandler = createTransformHandler(logger)
+    const logHandler = createTransformHandler(this.logger)
 
     const client = createClient({
       cmaToken: flags['cma-token'],
@@ -52,7 +64,7 @@ export default class Apply extends Command {
     const responseCollector = new ResponseStatusCollector()
 
     const context: ApplyChangesetContext = {
-      logger,
+      logger: this.logger,
       client,
       responseCollector,
       limit: flags.limit,
@@ -61,34 +73,22 @@ export default class Apply extends Command {
       environmentId: flags.environment,
       inputPath: args.input,
       changeset: createChangeset(flags.source, flags.target),
+      processedEntities: {
+        entries: { added: [], deleted: [], updated: [] },
+      },
     }
 
-    console.log(chalk.underline.bold('\nStart applying changeset'))
+    console.log(OutputFormatter.headline(`\nStart applying changeset to ${chalk.yellow(flags.environment)} 📥`))
 
-    const startTime = performance.now()
-    const result = await applyChangesetTask(context).run()
-    const endTime = performance.now()
+    // const startTime = performance.now()
+    await applyChangesetTask(context).run()
+    // const endTime = performance.now()
 
-    const duration = ((endTime - startTime) / 1000).toFixed(1)
-    const usedMemory = process.memoryUsage().heapUsed / 1024 / 1024
+    // const duration = ((endTime - startTime) / 1000).toFixed(1)
+    // const usedMemory = process.memoryUsage().heapUsed / 1024 / 1024
 
-    const logFilePath = await writeLog(result.logger)
-    let output = '\n'
-    output += chalk.underline.bold('Changeset successfully applied 🎉')
-    output += `\nApplied a changeset with ${OutputFormatter.formatNumber(context.changeset.items.length)} changes to ${
-      flags.environment
-    }`
-    output += `\nOverall ${OutputFormatter.formatNumber(client.requestCounts().cda)} CDA and `
-    output += `${OutputFormatter.formatNumber(
-      client.requestCounts().cma
-    )} CMA request were fired within ${OutputFormatter.formatNumber(duration)} seconds.`
-    output += `\nThe process used approximately ${OutputFormatter.formatNumber(usedMemory.toFixed(2))} MB memory.`
-    output += '\n'
-    output += `\n📖 ${logFilePath}`
-
-    console.log(output)
-
-    // console.log(responseCollector.toString())
+    const output = await renderOutput(context)
+    this.log(output)
   }
 
   async catch(error: any) {
@@ -96,5 +96,10 @@ export default class Apply extends Command {
 
     this.log(output)
     this.exit(1)
+  }
+
+  protected async finally(): Promise<any> {
+    await this.writeFileLog()
+    this.log(renderFilePaths({ logFilePath: this.logFilePath }))
   }
 }

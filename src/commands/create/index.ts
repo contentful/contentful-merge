@@ -22,7 +22,7 @@ import { renderOutput } from '../../engine/create-changeset/render-output'
 import { OutputFormatter } from '../../engine/utils/output-formatter'
 import { config } from '../../config'
 import { renderErrorOutputForCreate } from '../../engine/utils/render-error-output'
-import { renderFilePaths } from '../../engine/create-changeset/render-file-paths'
+import { renderFilePaths } from '../../engine/utils'
 
 Sentry.init({
   dsn: 'https://5bc27276ac684a56bab07632be10a455@o2239.ingest.sentry.io/4505312653410304',
@@ -215,7 +215,7 @@ export default class Create extends Command {
 
   protected async finally(): Promise<any> {
     await this.writeFileLog()
-    this.log(renderFilePaths(this.changesetFilePath, this.logFilePath))
+    this.log(renderFilePaths({ changesetPath: this.changesetFilePath, logFilePath: this.logFilePath }))
 
     // analyticsCloseAndFlush has a very short timeout because it will
     // otherwise trigger a rerender of the listr tasks on error exits

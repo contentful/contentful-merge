@@ -9,7 +9,7 @@ export const applyChangesetTask = (context: ApplyChangesetContext): Listr => {
   return new Listr<ApplyChangesetContext>(
     [
       {
-        title: 'Apply changeset',
+        title: 'Applying the Changeset',
         task: (ctx, task): Listr => {
           return task.newListr(
             [
