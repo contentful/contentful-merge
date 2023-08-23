@@ -39,11 +39,7 @@ jobs:
       - node/install:
           node-version: '18.15'
       - node/install-packages
-      - run: npm run test-integration-with-reports
-      - store_test_results:
-          path: reports
-      - store_artifacts:
-          path: ./reports/integration-results.xml
+      - run: npm run test-integration
   release:
     docker:
      - image: cimg/node:lts
