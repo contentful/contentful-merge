@@ -59,6 +59,8 @@ describe('Apply command flow', () => {
     .stdout()
     .runApplyCommand(() => applyTestContext)
     .it('should add new entries to environment if specified in changeset', (ctx) => {
+      console.log('standard output')
+      console.log(ctx.stdout)
       expect(ctx.stdout).to.contain('Changeset successfully applied 🎉')
       // expect(ctx.stdout).to.contain('Deleted 1/1 entities')
       // expect(ctx.stdout).to.contain('Added 1/1 entities')
