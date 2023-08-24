@@ -19,7 +19,6 @@ describe('create command', () => {
   let testSpace: Space
   let cdaTokenWithOnlyMasterAccess: ApiKey
   before(async () => {
-    console.log('before hook: create command: starting')
     const client = createClient({ accessToken: cmaToken })
     testSpace = await client.getSpace(spaceId)
     const environmentsContext = await createEnvironments(testSpace)
@@ -29,11 +28,9 @@ describe('create command', () => {
 
     testContext = environmentsContext
     cdaTokenWithOnlyMasterAccess = await createCdaToken(testSpace, ['master'])
-    console.log('[CREATE COMMAND] (BEFORE) Finished')
   })
 
   after(async () => {
-    console.log('[CREATE COMMAND] Deleting test environments and api keys ...')
     await Promise.all([testContext.teardown(), cdaTokenWithOnlyMasterAccess.delete()])
   })
 
