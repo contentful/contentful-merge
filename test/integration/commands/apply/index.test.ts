@@ -28,7 +28,6 @@ describe('Apply command flow', () => {
       throw new Error('Environments were not created successfully')
     }
     createTestContext = environmentsContext
-    // const { environmentId, teardown } = await createEnvironment(testSpace)
     applyTestContext = {
       spaceId: testSpace.sys.id,
       targetEnvironmentId: createTestContext.targetEnvironment.sys.id,
@@ -40,10 +39,9 @@ describe('Apply command flow', () => {
   after(async () => {
     await Promise.all([createTestContext.teardown()])
   })
-  // create changeset flow
-  // to print the output during testing use `.stdout({ print: true })`
+
   fancy
-    .stdout()
+    .stdout() // to print the output during testing use `.stdout({ print: true })`
     .createTestContentType(() => createTestContext.targetEnvironment)
     .createTestData(() => createTestContext.targetEnvironment, 'entry-1', 'original-title')
     .createTestData(() => createTestContext.targetEnvironment, 'entry-to-be-deleted')
