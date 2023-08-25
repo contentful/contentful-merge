@@ -20,11 +20,11 @@ const createTestContentType = async (env: Environment): Promise<ContentType> => 
   return contentType
 }
 
-const createTestEntry = async (env: Environment): Promise<Entry> => {
+const createTestEntry = async (env: Environment, entryId: string, title = 'default title'): Promise<Entry> => {
   const contentTypeId = 'testType'
-  let entry = await env.createEntry(contentTypeId, {
+  let entry = await env.createEntryWithId(contentTypeId, entryId, {
     fields: {
-      title: { 'en-US': 'Hello from contentful-merge CLI' },
+      title: { 'en-US': title },
       description: { 'en-US': "Lovely weather isn't it?" },
     },
   })
@@ -34,19 +34,19 @@ const createTestEntry = async (env: Environment): Promise<Entry> => {
   return entry
 }
 
-const createTestData = async (env: Environment): Promise<() => Promise<unknown>> => {
-  const contentType = await createTestContentType(env)
+const createTestData = async (env: Environment, entryId: string, title?: string): Promise<() => Promise<unknown>> => {
+  const entry = await createTestEntry(env, entryId, title)
+  console.log('entry created', entryId)
 
-  const entry = await createTestEntry(env)
-
-  return () => Promise.allSettled([entry.unpublish(), entry.delete(), contentType.unpublish(), contentType.delete()])
+  return () => Promise.allSettled([entry.unpublish(), entry.delete()])
 }
 
 export default fancy
-  .register('createTestData', (getSourceEnvironment: () => Environment) => {
+  .register('createTestData', (getSourceEnvironment: () => Environment, entryId: string, title?: string) => {
+    // rename to createEntryInEnvironment
     return {
       async run(ctx: { deleteTestData: () => Promise<unknown> }) {
-        const deleteTestData = await createTestData(getSourceEnvironment())
+        const deleteTestData = await createTestData(getSourceEnvironment(), entryId, title)
 
         ctx.deleteTestData = deleteTestData
       },
@@ -101,7 +101,7 @@ export default fancy
             '--space',
             testContext.spaceId,
             '--environment',
-            testContext.environmentId,
+            testContext.targetEnvironmentId,
             '--cma-token',
             testContext.cmaToken,
           ],
