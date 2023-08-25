@@ -1,8 +1,8 @@
 import { expect } from '@oclif/test'
 import { Space, createClient } from 'contentful-management'
 import fs from 'fs'
-import { ApplyTestContext, TestContext, createEnvironments } from './../bootstrap'
-import fancy from './../register-plugins'
+import { ApplyTestContext, TestContext, createEnvironments } from './../../integration/commands/bootstrap'
+import fancy from './../../integration/commands/register-plugins'
 
 describe('Apply command flow', () => {
   const spaceId = process.env.CONTENTFUL_SPACE_ID!

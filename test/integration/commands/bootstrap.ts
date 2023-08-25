@@ -62,25 +62,20 @@ const teardown = async ({ apiKey, environments }: { apiKey?: ApiKey; environment
 }
 
 export const createEnvironments = async (testSpace: Space): Promise<TestContext | undefined> => {
-  try {
-    const randomId = Math.floor(Math.random() * 10000).toString() // used to prevent concurrency issues
-    console.log('creating source environment...')
-    const sourceEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + '_source_environment')
-    console.log('creating target environment...')
-    const targetEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + '_target_environment')
-    console.log('creating API keys...')
-    const apiKey = await createCdaToken(testSpace, [targetEnvironment.sys.id, sourceEnvironment.sys.id])
-    console.log('all setup')
-    return {
-      sourceEnvironment,
-      targetEnvironment,
-      cdaToken: apiKey.accessToken,
-      spaceId: testSpace.sys.id,
-      teardown: () => teardown({ apiKey, environments: [sourceEnvironment, targetEnvironment] }),
-    }
-  } catch (error) {
-    console.error(error)
-    throw error
+  const randomId = Math.floor(Math.random() * 10000).toString() // used to prevent concurrency issues
+  console.log('creating source environment...')
+  const sourceEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + '_source_environment')
+  console.log('creating target environment...')
+  const targetEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + '_target_environment')
+  console.log('creating API keys...')
+  const apiKey = await createCdaToken(testSpace, [targetEnvironment.sys.id, sourceEnvironment.sys.id])
+  console.log('all setup')
+  return {
+    sourceEnvironment,
+    targetEnvironment,
+    cdaToken: apiKey.accessToken,
+    spaceId: testSpace.sys.id,
+    teardown: () => teardown({ apiKey, environments: [sourceEnvironment, targetEnvironment] }),
   }
 }
 
