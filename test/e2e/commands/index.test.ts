@@ -4,7 +4,7 @@ import fs from 'fs'
 import { ApplyTestContext, TestContext, createEnvironments } from './../../integration/commands/bootstrap'
 import fancy from './../../integration/commands/register-plugins'
 
-describe('Apply command flow', () => {
+describe('Command flow - create and apply', () => {
   const spaceId = process.env.CONTENTFUL_SPACE_ID!
   if (!spaceId) {
     throw new Error('Please provide a `CONTENTFUL_SPACE_ID`')
