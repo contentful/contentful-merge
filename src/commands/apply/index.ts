@@ -1,4 +1,4 @@
-import { Command, Config, Args, Flags } from '@oclif/core'
+import { Command, Config, Flags } from '@oclif/core'
 import { MemoryLogger } from '../../engine/logger/memory-logger'
 import { createTransformHandler } from '../../engine/logger/create-transform-handler'
 import { createClient } from '../../engine/client'
@@ -28,21 +28,17 @@ export default class Apply extends Command {
 
   static hidden = true
 
-  static examples = [
-    './bin/dev apply changeset.json --space "<space-id>" --environment "staging"',
-    'contentful-merge apply changeset.json --space "<space-id>" --environment "staging"',
-  ]
-
-  // How are args being passed into fancy?
-  static args = {
-    input: Args.string({ required: false, default: 'changeset.json' }),
-  }
+  static examples = ['contentful-merge apply  --space "<space-id>" --environment "staging" --file changeset.json']
 
   static flags = {
     space: Flags.string({ description: 'Space id', required: true }),
     environment: Flags.string({ description: 'Target environment id', required: true }),
-    'cma-token': Flags.string({ description: 'CMA token', required: true, env: 'CMA_TOKEN' }),
-    limit: Flags.integer({ description: 'Limit parameter for collection endpoints', required: false, default: 200 }),
+    file: Flags.string({ description: 'File path to changeset file', required: false, default: 'changeset.json' }),
+    'cma-token': Flags.string({
+      description: 'CMA token, defaults to env: $CMA_TOKEN',
+      required: true,
+      env: 'CMA_TOKEN',
+    }),
   }
 
   private async writeFileLog() {
@@ -50,7 +46,7 @@ export default class Apply extends Command {
   }
 
   async run(): Promise<void> {
-    const { flags, args } = await this.parse(Apply)
+    const { flags } = await this.parse(Apply)
 
     const logHandler = createTransformHandler(this.logger)
 
@@ -71,7 +67,7 @@ export default class Apply extends Command {
       accessToken: flags.token,
       spaceId: flags.space,
       environmentId: flags.environment,
-      inputPath: args.input,
+      inputPath: flags.file,
       changeset: createChangeset(flags.source, flags.target),
       processedEntities: {
         entries: { added: [], deleted: [], updated: [] },
@@ -92,6 +88,8 @@ export default class Apply extends Command {
   }
 
   async catch(error: any) {
+    await this.parse(Apply)
+
     const output = renderErrorOutputForApply(error)
 
     this.log(output)
