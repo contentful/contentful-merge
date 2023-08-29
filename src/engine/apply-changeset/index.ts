@@ -28,7 +28,7 @@ export const applyChangesetTask = (context: ApplyChangesetContext): Listr => {
       rendererOptions: {
         timer: PRESET_TIMER,
         collapseSubtasks: false,
-        showErrorMessage: true,
+        showErrorMessage: false,
       },
     }
   )

@@ -2,7 +2,7 @@ import { AffectedEntities } from './create-changeset/types'
 
 export class ContentfulError extends Error {
   details: any
-  constructor(message: string, details: any) {
+  constructor(message: string, details?: any) {
     super(message)
     this.details = details
   }
@@ -68,5 +68,13 @@ export class AddEntryError extends MergeEntityError {
 export class UpdateEntryError extends MergeEntityError {
   constructor(context: MergeEntityErrorContext) {
     super(`An error occurred while updating an entry.`, context)
+  }
+}
+
+export class ChangesetFileError extends ContentfulError {
+  constructor(changesetFilePath: string) {
+    super(
+      `There is no changeset at the path you provided ("${changesetFilePath}").\nPlease provide the path to an existing changeset to the "--file" flag and try again.`
+    )
   }
 }
