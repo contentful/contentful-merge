@@ -4,7 +4,7 @@ import { expect } from 'chai'
 import { createAffectedContentTypesDivergedTask } from '../../../../../src/engine/create-changeset/tasks/create-affected-content-types-diverged-task'
 import { createCreateChangesetContext } from '../../../fixtures/create-changeset-context-fixture'
 import { beforeEach } from 'mocha'
-import { ContentModelDivergedError } from '../../../../../src/engine/create-changeset/errors'
+import { ContentModelDivergedError } from '../../../../../src/engine/errors'
 
 const CONTENT_TYPE_ID = 'affected-content-type'
 

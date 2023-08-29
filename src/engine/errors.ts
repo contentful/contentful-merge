@@ -1,4 +1,4 @@
-import { AffectedEntities } from './types'
+import { AffectedEntities } from './create-changeset/types'
 
 export class ContentfulError extends Error {
   details: any
@@ -38,5 +38,35 @@ export class ContentModelDivergedError extends ContentfulError {
     const details = { amount: divergedContentTypeIds.length }
     super(message, details)
     this.divergedContentTypeIds = divergedContentTypeIds
+  }
+}
+
+export interface MergeEntityErrorContext {
+  id: string
+  details: Record<any, any>
+}
+
+export class MergeEntityError extends ContentfulError {
+  public entryId: string
+  constructor(message: string, context: MergeEntityErrorContext) {
+    super(message, context.details)
+    this.entryId = context.id
+  }
+}
+
+export class DeleteEntryError extends MergeEntityError {
+  constructor(context: MergeEntityErrorContext) {
+    super(`An error occurred while deleting an entry.`, context)
+  }
+}
+export class AddEntryError extends MergeEntityError {
+  constructor(context: MergeEntityErrorContext) {
+    super(`An error occurred while adding an entry.`, context)
+  }
+}
+
+export class UpdateEntryError extends MergeEntityError {
+  constructor(context: MergeEntityErrorContext) {
+    super(`An error occurred while updating an entry.`, context)
   }
 }

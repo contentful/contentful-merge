@@ -1,10 +1,12 @@
 import { AxiosError } from 'axios'
 import { OutputFormatter } from './output-formatter'
-import { ContentModelDivergedError, LimitsExceededError } from '../create-changeset/errors'
+import { ContentModelDivergedError, LimitsExceededError, MergeEntityError } from '../errors'
 import { entityStatRenderer } from './entity-stat-renderer'
 import { pluralizeContentType, pluralizeEntry } from './pluralize'
 import { icons } from './icons'
 import chalk from 'chalk'
+
+const red = (text: string) => OutputFormatter.error(text)
 
 const failedEntryChangeRenderer = entityStatRenderer({
   icon: icons.bulletPoint,
@@ -45,6 +47,15 @@ export function renderErrorOutputForApply(error: Error) {
   }
 
   output += OutputFormatter.error(errorMessage)
+
+  if (error instanceof MergeEntityError) {
+    const errorDetails = `\n\n${JSON.stringify(error.details, null, 2)}`
+    output += red(
+      `\nThe changeset was only partially applied. The merge was stopped due to the following error (entry id: ${error.entryId}):`
+    )
+
+    output += red(errorDetails)
+  }
 
   return output
 }
