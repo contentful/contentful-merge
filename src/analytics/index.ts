@@ -7,7 +7,7 @@ const userId = crypto.randomUUID()
 
 const analytics = new Analytics({
   writeKey,
-  disable: !!process.env.DISABLE_ANALYTICS || !!process.env.CI,
+  disable: !!process.env.DISABLE_ANALYTICS,
 })
 
 export async function analyticsCloseAndFlush(timeout: number) {

@@ -210,7 +210,6 @@ export default class Create extends Command {
     Sentry.captureException(error)
 
     this.log(output)
-    this.exit(1)
   }
 
   protected async finally(): Promise<any> {
