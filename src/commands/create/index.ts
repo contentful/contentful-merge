@@ -182,7 +182,6 @@ export default class Create extends Command {
       num_changed_items: context.affectedEntities.entries.changed.length,
       num_source_entries: context.sourceData.entries.ids.length,
       num_target_entries: context.targetData.entries.ids.length,
-      num_changeset_items_exceeded: false,
     })
 
     this.changesetFilePath = path.join(process.cwd(), 'changeset.json')
