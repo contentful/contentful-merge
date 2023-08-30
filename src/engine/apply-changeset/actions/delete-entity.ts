@@ -1,3 +1,4 @@
+import { DeleteEntryError } from '../../errors'
 import { LogLevel } from '../../logger/types'
 import { BaseActionParams } from '../../types'
 
@@ -37,5 +38,7 @@ export const deleteEntity = async ({
     task.output = `🚨 failed to delete ${id}`
     logger.log(LogLevel.ERROR, `delete entry ${id} failed with ${error}`)
     responseCollector.add(error.code, error)
+
+    throw new DeleteEntryError({ id, details: error.response?.data })
   }
 }

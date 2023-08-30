@@ -2,6 +2,7 @@ import { EntryProps } from 'contentful-management'
 import { omit } from 'lodash'
 import { LogLevel } from '../../logger/types'
 import { AddedChangesetItem, BaseActionParams } from '../../types'
+import { AddEntryError } from '../../errors'
 
 type CreateEntityParams = BaseActionParams & {
   item: AddedChangesetItem
@@ -30,5 +31,7 @@ export const createEntity = async ({
     task.output = `🚨 failed to create ${item.entity.sys.id}`
     logger.log(LogLevel.ERROR, `add entry ${item.entity.sys.id} failed with ${error}`)
     responseCollector.add(error.code, error)
+
+    throw new AddEntryError({ id: item.entity.sys.id, details: error.response?.data })
   }
 }

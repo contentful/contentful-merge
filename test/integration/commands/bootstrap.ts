@@ -69,7 +69,8 @@ export const createEnvironments = async (testSpace: Space): Promise<TestContext 
   const targetEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + '_target_environment')
   console.log('creating API keys...')
   const apiKey = await createCdaToken(testSpace, [targetEnvironment.sys.id, sourceEnvironment.sys.id])
-  console.log('all setup')
+  console.log('setup finished\n')
+
   return {
     sourceEnvironment,
     targetEnvironment,

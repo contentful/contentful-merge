@@ -3,7 +3,7 @@ import { LogLevel } from '../../logger/types'
 import { CreateChangesetContext } from '../types'
 import { doesExceedLimits } from '../../utils/exceeds-limits'
 import { EntityType } from '../../types'
-import { LimitsExceededError } from '../errors'
+import { LimitsExceededError } from '../../errors'
 
 type ComputeIdsTaskProps = {
   entityType: EntityType

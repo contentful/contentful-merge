@@ -97,6 +97,7 @@ export default fancy
 
         const cmd = new ApplyCommand(
           [
+            '--file',
             testContext.changesetFilePath,
             '--space',
             testContext.spaceId,

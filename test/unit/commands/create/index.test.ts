@@ -3,11 +3,7 @@ import { Config } from '@oclif/core'
 import CreateCommand from '../../../../src/commands/create'
 import { fancy } from 'fancy-test'
 import { AxiosError } from 'axios'
-import {
-  ContentModelDivergedError,
-  LimitsExceededContext,
-  LimitsExceededError,
-} from '../../../../src/engine/create-changeset/errors'
+import { ContentModelDivergedError, LimitsExceededContext, LimitsExceededError } from '../../../../src/engine/errors'
 import { MemoryLogger } from '../../../../src/engine/logger/memory-logger'
 
 import fs from 'node:fs/promises'
