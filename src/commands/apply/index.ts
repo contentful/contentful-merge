@@ -93,7 +93,6 @@ export default class Apply extends Command {
     const output = renderErrorOutputForApply(error)
 
     this.log(output)
-    this.exit(1)
   }
 
   protected async finally(): Promise<any> {
