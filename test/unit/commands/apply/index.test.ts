@@ -8,6 +8,9 @@ import { MemoryLogger } from '../../../../src/engine/logger/memory-logger'
 import fs from 'node:fs/promises'
 import sinon from 'sinon'
 import { writeLog } from '../../../../src/engine/logger/write-log'
+import { LimitsExceededForApplyError } from '../../../../src/engine/errors'
+import { ApplyChangesetContext } from '../../../../src/engine/apply-changeset/types'
+import { createApplyChangesetContext } from '../../fixtures/apply-changeset-context-fixture'
 
 const cmd = new ApplyCommand(
   [],
@@ -44,6 +47,21 @@ describe('Apply Command', () => {
     .it('should inform that api keys need access to all compared environments', (ctx) => {
       expect(ctx.stdout).to.contain('Merge was unsuccessful 💔')
       expect(ctx.stdout).to.contain('An authorization issue occurred. Please make sure the CMA token is correct.')
+    })
+
+  fancy
+    .stdout()
+    .do(() => {
+      const mockContext: ApplyChangesetContext = {
+        ...createApplyChangesetContext(),
+        limit: 20,
+      } as unknown as ApplyChangesetContext
+      const mockError = new LimitsExceededForApplyError(mockContext)
+      cmd.catch(mockError)
+    })
+    .it('should inform on entry limit and number of changes on LimitsExceeded Error', (ctx) => {
+      expect(ctx.stdout).to.contain('Merge was unsuccessful 💔')
+      expect(ctx.stdout).to.contain('allowed limit is 20 entries')
     })
 
   fancy

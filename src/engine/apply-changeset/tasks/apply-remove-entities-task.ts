@@ -6,7 +6,7 @@ import { ApplyChangesetContext } from '../types'
 import { pluralizeEntry } from '../../utils'
 import { isString } from 'lodash'
 
-export const createRemoveEntitiesTask = (): ListrTask => {
+export const applyRemoveEntitiesTask = (): ListrTask => {
   return {
     title: 'Deleting entries',
     task: async (context: ApplyChangesetContext, task) => {

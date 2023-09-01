@@ -7,7 +7,7 @@ import { ApplyChangesetContext } from '../types'
 import { pluralizeEntry } from '../../utils'
 import { isString } from 'lodash'
 
-export const createAddEntitiesTask = (): ListrTask => {
+export const applyAddEntitiesTask = (): ListrTask => {
   return {
     title: 'Adding entries',
     task: async (context: ApplyChangesetContext, task) => {
