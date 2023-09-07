@@ -14,8 +14,8 @@ export const applyChangesetTask = (context: ApplyChangesetContext): Listr => {
         task: (ctx, task): Listr => {
           return task.newListr(
             [
-              applyComputeIdsTask(),
               applyLoadChangesetTask(),
+              applyComputeIdsTask(),
               applyRemoveEntitiesTask(),
               applyAddEntitiesTask(),
               applyChangeEntitiesTask(),

@@ -14,7 +14,7 @@ export interface LimitsExceededContext {
   affectedEntities: AffectedEntities
 }
 
-export class LimitsExceededError extends ContentfulError {
+export class LimitsExceededForCreateError extends ContentfulError {
   constructor(context: LimitsExceededContext) {
     const entries = context.affectedEntities.entries
     const message = `The detected number of entries to be compared, added or deleted is too high.\nThe currently allowed limit is ${context.limit} entries.`

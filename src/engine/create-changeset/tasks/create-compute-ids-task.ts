@@ -3,7 +3,7 @@ import { LogLevel } from '../../logger/types'
 import { CreateChangesetContext } from '../types'
 import { doesExceedLimits } from '../../utils/exceeds-limits'
 import { EntityType } from '../../types'
-import { LimitsExceededError } from '../../errors'
+import { LimitsExceededForCreateError } from '../../errors'
 
 type ComputeIdsTaskProps = {
   entityType: EntityType
@@ -37,7 +37,10 @@ export const createComputeIdsTask = ({ entityType }: ComputeIdsTaskProps): Listr
 
       // We are only enforcing limits for entries atm as we do not create changesets for content types
       if (exceedsLimits && entityType == 'entries') {
-        throw new LimitsExceededError({ limit: context.limits.all, affectedEntities: context.affectedEntities })
+        throw new LimitsExceededForCreateError({
+          limit: context.limits.all,
+          affectedEntities: context.affectedEntities,
+        })
       }
 
       return Promise.resolve(context)

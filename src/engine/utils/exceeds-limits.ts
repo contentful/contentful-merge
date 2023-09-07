@@ -15,6 +15,6 @@ export const doesExceedLimits = (context: CreateChangesetContext, entityType: En
   )
 }
 
-export const changegestExceedLimits = (context: ApplyChangesetContext) => {
+export const changesetExceedsLimits = (context: ApplyChangesetContext) => {
   return context.changeset.items.length > context.limit
 }
