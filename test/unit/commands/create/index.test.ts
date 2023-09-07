@@ -3,7 +3,11 @@ import { Config } from '@oclif/core'
 import CreateCommand from '../../../../src/commands/create'
 import { fancy } from 'fancy-test'
 import { AxiosError } from 'axios'
-import { ContentModelDivergedError, LimitsExceededContext, LimitsExceededError } from '../../../../src/engine/errors'
+import {
+  ContentModelDivergedError,
+  LimitsExceededContext,
+  LimitsExceededForCreateError,
+} from '../../../../src/engine/errors'
 import { MemoryLogger } from '../../../../src/engine/logger/memory-logger'
 
 import fs from 'node:fs/promises'
@@ -56,7 +60,7 @@ describe('Create Command', () => {
         limit: 20,
         affectedEntities: { entries: { added: [], removed: [], maybeChanged: ['test-entry'] } },
       } as unknown as LimitsExceededContext
-      const mockError = new LimitsExceededError(mockContext)
+      const mockError = new LimitsExceededForCreateError(mockContext)
       cmd.catch(mockError)
     })
     .it('should inform on entry limit and number of changes on LimitsExceeded Error', (ctx) => {
