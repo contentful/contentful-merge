@@ -1,6 +1,6 @@
 import { initializeTask } from '../../../test-utils'
 import { expect } from 'chai'
-import { createLoadChangesetTask } from '../../../../../src/engine/apply-changeset/tasks/create-load-changeset-task'
+import { applyLoadChangesetTask } from '../../../../../src/engine/apply-changeset/tasks/apply-load-changeset-task'
 import { beforeEach } from 'mocha'
 import { DeletedChangesetItem } from '../../../../../src/engine/types'
 import { createLinkObject } from '../../../../../src/engine/utils/create-link-object'
@@ -9,7 +9,7 @@ import { createApplyChangesetContext } from '../../../fixtures/apply-changeset-c
 import { ApplyChangesetContext } from '../../../../../src/engine/apply-changeset/types'
 import path from 'path'
 
-describe('createLoadChangesetTask', () => {
+describe('applyLoadChangesetTask', () => {
   let context: ApplyChangesetContext
   beforeEach(() => {
     context = createApplyChangesetContext()
@@ -18,7 +18,7 @@ describe('createLoadChangesetTask', () => {
   it('loads changeset from file', async () => {
     context.inputPath = path.resolve(__dirname, './test-loading-changeset')
 
-    const task = initializeTask(createLoadChangesetTask(), context)
+    const task = initializeTask(applyLoadChangesetTask(), context)
     let error = null
     try {
       await task.run()

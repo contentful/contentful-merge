@@ -15,4 +15,5 @@ export interface ApplyChangesetContext extends BaseContext {
   changeset: Changeset
   processedEntities: ProcessedEntities
   responseCollector: ResponseStatusCollector
+  limit: number
 }

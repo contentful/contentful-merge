@@ -1,3 +1,4 @@
+import { ApplyChangesetContext } from './apply-changeset/types'
 import { AffectedEntities } from './create-changeset/types'
 
 export class ContentfulError extends Error {
@@ -13,7 +14,7 @@ export interface LimitsExceededContext {
   affectedEntities: AffectedEntities
 }
 
-export class LimitsExceededError extends ContentfulError {
+export class LimitsExceededForCreateError extends ContentfulError {
   constructor(context: LimitsExceededContext) {
     const entries = context.affectedEntities.entries
     const message = `The detected number of entries to be compared, added or deleted is too high.\nThe currently allowed limit is ${context.limit} entries.`
@@ -25,6 +26,17 @@ export class LimitsExceededError extends ContentfulError {
         maybeChanged: entries.maybeChanged.length,
         total: entries.added.length + entries.removed.length + entries.maybeChanged.length,
       },
+    }
+    super(message, details)
+  }
+}
+
+export class LimitsExceededForApplyError extends ContentfulError {
+  constructor(context: ApplyChangesetContext) {
+    const message = `The detected number of entries to be changed is too high.\nThe currently allowed limit is ${context.limit} entries.`
+    const details = {
+      limit: context.limit,
+      amount: context.changeset.items.length,
     }
     super(message, details)
   }

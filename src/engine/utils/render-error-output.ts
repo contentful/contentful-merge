@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios'
 import { OutputFormatter } from './output-formatter'
-import { ContentModelDivergedError, LimitsExceededError, MergeEntityError } from '../errors'
+import { ContentModelDivergedError, LimitsExceededForCreateError, MergeEntityError } from '../errors'
 import { entityStatRenderer } from './entity-stat-renderer'
 import { pluralizeContentType, pluralizeEntry } from './pluralize'
 import { icons } from './icons'
@@ -84,7 +84,7 @@ export function renderErrorOutputForCreate(error: Error) {
 
   output += OutputFormatter.error(errorMessage)
 
-  if (error instanceof LimitsExceededError) {
+  if (error instanceof LimitsExceededForCreateError) {
     const entriesAddedLength = error.details.amount.added
     const entriesRemovedLength = error.details.amount.removed
     const entriesMaybeChangedLength = error.details.amount.maybeChanged

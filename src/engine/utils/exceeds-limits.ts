@@ -1,3 +1,4 @@
+import { ApplyChangesetContext } from '../apply-changeset/types'
 import { CreateChangesetContext } from '../create-changeset/types'
 import { EntityType } from '../types'
 
@@ -12,4 +13,8 @@ export const doesExceedLimits = (context: CreateChangesetContext, entityType: En
     numberOfRemoved > context.limits.removed ||
     numberOfMaybeChanged > context.limits.changed
   )
+}
+
+export const changesetExceedsLimits = (context: ApplyChangesetContext) => {
+  return context.changeset.items.length > context.limit
 }
