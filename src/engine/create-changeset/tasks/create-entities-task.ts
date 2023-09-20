@@ -5,8 +5,6 @@ import { LogLevel } from '../../logger/types'
 import { Comparable, CreateChangesetContext, EntityData, EnvironmentScope } from '../types'
 import { EntityType } from '../../types'
 
-const LIMIT = 1000
-
 type ExecuteParams = {
   context: CreateChangesetContext
   task: ListrTaskWrapper<CreateChangesetContext, any>
@@ -19,6 +17,7 @@ type ExecuteParams = {
 const execute = async ({ context, environmentId, task, entityType, additionalFields = [] }: ExecuteParams) => {
   const {
     client: { cda },
+    requestBatchSize,
   } = context
 
   const localContext: EntityData = {
@@ -33,7 +32,7 @@ const execute = async ({ context, environmentId, task, entityType, additionalFie
   const promises = []
   let requestsDone = 0
   const result: Comparable[] = []
-  const iterations = Math.ceil(total / LIMIT)
+  const iterations = Math.ceil(total / requestBatchSize)
 
   const limiter = pLimit(7)
 
@@ -42,10 +41,14 @@ const execute = async ({ context, environmentId, task, entityType, additionalFie
       limiter(async () => {
         const response = await api.getMany({
           environment: environmentId,
-          query: { select: ['sys.id', 'sys.updatedAt', ...additionalFields], limit: LIMIT, skip: LIMIT * i },
+          query: {
+            select: ['sys.id', 'sys.updatedAt', ...additionalFields],
+            limit: requestBatchSize,
+            skip: requestBatchSize * i,
+          },
         })
         requestsDone++
-        task.output = `Fetching ${requestsDone * LIMIT}/${total} ${entityType}`
+        task.output = `Fetching ${requestsDone * requestBatchSize}/${total} ${entityType}`
         result.push(...response.items)
       })
     )
