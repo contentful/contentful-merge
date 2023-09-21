@@ -33,10 +33,10 @@ Sentry.init({
 })
 
 const limits = {
-  all: 100,
-  changed: 100,
-  added: 100,
-  removed: 100,
+  all: 10000,
+  changed: 10000,
+  added: 10000,
+  removed: 10000,
 }
 
 const sequenceKey = crypto.randomUUID()
@@ -104,7 +104,6 @@ export default class Create extends Command {
     const context: CreateChangesetContext = {
       logger: this.logger,
       client,
-      limit: 200,
       accessToken: flags.token,
       spaceId: flags.space,
       sourceEnvironmentId: flags.source,

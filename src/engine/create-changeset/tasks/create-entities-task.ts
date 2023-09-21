@@ -53,7 +53,6 @@ const execute = async ({ context, environmentId, task, entityType, additionalFie
       })
     )
   }
-
   await Promise.all(promises)
 
   localContext.comparables = result
