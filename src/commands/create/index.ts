@@ -33,10 +33,10 @@ Sentry.init({
 })
 
 const limits = {
-  all: 10000,
-  changed: 10000,
-  added: 10000,
-  removed: 10000,
+  all: 100,
+  changed: 100,
+  added: 100,
+  removed: 100,
 }
 
 const sequenceKey = crypto.randomUUID()
