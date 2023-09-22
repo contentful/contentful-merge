@@ -32,7 +32,7 @@ export function createFetchAddedEntitiesTask({ entityType }: FetchAddedEntitiesT
 
       for (const chunk of idChunks) {
         task.output = `Fetching ${requestBatchSize} entities ${++iterator * requestBatchSize}/${added.length}`
-        const query = { 'sys.id[in]': chunk.join(','), locale: '*', requestBatchSize }
+        const query = { 'sys.id[in]': chunk.join(','), locale: '*', limit: requestBatchSize }
         // eslint-disable-next-line no-await-in-loop
         const entries = await client.cda.entries
           .getMany({
