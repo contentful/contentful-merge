@@ -68,6 +68,7 @@ export default class Create extends Command {
       required: true,
       env: 'CDA_TOKEN',
     }),
+    'request-batch-size': Flags.integer({ description: 'Limit for every single request', default: 1000 }),
   }
 
   private async writeFileLog() {
@@ -103,11 +104,11 @@ export default class Create extends Command {
     const context: CreateChangesetContext = {
       logger: this.logger,
       client,
-      limit: 200,
       accessToken: flags.token,
       spaceId: flags.space,
       sourceEnvironmentId: flags.source,
       targetEnvironmentId: flags.target,
+      requestBatchSize: flags['request-batch-size'],
       sourceData: {
         entries: { comparables: [], ids: [] },
         contentTypes: { comparables: [], ids: [] },

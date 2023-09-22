@@ -66,7 +66,8 @@ export const createFetchChangedTasks = ({ entityType }: FetchChangedTaskProps): 
   return {
     title: `Fetching full payload for ${entityType} to be compared`,
     task: async (context: CreateChangesetContext, task) => {
-      const { sourceEnvironmentId, affectedEntities, targetEnvironmentId, statistics, limit, changeset } = context
+      const { sourceEnvironmentId, affectedEntities, targetEnvironmentId, statistics, requestBatchSize, changeset } =
+        context
 
       const entityTypeStatistics = statistics[entityType]
 
@@ -79,16 +80,17 @@ export const createFetchChangedTasks = ({ entityType }: FetchChangedTaskProps): 
         numberOfMaybeChanged
       )} to be compared`
 
-      // TODO: use pLimit
       const idChunks = chunk(
         maybeChanged.map((c) => c.sys.id),
-        limit
+        requestBatchSize
       )
 
       let iterator = 0
 
       for (const chunk of idChunks) {
-        task.output = `Fetching ${limit} ${entityType} ${++iterator * limit}/${numberOfMaybeChanged}`
+        task.output = `Fetching ${requestBatchSize} ${entityType} ${
+          ++iterator * requestBatchSize
+        }/${numberOfMaybeChanged}`
         // eslint-disable-next-line no-await-in-loop
         const changedObjects = await getEntityPatches({
           context,

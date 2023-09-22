@@ -67,7 +67,7 @@ export interface BaseContext {
   logger: MemoryLogger
   accessToken: string
   spaceId: string
-  limit: number
+  limit?: number
 }
 
 export type BaseActionParams = {

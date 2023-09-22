@@ -18,7 +18,7 @@ export function createFetchAddedEntitiesTask({ entityType }: FetchAddedEntitiesT
   return {
     title: 'Fetching full payload for added entries',
     task: async (context: CreateChangesetContext, task) => {
-      const { client, affectedEntities, sourceEnvironmentId, changeset, limit, logger } = context
+      const { client, affectedEntities, sourceEnvironmentId, changeset, requestBatchSize, logger } = context
       logger.log(LogLevel.INFO, 'Start createFetchAddedEntitiesTask')
 
       const {
@@ -27,13 +27,12 @@ export function createFetchAddedEntitiesTask({ entityType }: FetchAddedEntitiesT
 
       task.title = `Fetching full payload for ${added.length} added ${pluralizeEntry(added.length)}`
 
-      // TODO: use pLimit
-      const idChunks = chunk(added, limit)
+      const idChunks = chunk(added, requestBatchSize)
       let iterator = 0
 
       for (const chunk of idChunks) {
-        task.output = `Fetching ${limit} entities ${++iterator * limit}/${added.length}`
-        const query = { 'sys.id[in]': chunk.join(','), locale: '*', limit }
+        task.output = `Fetching ${requestBatchSize} entities ${++iterator * requestBatchSize}/${added.length}`
+        const query = { 'sys.id[in]': chunk.join(','), locale: '*', limit: requestBatchSize }
         // eslint-disable-next-line no-await-in-loop
         const entries = await client.cda.entries
           .getMany({

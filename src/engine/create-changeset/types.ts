@@ -56,6 +56,8 @@ export interface CreateChangesetContext extends BaseContext {
     added: number
     removed: number
   }
+
+  requestBatchSize: number
 }
 
 export type SkipHandler = (context: CreateChangesetContext) => boolean

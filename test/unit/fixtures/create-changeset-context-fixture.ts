@@ -17,6 +17,7 @@ export const createCreateChangesetContext = (context?: Partial<CreateChangesetCo
     contentTypes: { added: 0, removed: 0, changed: 0, nonChanged: 0 },
   },
   limit: 1000,
+  requestBatchSize: 1000,
   logger: createStubInstance(MemoryLogger),
   sourceData: {
     contentTypes: { ids: [], comparables: [] },
