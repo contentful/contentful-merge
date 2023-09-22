@@ -234,9 +234,9 @@ At the moment we have a limit amount of entries that can be in the generated cha
 
 | Change Type    | Limit |  
 |----------------|-------|
-| Add            | 300   |
-| Delete         | 300   |
-| update         | 300   |
+| Added          | 300   |
+| Deleted        | 300   |
+| Updated        | 300   |
 | Combined       | 500   |
 
 
