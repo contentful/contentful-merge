@@ -115,6 +115,7 @@ FLAGS
   --source=<value>     [required] Source environment id
   --target=<value>     [required] Target environment id
   --cda-token=<value>  [required, defaults to env: $CDA_TOKEN] CDA token
+  --request-batch-size=<value>  [optional, default value: 1000] Limit for every single request
 
 DESCRIPTION
   Create Entries Changeset
@@ -227,6 +228,18 @@ There are three different change types: `add`, `update`, `delete`.
 
 If you want to see the data structure in practice, run the `create` command and have a look at the generated `changeset.json` file, or look at the [type definitions](src/engine/types.ts).
 
+## Limitations
+
+At the moment we have a limit amount of entries that can be in the generated changeset
+
+| Change Type    | Limit |  
+|----------------|-------|
+| Add            | 300   |
+| Delete         | 300   |
+| update         | 300   |
+| Combined       | 500   |
+
+
 ## FAQ
 
 **I have access to the environments I provided, yet the CLI responds with a 404, what could be wrong?**
@@ -239,7 +252,7 @@ As the CDA is used to fetch and compare entries, only published changes will be 
 
 **I have run the `create` command several times, but only see one `changeset.json` file created.**
 
-Currently, the `changeset.json` file is overwritten everytime you run the `create` command in the same directory.
+Currently, the `changeset.json` file is overwritten every time you run the `create` command in the same directory.
 
 ## What's next
 
