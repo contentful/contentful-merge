@@ -33,7 +33,7 @@ export const updateEntity = async ({
     await client.cma.entries.publish({
       environment: environmentId,
       entryId: updatedEntry.sys.id,
-      entry: updatedEntry,
+      entryVersion: updatedEntry.sys.version,
     })
     task.output = `✨ successfully updated ${item.entity.sys.id}`
     logger.log(LogLevel.INFO, `entry ${item.entity.sys.id} successfully updated on environment: ${environmentId}`)

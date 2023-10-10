@@ -82,6 +82,11 @@ export class AddEntryError extends MergeEntityError {
     super(`An error occurred while adding an entry.`, context)
   }
 }
+export class PublishEntryError extends MergeEntityError {
+  constructor(context: MergeEntityErrorContext) {
+    super(`An error occurred while publishing an entry.`, context)
+  }
+}
 
 export class UpdateEntryError extends MergeEntityError {
   constructor(context: MergeEntityErrorContext) {
