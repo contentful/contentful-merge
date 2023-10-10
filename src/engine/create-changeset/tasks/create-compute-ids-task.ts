@@ -1,7 +1,7 @@
 import { ListrTask } from 'listr2'
 import { LogLevel } from '../../logger/types'
 import { CreateChangesetContext } from '../types'
-import { doesExceedLimits } from '../../utils/exceeds-limits'
+import { doesExceedLimits } from '../../validations/exceeds-limits'
 import { EntityType } from '../../types'
 import { LimitsExceededForCreateError } from '../../errors'
 
