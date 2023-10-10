@@ -6,7 +6,6 @@ import { createEntity } from '../actions/create-entity'
 import { ApplyChangesetContext } from '../types'
 import { pluralizeEntry } from '../../utils'
 import { isString } from 'lodash'
-import { AddEntryError } from '../../errors'
 
 export const applyAddEntitiesTask = (): ListrTask => {
   return {
@@ -26,12 +25,6 @@ export const applyAddEntitiesTask = (): ListrTask => {
       const result = await Promise.all(
         entries.map(async (item) => {
           return limiter(async () => {
-            if (item.data.metadata) {
-              throw new AddEntryError({
-                id: item.entity.sys.id,
-                details: { message: 'Changesets containing metadata are currently not supported' },
-              })
-            }
             const idOfAdded = await createEntity({ client, environmentId, logger, item, responseCollector, task })
             task.title = `Adding ${++count}/${entityCount} entries (failures: ${responseCollector.errorsLength})`
 
