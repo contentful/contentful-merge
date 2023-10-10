@@ -1,29 +1,25 @@
 import { initializeTask } from '../../../test-utils'
 import { expect } from 'chai'
-import { applyChangeEntitiesTask } from '../../../../../src/engine/apply-changeset/tasks/create-change-entities-taskk'
 import { beforeEach } from 'mocha'
-import { UpdatedChangesetItem } from '../../../../../src/engine/types'
+import { AddedChangesetItem } from '../../../../../src/engine/types'
 import { createLinkObject } from '../../../../../src/engine/utils/create-link-object'
 import { createApplyChangesetContext } from '../../../fixtures/apply-changeset-context-fixture'
 import { ApplyChangesetContext } from '../../../../../src/engine/apply-changeset/types'
+import { ApplyChangesetTasks } from '../../../../../src/engine/apply-changeset/tasks'
 
-describe('applyChangeEntitiesTask', () => {
+describe('applyAddEntitiesTask', () => {
   let context: ApplyChangesetContext
   beforeEach(() => {
     context = createApplyChangesetContext()
   })
 
-  it('updates an entry from changeset', async () => {
-    const updatedChangesetItem: UpdatedChangesetItem = {
-      ...createLinkObject('update-entry', 'update', 'Entry'),
-      patch: [],
-    }
+  it('creates an entry from changeset', async () => {
+    const addedChangesetItem: AddedChangesetItem = createLinkObject('added-entry', 'add', 'Entry')
 
-    const updatedEntry = {
-      metadata: { tags: [] },
+    addedChangesetItem.data = {
       sys: {
         space: { sys: { type: 'Link', linkType: 'Space', id: '529ziq3ce86u' } },
-        id: 'update-entry',
+        id: 'added-entry',
         type: 'Entry',
         createdAt: '2023-05-17T10:36:22.538Z',
         updatedAt: '2023-05-17T10:36:40.280Z',
@@ -34,27 +30,32 @@ describe('applyChangeEntitiesTask', () => {
       fields: {},
     }
 
+    const createdEntry = {
+      sys: {
+        id: 'added-entry',
+      },
+    }
+
     class Spy {
       called = 0
 
       call = (args: any): any => {
         expect(args.environment).to.be.equal('qa')
-        expect(args.entryId).to.be.equal('update-entry')
+        expect(args.entryId).to.be.equal('added-entry')
+        expect(args.contentType).to.be.equal('lesson')
 
         this.called++
 
-        return updatedEntry
+        return createdEntry
       }
     }
 
     const spy = new Spy()
 
-    context.client.cma.entries.update = spy.call
-    context.client.cma.entries.get = spy.call
+    context.client.cma.entries.create = spy.call
+    context.changeset.items.push(addedChangesetItem)
 
-    context.changeset.items.push(updatedChangesetItem)
-
-    const task = initializeTask(applyChangeEntitiesTask(), context)
+    const task = initializeTask(ApplyChangesetTasks.createAddEntitiesTask(), context)
     let error = null
     try {
       await task.run()
@@ -63,7 +64,7 @@ describe('applyChangeEntitiesTask', () => {
     }
 
     expect(error).to.be.null
-    expect(task.tasks[0].output).to.be.equal('✨ successfully updated update-entry')
-    expect(spy.called).to.be.equal(2)
+    expect(task.tasks[0].output).to.be.equal('✨ successfully created added-entry')
+    expect(spy.called).to.be.equal(1)
   })
 })

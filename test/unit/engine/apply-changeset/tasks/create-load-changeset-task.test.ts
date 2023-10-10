@@ -1,10 +1,10 @@
 import { initializeTask } from '../../../test-utils'
 import { expect } from 'chai'
-import { applyLoadChangesetTask } from '../../../../../src/engine/apply-changeset/tasks/create-load-changeset-taskk'
 import { beforeEach } from 'mocha'
 import { createApplyChangesetContext } from '../../../fixtures/apply-changeset-context-fixture'
 import { ApplyChangesetContext } from '../../../../../src/engine/apply-changeset/types'
 import path from 'path'
+import { ApplyChangesetTasks } from '../../../../../src/engine/apply-changeset/tasks'
 
 describe('applyLoadChangesetTask', () => {
   let context: ApplyChangesetContext
@@ -15,7 +15,7 @@ describe('applyLoadChangesetTask', () => {
   it('loads changeset from file', async () => {
     context.inputPath = path.resolve(__dirname, './test-loading-changeset')
 
-    const task = initializeTask(applyLoadChangesetTask(), context)
+    const task = initializeTask(ApplyChangesetTasks.createLoadChangesetTask(), context)
     let error = null
     try {
       await task.run()
