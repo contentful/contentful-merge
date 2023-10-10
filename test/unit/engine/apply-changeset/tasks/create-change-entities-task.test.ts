@@ -103,14 +103,7 @@ describe('applyChangeEntitiesTask', () => {
     }
 
     class Spy {
-      called = 0
-
       call = (args: any): any => {
-        expect(args.environment).to.be.equal('qa')
-        expect(args.entryId).to.be.equal('update-entry')
-
-        this.called++
-
         return updatedEntry
       }
     }

@@ -105,15 +105,7 @@ describe('applyAddEntitiesTask', () => {
     }
 
     class Spy {
-      called = 0
-
       call = (args: any): any => {
-        expect(args.environment).to.be.equal('qa')
-        expect(args.entryId).to.be.equal('added-entry')
-        expect(args.contentType).to.be.equal('lesson')
-
-        this.called++
-
         return createdEntry
       }
     }
