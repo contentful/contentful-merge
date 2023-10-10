@@ -4,13 +4,11 @@ import { initializeTask, matchChangeType } from '../../../test-utils'
 import { sourceEntriesFixture } from '../../../fixtures/entries'
 import { CreateChangesetContext } from '../../../../../src/engine/create-changeset/types'
 import { AddedChangesetItem, UpdatedChangesetItem, DeletedChangesetItem } from '../../../../../src/engine/types'
-import {
-  cleanEntity,
-  fetchAddedEntitiesTask,
-} from '../../../../../src/engine/create-changeset/tasks/create-fetch-added-entities-task'
+import { cleanEntity } from '../../../../../src/engine/create-changeset/tasks/fetch-added-entities-task'
 import { createCreateChangesetContext } from '../../../fixtures/create-changeset-context-fixture'
 import { createChangeset } from '../../../../../src/engine/utils/create-changeset'
 import { EnvironmentIdFixture } from '../../../fixtures/environment-id-fixtures'
+import { createChangesetTasks } from '../../../../../src/engine/create-changeset/tasks'
 
 describe('fetchAddedEntitiesTask', () => {
   let context: CreateChangesetContext
@@ -112,7 +110,7 @@ describe('fetchAddedEntitiesTask', () => {
     context.changeset = createChangeset(EnvironmentIdFixture.source, EnvironmentIdFixture.target)
 
     const task = initializeTask(
-      fetchAddedEntitiesTask({
+      createChangesetTasks.fetchAddedEntitiesTask({
         entityType: 'entries',
       }),
       context
@@ -135,7 +133,7 @@ describe('fetchAddedEntitiesTask', () => {
   })
   it('does not fetch anything for changed entries', async () => {
     const task = initializeTask(
-      fetchAddedEntitiesTask({
+      createChangesetTasks.fetchAddedEntitiesTask({
         entityType: 'entries',
       }),
       context
@@ -151,7 +149,7 @@ describe('fetchAddedEntitiesTask', () => {
   })
   it('does not fetch anything for deleted entries', async () => {
     const task = initializeTask(
-      fetchAddedEntitiesTask({
+      createChangesetTasks.fetchAddedEntitiesTask({
         entityType: 'entries',
       }),
       context
