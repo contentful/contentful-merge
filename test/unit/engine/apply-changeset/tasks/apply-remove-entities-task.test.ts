@@ -1,6 +1,6 @@
 import { initializeTask } from '../../../test-utils'
 import { expect } from 'chai'
-import { applyRemoveEntitiesTask } from '../../../../../src/engine/apply-changeset/tasks/apply-remove-entities-task'
+import { applyRemoveEntitiesTask } from '../../../../../src/engine/apply-changeset/tasks/create-remove-entities-taskk'
 import { beforeEach } from 'mocha'
 import { DeletedChangesetItem } from '../../../../../src/engine/types'
 import { createLinkObject } from '../../../../../src/engine/utils/create-link-object'

@@ -1,6 +1,6 @@
 import { initializeTask } from '../../../test-utils'
 import { expect } from 'chai'
-import { applyChangeEntitiesTask } from '../../../../../src/engine/apply-changeset/tasks/apply-change-entities-task'
+import { applyChangeEntitiesTask } from '../../../../../src/engine/apply-changeset/tasks/create-change-entities-taskk'
 import { beforeEach } from 'mocha'
 import { UpdatedChangesetItem } from '../../../../../src/engine/types'
 import { createLinkObject } from '../../../../../src/engine/utils/create-link-object'

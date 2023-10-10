@@ -1,6 +1,6 @@
 import { initializeTask } from '../../../test-utils'
 import { expect } from 'chai'
-import { applyLoadChangesetTask } from '../../../../../src/engine/apply-changeset/tasks/apply-load-changeset-task'
+import { applyLoadChangesetTask } from '../../../../../src/engine/apply-changeset/tasks/create-load-changeset-taskk'
 import { beforeEach } from 'mocha'
 import { createApplyChangesetContext } from '../../../fixtures/apply-changeset-context-fixture'
 import { ApplyChangesetContext } from '../../../../../src/engine/apply-changeset/types'
