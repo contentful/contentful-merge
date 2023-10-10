@@ -36,7 +36,7 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
                       CreateChangesetTasks.createComputeIdsTask({
                         entityType: 'contentTypes',
                       }),
-                      CreateChangesetTasks.createFetchChangedTasks({
+                      CreateChangesetTasks.createFetchChangedEntitiesTask({
                         entityType: 'contentTypes',
                       }),
                     ],
@@ -65,7 +65,7 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
                       CreateChangesetTasks.createComputeIdsTask({
                         entityType: 'entries',
                       }),
-                      CreateChangesetTasks.createFetchChangedTasks({
+                      CreateChangesetTasks.createFetchChangedEntitiesTask({
                         entityType: 'entries',
                       }),
                       CreateChangesetTasks.createAffectedContentTypesDivergedTask(),

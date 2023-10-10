@@ -2,11 +2,20 @@ import { createAffectedContentTypesDivergedTask } from './create-affected-conten
 import { createComputeIdsTask } from './create-compute-ids-task'
 import { createFetchPartialEntitiesTask } from './create-fetch-partial-entities-task'
 import { createFetchAddedEntitiesTask } from './create-fetch-added-entities-task'
-import { createFetchChangedTasks } from './create-fetch-changed-tasks'
+import { createFetchChangedEntitiesTask } from './create-fetch-changed-task'
+
+/**
+ * @description This module imports various task-creation functions related to changesets.
+ * @property {Function} createFetchPartialEntitiesTask
+ * @property {Function} createFetchChangedEntitiesTask
+ * @property {Function} createFetchAddedEntitiesTask
+ * @property {Function} createComputeIdsTask
+ * @property {Function} createAffectedContentTypesDivergedTask
+ */
 
 export const CreateChangesetTasks = {
   createFetchPartialEntitiesTask,
-  createFetchChangedTasks,
+  createFetchChangedEntitiesTask,
   createFetchAddedEntitiesTask,
   createComputeIdsTask,
   createAffectedContentTypesDivergedTask,
