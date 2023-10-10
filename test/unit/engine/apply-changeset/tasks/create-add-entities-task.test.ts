@@ -64,7 +64,7 @@ describe('applyAddEntitiesTask', () => {
     }
 
     expect(error).to.be.null
-    expect(task.tasks[0].output).to.be.equal('✨ successfully created added-entry')
+    expect(task.tasks[0].output).to.be.equal('✨ successfully published added-entry')
     expect(spy.called).to.be.equal(1)
   })
 })
