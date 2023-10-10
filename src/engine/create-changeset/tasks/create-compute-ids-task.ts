@@ -9,7 +9,7 @@ type ComputeIdsTaskProps = {
   entityType: EntityType
 }
 
-export const computeIdsTask = ({ entityType }: ComputeIdsTaskProps): ListrTask => {
+export const createComputeIdsTask = ({ entityType }: ComputeIdsTaskProps): ListrTask => {
   return {
     title: `Counting number of ${entityType} changes between environments`,
     task: async (context: CreateChangesetContext) => {

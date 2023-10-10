@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { initializeTask } from '../../../test-utils'
 import { CreateChangesetContext } from '../../../../../src/engine/create-changeset/types'
 import { createCreateChangesetContext } from '../../../fixtures/create-changeset-context-fixture'
-import { createChangesetTasks } from '../../../../../src/engine/create-changeset/tasks'
+import { CreateChangesetTasks } from '../../../../../src/engine/create-changeset/tasks'
 
 describe('computeIdsTask', () => {
   let context: CreateChangesetContext
@@ -127,19 +127,19 @@ describe('computeIdsTask', () => {
     })
   })
   it('adds added ids to the context', async () => {
-    const task = initializeTask(createChangesetTasks.computeIdsTask({ entityType: 'entries' }), context)
+    const task = initializeTask(CreateChangesetTasks.createComputeIdsTask({ entityType: 'entries' }), context)
     await task.run()
 
     expect(context.affectedEntities.entries.added).to.deep.equal(['3op5VIqGZiwoe06c8IQIMO', '6gFiJvssqQ62CMYqECOu2M'])
   })
   it('adds removed ids to the context', async () => {
-    const task = initializeTask(createChangesetTasks.computeIdsTask({ entityType: 'entries' }), context)
+    const task = initializeTask(CreateChangesetTasks.createComputeIdsTask({ entityType: 'entries' }), context)
     await task.run()
 
     expect(context.affectedEntities.entries.removed).to.deep.equal(['34MlmiuMgU8wKCOOIkAuMy', '1toEOumnkEksWakieoeC6M'])
   })
   it('adds changed ids to the context', async () => {
-    const task = initializeTask(createChangesetTasks.computeIdsTask({ entityType: 'entries' }), context)
+    const task = initializeTask(CreateChangesetTasks.createComputeIdsTask({ entityType: 'entries' }), context)
     await task.run()
 
     expect(context.affectedEntities.entries.maybeChanged).to.deep.equal([
@@ -170,7 +170,7 @@ describe('computeIdsTask', () => {
     ])
   })
   it('does not add id to context if nothing has changed', async () => {
-    const task = initializeTask(createChangesetTasks.computeIdsTask({ entityType: 'entries' }), context)
+    const task = initializeTask(CreateChangesetTasks.createComputeIdsTask({ entityType: 'entries' }), context)
     await task.run()
 
     expect(context.affectedEntities.entries.added).not.includes('Dy6jo5j4goU2C4sc8Kwkk')

@@ -71,7 +71,7 @@ type EntitiesTaskProps = {
 // entities. With this information, we are able to determine which
 // entities differ between environments, so that in next steps we can
 // fetch only those completely.
-export function fetchPartialEntitiesTask({ scope, environmentId, entityType }: EntitiesTaskProps): ListrTask {
+export function createFetchPartialEntitiesTask({ scope, environmentId, entityType }: EntitiesTaskProps): ListrTask {
   return {
     title: `Reading the ${scope} environment "${environmentId}"`,
     task: async (context: CreateChangesetContext, task) => {

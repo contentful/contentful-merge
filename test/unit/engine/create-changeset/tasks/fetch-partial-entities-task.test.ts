@@ -3,7 +3,7 @@ import { initializeTask } from '../../../test-utils'
 import { CreateChangesetContext } from '../../../../../src/engine/create-changeset/types'
 import { createCreateChangesetContext } from '../../../fixtures/create-changeset-context-fixture'
 import { EnvironmentIdFixture } from '../../../fixtures/environment-id-fixtures'
-import { createChangesetTasks } from '../../../../../src/engine/create-changeset/tasks'
+import { CreateChangesetTasks } from '../../../../../src/engine/create-changeset/tasks'
 
 describe('fetchPartialEntitiesTask', () => {
   let context: CreateChangesetContext
@@ -12,7 +12,7 @@ describe('fetchPartialEntitiesTask', () => {
   })
   it("fetches all entries' sys info of the source environment and collects them in the 'source' section of the context", async () => {
     const task = initializeTask(
-      createChangesetTasks.fetchPartialEntitiesTask({
+      CreateChangesetTasks.createFetchPartialEntitiesTask({
         scope: 'source',
         environmentId: EnvironmentIdFixture.source,
         entityType: 'entries',
@@ -28,7 +28,7 @@ describe('fetchPartialEntitiesTask', () => {
   })
   it("fetches all entries' sys info of the target environment and collects them in 'target' section of the context", async () => {
     const task = initializeTask(
-      createChangesetTasks.fetchPartialEntitiesTask({
+      CreateChangesetTasks.createFetchPartialEntitiesTask({
         scope: 'target',
         environmentId: EnvironmentIdFixture.target,
         entityType: 'entries',

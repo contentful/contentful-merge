@@ -14,7 +14,7 @@ type FetchAddedEntitiesTaskProps = {
   entityType: EntityType
 }
 
-export function fetchAddedEntitiesTask({ entityType }: FetchAddedEntitiesTaskProps): ListrTask {
+export function createFetchAddedEntitiesTask({ entityType }: FetchAddedEntitiesTaskProps): ListrTask {
   return {
     title: 'Fetching full payload for added entries',
     task: async (context: CreateChangesetContext, task) => {

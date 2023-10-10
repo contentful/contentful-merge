@@ -1,13 +1,13 @@
-import { affectedContentTypesDivergedTask } from './affected-content-types-diverged-task'
-import { computeIdsTask } from './compute-ids-task'
-import { fetchPartialEntitiesTask } from './fetch-partial-entities-task'
-import { fetchAddedEntitiesTask } from './fetch-added-entities-task'
-import { fetchChangedTasks } from './fetch-changed-tasks'
+import { createAffectedContentTypesDivergedTask } from './create-affected-content-types-diverged-task'
+import { createComputeIdsTask } from './create-compute-ids-task'
+import { createFetchPartialEntitiesTask } from './create-fetch-partial-entities-task'
+import { createFetchAddedEntitiesTask } from './create-fetch-added-entities-task'
+import { createFetchChangedTasks } from './create-fetch-changed-tasks'
 
-export const createChangesetTasks = {
-  fetchPartialEntitiesTask,
-  fetchChangedTasks,
-  fetchAddedEntitiesTask,
-  computeIdsTask,
-  affectedContentTypesDivergedTask,
+export const CreateChangesetTasks = {
+  createFetchPartialEntitiesTask,
+  createFetchChangedTasks,
+  createFetchAddedEntitiesTask,
+  createComputeIdsTask,
+  createAffectedContentTypesDivergedTask,
 }
