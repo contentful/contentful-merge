@@ -66,6 +66,12 @@ export class MergeEntityError extends ContentfulError {
   }
 }
 
+export class ContainsMetadataError extends ContentfulError {
+  constructor(entityId: string) {
+    super(`Metadata in changesets is currently not supported`, { id: entityId })
+  }
+}
+
 export class DeleteEntryError extends MergeEntityError {
   constructor(context: MergeEntityErrorContext) {
     super(`An error occurred while deleting an entry.`, context)

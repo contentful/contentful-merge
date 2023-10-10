@@ -4,7 +4,6 @@ import { applyAddEntitiesTask } from '../../../../../src/engine/apply-changeset/
 import { beforeEach } from 'mocha'
 import { AddedChangesetItem } from '../../../../../src/engine/types'
 import { createLinkObject } from '../../../../../src/engine/utils/create-link-object'
-import * as sinon from 'sinon'
 import { createApplyChangesetContext } from '../../../fixtures/apply-changeset-context-fixture'
 import { ApplyChangesetContext } from '../../../../../src/engine/apply-changeset/types'
 
@@ -18,8 +17,6 @@ describe('applyAddEntitiesTask', () => {
     const addedChangesetItem: AddedChangesetItem = createLinkObject('added-entry', 'add', 'Entry')
 
     addedChangesetItem.data = {
-      // added entry
-      metadata: { tags: [] },
       sys: {
         space: { sys: { type: 'Link', linkType: 'Space', id: '529ziq3ce86u' } },
         id: 'added-entry',
