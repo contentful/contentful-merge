@@ -47,7 +47,10 @@ async function getEntityPatches({
     const targetEntry = targetEntries.find((entry) => entry.sys.id === entryId)
 
     if (sourceEntry && targetEntry) {
-      const patch = createPatch({ targetEntry, sourceEntry })
+      const cleanedSourceEntry = sourceEntry.metadata ? { ...sourceEntry, metadata: undefined } : sourceEntry
+      const cleanedTargetEntry = targetEntry.metadata ? { ...targetEntry, metadata: undefined } : targetEntry
+
+      const patch = createPatch({ targetEntry: cleanedTargetEntry, sourceEntry: cleanedSourceEntry })
       result.push({
         ...createLinkObject(entryId, 'update', EntityTypeMap[entityType]),
         patch,

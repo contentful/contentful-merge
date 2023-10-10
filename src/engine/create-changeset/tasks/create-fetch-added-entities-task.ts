@@ -7,7 +7,7 @@ import { pluralizeEntry } from '../../utils/pluralize'
 import { EntityType } from '../../types'
 
 export function cleanEntity(entry: Entry<any>): any {
-  return { ...entry, sys: pick(entry.sys, ['id', 'type', 'contentType']) }
+  return { ...entry, sys: pick(entry.sys, ['id', 'type', 'contentType']), metadata: undefined }
 }
 
 type FetchAddedEntitiesTaskProps = {

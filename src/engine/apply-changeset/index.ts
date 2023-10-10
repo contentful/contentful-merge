@@ -4,7 +4,7 @@ import { applyChangeEntitiesTask } from './tasks/apply-change-entities-task'
 import { applyLoadChangesetTask } from './tasks/apply-load-changeset-task'
 import { applyRemoveEntitiesTask } from './tasks/apply-remove-entities-task'
 import { ApplyChangesetContext } from './types'
-import { applyComputeIdsTask } from './tasks/apply-compute-ids-task'
+import { applyValidateChangesetTask } from './tasks/apply-validate-changeset-task'
 
 export const applyChangesetTask = (context: ApplyChangesetContext): Listr => {
   return new Listr<ApplyChangesetContext>(
@@ -15,7 +15,7 @@ export const applyChangesetTask = (context: ApplyChangesetContext): Listr => {
           return task.newListr(
             [
               applyLoadChangesetTask(),
-              applyComputeIdsTask(),
+              applyValidateChangesetTask(),
               applyRemoveEntitiesTask(),
               applyAddEntitiesTask(),
               applyChangeEntitiesTask(),
