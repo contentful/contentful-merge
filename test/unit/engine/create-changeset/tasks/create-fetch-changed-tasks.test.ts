@@ -1,12 +1,12 @@
 import { expect } from 'chai'
 import { initializeTask, matchChangeType } from '../../../test-utils'
 import { CreateChangesetContext } from '../../../../../src/engine/create-changeset/types'
-import { createFetchChangedTasks } from '../../../../../src/engine/create-changeset/tasks/create-fetch-changed-tasks'
 import { createCreateChangesetContext } from '../../../fixtures/create-changeset-context-fixture'
 import { EnvironmentIdFixture } from '../../../fixtures/environment-id-fixtures'
 import { sourceEntriesFixture, targetEntriesFixture } from '../../../fixtures/entries'
-;``
-describe('createFetchChangedTasks', () => {
+import { createChangesetTasks } from '../../../../../src/engine/create-changeset/tasks'
+
+describe('fetchChangedTasks', () => {
   let context: CreateChangesetContext
   beforeEach(() => {
     context = createCreateChangesetContext({
@@ -58,7 +58,7 @@ describe('createFetchChangedTasks', () => {
   })
 
   it('fetches the full payload of all changed entries and calculates changeset', async () => {
-    const task = initializeTask(createFetchChangedTasks({ entityType: 'entries' }), context)
+    const task = initializeTask(createChangesetTasks.fetchChangedTasks({ entityType: 'entries' }), context)
 
     expect(context.changeset.items.length).to.equal(0)
     expect(context.affectedEntities.entries.maybeChanged.length).to.equal(4)
@@ -67,21 +67,21 @@ describe('createFetchChangedTasks', () => {
     expect(context.changeset.items.length).to.equal(7)
   })
   it('adds 2 added items to the changeset', async () => {
-    const task = initializeTask(createFetchChangedTasks({ entityType: 'entries' }), context)
+    const task = initializeTask(createChangesetTasks.fetchChangedTasks({ entityType: 'entries' }), context)
     await task.run()
     const addedItems = context.changeset.items.filter(matchChangeType('add'))
 
     expect(addedItems.length).to.equal(2)
   })
   it('adds 2 deleted items to the changeset', async () => {
-    const task = initializeTask(createFetchChangedTasks({ entityType: 'entries' }), context)
+    const task = initializeTask(createChangesetTasks.fetchChangedTasks({ entityType: 'entries' }), context)
     await task.run()
     const deletedItems = context.changeset.items.filter(matchChangeType('delete'))
 
     expect(deletedItems.length).to.equal(2)
   })
   it('adds 3 changed items to the changeset', async () => {
-    const task = initializeTask(createFetchChangedTasks({ entityType: 'entries' }), context)
+    const task = initializeTask(createChangesetTasks.fetchChangedTasks({ entityType: 'entries' }), context)
     await task.run()
 
     const changedItems = context.changeset.items.filter(matchChangeType('update'))
@@ -89,7 +89,7 @@ describe('createFetchChangedTasks', () => {
     expect(changedItems.length).to.equal(3)
   })
   it('adds the ids of 3 changed item to the `changed` array', async () => {
-    const task = initializeTask(createFetchChangedTasks({ entityType: 'entries' }), context)
+    const task = initializeTask(createChangesetTasks.fetchChangedTasks({ entityType: 'entries' }), context)
     const changedEntryIds = context.affectedEntities.entries.changed
 
     expect(changedEntryIds).to.deep.equal([])

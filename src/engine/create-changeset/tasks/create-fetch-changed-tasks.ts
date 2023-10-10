@@ -65,7 +65,7 @@ type FetchChangedTaskProps = {
   entityType: EntityType
 }
 
-export const createFetchChangedTasks = ({ entityType }: FetchChangedTaskProps): ListrTask => {
+export const fetchChangedTasks = ({ entityType }: FetchChangedTaskProps): ListrTask => {
   return {
     title: `Fetching full payload for ${entityType} to be compared`,
     task: async (context: CreateChangesetContext, task) => {

@@ -1,10 +1,6 @@
 import { Listr, PRESET_TIMER } from 'listr2'
-import { createComputeIdsTask } from './tasks/create-compute-ids-task'
-import { createEntitiesTask } from './tasks/create-entities-task'
-import { createFetchAddedEntitiesTask } from './tasks/create-fetch-added-entities-task'
-import { createFetchChangedTasks } from './tasks/create-fetch-changed-tasks'
 import { CreateChangesetContext } from './types'
-import { createAffectedContentTypesDivergedTask } from './tasks/create-affected-content-types-diverged-task'
+import { createChangesetTasks } from './tasks'
 
 const subTaskOptions = {
   concurrent: false,
@@ -13,6 +9,7 @@ const subTaskOptions = {
     collapseSubtasks: false,
   },
 }
+
 export const createChangesetTask = (context: CreateChangesetContext): Listr => {
   return new Listr<CreateChangesetContext>(
     [
@@ -26,20 +23,20 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
                 task: (ctx, task): Listr => {
                   return task.newListr(
                     [
-                      createEntitiesTask({
+                      createChangesetTasks.fetchPartialEntitiesTask({
                         scope: 'source',
                         environmentId: ctx.sourceEnvironmentId,
                         entityType: 'contentTypes',
                       }),
-                      createEntitiesTask({
+                      createChangesetTasks.fetchPartialEntitiesTask({
                         scope: 'target',
                         environmentId: ctx.targetEnvironmentId,
                         entityType: 'contentTypes',
                       }),
-                      createComputeIdsTask({
+                      createChangesetTasks.computeIdsTask({
                         entityType: 'contentTypes',
                       }),
-                      createFetchChangedTasks({
+                      createChangesetTasks.fetchChangedTasks({
                         entityType: 'contentTypes',
                       }),
                     ],
@@ -55,24 +52,24 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
                 task: (ctx, task): Listr => {
                   return task.newListr(
                     [
-                      createEntitiesTask({
+                      createChangesetTasks.fetchPartialEntitiesTask({
                         scope: 'source',
                         environmentId: ctx.sourceEnvironmentId,
                         entityType: 'entries',
                       }),
-                      createEntitiesTask({
+                      createChangesetTasks.fetchPartialEntitiesTask({
                         scope: 'target',
                         environmentId: ctx.targetEnvironmentId,
                         entityType: 'entries',
                       }),
-                      createComputeIdsTask({
+                      createChangesetTasks.computeIdsTask({
                         entityType: 'entries',
                       }),
-                      createFetchChangedTasks({
+                      createChangesetTasks.fetchChangedTasks({
                         entityType: 'entries',
                       }),
-                      createAffectedContentTypesDivergedTask(),
-                      createFetchAddedEntitiesTask({
+                      createChangesetTasks.affectedContentTypesDivergedTask(),
+                      createChangesetTasks.fetchAddedEntitiesTask({
                         entityType: 'entries',
                       }),
                     ],

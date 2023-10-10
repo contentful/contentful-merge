@@ -1,14 +1,14 @@
 import { CreateChangesetContext } from '../../../../../src/engine/create-changeset/types'
 import { initializeTask } from '../../../test-utils'
 import { expect } from 'chai'
-import { createAffectedContentTypesDivergedTask } from '../../../../../src/engine/create-changeset/tasks/create-affected-content-types-diverged-task'
+import { createChangesetTasks } from '../../../../../src/engine/create-changeset/tasks'
 import { createCreateChangesetContext } from '../../../fixtures/create-changeset-context-fixture'
 import { beforeEach } from 'mocha'
 import { ContentModelDivergedError } from '../../../../../src/engine/errors'
 
 const CONTENT_TYPE_ID = 'affected-content-type'
 
-describe('createAffectedContentTypesDivergedTask', () => {
+describe('affectedContentTypesDivergedTask', () => {
   let context: CreateChangesetContext
   beforeEach(() => {
     context = createCreateChangesetContext()
@@ -33,7 +33,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
             },
           },
         })
-        const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
+        const task = initializeTask(createChangesetTasks.affectedContentTypesDivergedTask(), context)
         let error = null
         try {
           await task.run()
@@ -56,7 +56,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
             },
           },
         })
-        const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
+        const task = initializeTask(createChangesetTasks.affectedContentTypesDivergedTask(), context)
         let error = null
         try {
           await task.run()
@@ -82,7 +82,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
             },
           },
         })
-        const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
+        const task = initializeTask(createChangesetTasks.affectedContentTypesDivergedTask(), context)
         let error = null
         try {
           await task.run()
@@ -105,7 +105,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
             },
           },
         })
-        const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
+        const task = initializeTask(createChangesetTasks.affectedContentTypesDivergedTask(), context)
         let error = null
         try {
           await task.run()
@@ -132,7 +132,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
         }
         context.affectedEntities.entries.changed.push(entry.sys.id)
         context.sourceData.entries.comparables.push(entry)
-        const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
+        const task = initializeTask(createChangesetTasks.affectedContentTypesDivergedTask(), context)
         let error = null
         try {
           await task.run()
@@ -157,7 +157,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
         }
         context.affectedEntities.entries.changed.push(entry.sys.id)
         context.sourceData.entries.comparables.push(entry)
-        const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
+        const task = initializeTask(createChangesetTasks.affectedContentTypesDivergedTask(), context)
         let error = null
         try {
           await task.run()
@@ -190,7 +190,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
             },
           },
         })
-        const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
+        const task = initializeTask(createChangesetTasks.affectedContentTypesDivergedTask(), context)
         let error = null
         try {
           await task.run()
@@ -213,7 +213,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
             },
           },
         })
-        const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
+        const task = initializeTask(createChangesetTasks.affectedContentTypesDivergedTask(), context)
         let error = null
         try {
           await task.run()
@@ -245,7 +245,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
             },
           },
         })
-        const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
+        const task = initializeTask(createChangesetTasks.affectedContentTypesDivergedTask(), context)
         let error = null
         try {
           await task.run()
@@ -268,7 +268,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
             },
           },
         })
-        const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
+        const task = initializeTask(createChangesetTasks.affectedContentTypesDivergedTask(), context)
         let error = null
         try {
           await task.run()
@@ -294,7 +294,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
             },
           },
         })
-        const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
+        const task = initializeTask(createChangesetTasks.affectedContentTypesDivergedTask(), context)
         let error = null
         try {
           await task.run()
@@ -317,7 +317,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
             },
           },
         })
-        const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
+        const task = initializeTask(createChangesetTasks.affectedContentTypesDivergedTask(), context)
         let error = null
         try {
           await task.run()
@@ -344,7 +344,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
         }
         context.affectedEntities.entries.changed.push(entry.sys.id)
         context.sourceData.entries.comparables.push(entry)
-        const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
+        const task = initializeTask(createChangesetTasks.affectedContentTypesDivergedTask(), context)
         let error = null
         try {
           await task.run()
@@ -369,7 +369,7 @@ describe('createAffectedContentTypesDivergedTask', () => {
         }
         context.affectedEntities.entries.changed.push(entry.sys.id)
         context.sourceData.entries.comparables.push(entry)
-        const task = initializeTask(createAffectedContentTypesDivergedTask(), context)
+        const task = initializeTask(createChangesetTasks.affectedContentTypesDivergedTask(), context)
         let error = null
         try {
           await task.run()
