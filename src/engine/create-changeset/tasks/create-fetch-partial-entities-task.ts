@@ -67,11 +67,15 @@ type EntitiesTaskProps = {
   entityType: EntityType
 }
 
-export function createEntitiesTask({ scope, environmentId, entityType }: EntitiesTaskProps): ListrTask {
+// This function fetches only id and updatedAt properties of all
+// entities. With this information, we are able to determine which
+// entities differ between environments, so that in next steps we can
+// fetch only those completely.
+export function createFetchPartialEntitiesTask({ scope, environmentId, entityType }: EntitiesTaskProps): ListrTask {
   return {
     title: `Reading the ${scope} environment "${environmentId}"`,
     task: async (context: CreateChangesetContext, task) => {
-      context.logger.log(LogLevel.INFO, `Start createEntitiesTask for ${entityType}`)
+      context.logger.log(LogLevel.INFO, `Start fetchPartialEntitiesTask for ${entityType}`)
       const additionalFields = entityType === 'entries' ? ['sys.contentType.sys.id'] : []
       const result = await execute({ context, task, scope, environmentId, entityType, additionalFields })
       context[`${scope}Data`][entityType] = result

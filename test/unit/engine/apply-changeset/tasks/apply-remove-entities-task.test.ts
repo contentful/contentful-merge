@@ -4,7 +4,6 @@ import { applyRemoveEntitiesTask } from '../../../../../src/engine/apply-changes
 import { beforeEach } from 'mocha'
 import { DeletedChangesetItem } from '../../../../../src/engine/types'
 import { createLinkObject } from '../../../../../src/engine/utils/create-link-object'
-import * as sinon from 'sinon'
 import { createApplyChangesetContext } from '../../../fixtures/apply-changeset-context-fixture'
 import { ApplyChangesetContext } from '../../../../../src/engine/apply-changeset/types'
 

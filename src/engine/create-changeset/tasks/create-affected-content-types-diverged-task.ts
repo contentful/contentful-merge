@@ -8,7 +8,7 @@ export function createAffectedContentTypesDivergedTask(): ListrTask {
   return {
     title: `Checking for diverged content types`,
     task: async (context: CreateChangesetContext) => {
-      context.logger.log(LogLevel.INFO, `Start createAffectedContentTypesDivergedTask`)
+      context.logger.log(LogLevel.INFO, `Start affectedContentTypesDivergedTask`)
 
       const relevantDivergedContentTypeIds = divergedContentTypeIdsOfAffectedEntries(
         context.affectedEntities,

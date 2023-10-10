@@ -19,7 +19,7 @@ export function createFetchAddedEntitiesTask({ entityType }: FetchAddedEntitiesT
     title: 'Fetching full payload for added entries',
     task: async (context: CreateChangesetContext, task) => {
       const { client, affectedEntities, sourceEnvironmentId, changeset, requestBatchSize, logger } = context
-      logger.log(LogLevel.INFO, 'Start createFetchAddedEntitiesTask')
+      logger.log(LogLevel.INFO, 'Start fetchAddedEntitiesTask')
 
       const {
         [entityType]: { added },
