@@ -9,8 +9,8 @@ describe('createPatch', () => {
     const targetEntry = targetEntriesFixture.items[0] as unknown as Entry<any>
     const patch = createPatch({ targetEntry, sourceEntry })
     expect(patch).to.deep.equal([
-      { op: 'replace', path: '/fields/slug/en-US', value: 'home-page' },
       { op: 'replace', path: '/fields/title/en-US', value: 'Home page' },
+      { op: 'replace', path: '/fields/slug/en-US', value: 'home-page' },
     ])
   })
   it('creates a patch for added list items', () => {

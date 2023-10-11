@@ -1,4 +1,4 @@
-import { Patch } from '@contentful/jsondiffpatch'
+import { Patch } from 'generate-json-patch'
 import { ListrTaskWrapper } from 'listr2'
 import { createClient } from './client'
 import { ResponseStatusCollector } from './client/response-status-collector'
