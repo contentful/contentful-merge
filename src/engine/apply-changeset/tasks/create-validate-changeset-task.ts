@@ -4,7 +4,7 @@ import { changesetExceedsLimits } from '../../validations/exceeds-limits'
 import { LimitsExceededForApplyError } from '../../errors'
 import { containsMetadata } from '../../validations/contains-metadata'
 
-export const applyValidateChangesetTask = (): ListrTask => {
+export const createValidateChangesetTask = (): ListrTask => {
   return {
     title: `Validating changeset`,
     task: async (context: ApplyChangesetContext) => {

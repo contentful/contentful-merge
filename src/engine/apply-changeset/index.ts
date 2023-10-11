@@ -1,10 +1,6 @@
 import { Listr, PRESET_TIMER } from 'listr2'
-import { applyAddEntitiesTask } from './tasks/apply-add-entities-task'
-import { applyChangeEntitiesTask } from './tasks/apply-change-entities-task'
-import { applyLoadChangesetTask } from './tasks/apply-load-changeset-task'
-import { applyRemoveEntitiesTask } from './tasks/apply-remove-entities-task'
 import { ApplyChangesetContext } from './types'
-import { applyValidateChangesetTask } from './tasks/apply-validate-changeset-task'
+import { ApplyChangesetTasks } from './tasks'
 
 export const applyChangesetTask = (context: ApplyChangesetContext): Listr => {
   return new Listr<ApplyChangesetContext>(
@@ -14,11 +10,11 @@ export const applyChangesetTask = (context: ApplyChangesetContext): Listr => {
         task: (ctx, task): Listr => {
           return task.newListr(
             [
-              applyLoadChangesetTask(),
-              applyValidateChangesetTask(),
-              applyRemoveEntitiesTask(),
-              applyAddEntitiesTask(),
-              applyChangeEntitiesTask(),
+              ApplyChangesetTasks.createLoadChangesetTask(),
+              ApplyChangesetTasks.createValidateChangesetTask(),
+              ApplyChangesetTasks.createRemoveEntitiesTask(),
+              ApplyChangesetTasks.createAddEntitiesTask(),
+              ApplyChangesetTasks.createChangeEntitiesTask(),
             ],
             { concurrent: false }
           )

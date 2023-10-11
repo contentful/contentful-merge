@@ -1,11 +1,11 @@
 import { initializeTask } from '../../../test-utils'
 import { expect } from 'chai'
-import { applyAddEntitiesTask } from '../../../../../src/engine/apply-changeset/tasks/apply-add-entities-task'
 import { beforeEach } from 'mocha'
 import { AddedChangesetItem } from '../../../../../src/engine/types'
 import { createLinkObject } from '../../../../../src/engine/utils/create-link-object'
 import { createApplyChangesetContext } from '../../../fixtures/apply-changeset-context-fixture'
 import { ApplyChangesetContext } from '../../../../../src/engine/apply-changeset/types'
+import { ApplyChangesetTasks } from '../../../../../src/engine/apply-changeset/tasks'
 
 describe('applyAddEntitiesTask', () => {
   let context: ApplyChangesetContext
@@ -55,7 +55,7 @@ describe('applyAddEntitiesTask', () => {
     context.client.cma.entries.create = spy.call
     context.changeset.items.push(addedChangesetItem)
 
-    const task = initializeTask(applyAddEntitiesTask(), context)
+    const task = initializeTask(ApplyChangesetTasks.createAddEntitiesTask(), context)
     let error = null
     try {
       await task.run()

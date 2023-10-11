@@ -1,11 +1,11 @@
 import { initializeTask } from '../../../test-utils'
 import { expect } from 'chai'
-import { applyRemoveEntitiesTask } from '../../../../../src/engine/apply-changeset/tasks/apply-remove-entities-task'
 import { beforeEach } from 'mocha'
 import { DeletedChangesetItem } from '../../../../../src/engine/types'
 import { createLinkObject } from '../../../../../src/engine/utils/create-link-object'
 import { createApplyChangesetContext } from '../../../fixtures/apply-changeset-context-fixture'
 import { ApplyChangesetContext } from '../../../../../src/engine/apply-changeset/types'
+import { ApplyChangesetTasks } from '../../../../../src/engine/apply-changeset/tasks'
 
 describe('applyRemoveEntitiesTask', () => {
   let context: ApplyChangesetContext
@@ -34,7 +34,7 @@ describe('applyRemoveEntitiesTask', () => {
     context.client.cma.entries.delete = spy.call
     context.changeset.items.push(removeChangesetItem)
 
-    const task = initializeTask(applyRemoveEntitiesTask(), context)
+    const task = initializeTask(ApplyChangesetTasks.createRemoveEntitiesTask(), context)
     let error = null
     try {
       await task.run()

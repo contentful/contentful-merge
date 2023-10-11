@@ -5,7 +5,7 @@ import { createFetchAddedEntitiesTask } from './create-fetch-added-entities-task
 import { createFetchChangedEntitiesTask } from './create-fetch-changed-task'
 
 /**
- * @description This module imports various task-creation functions related to changesets.
+ * @description This module imports various task-creation functions related to creating changesets.
  * @property {Function} createFetchPartialEntitiesTask
  * @property {Function} createFetchChangedEntitiesTask
  * @property {Function} createFetchAddedEntitiesTask
