@@ -4,7 +4,7 @@ import { LogLevel } from '../../logger/types'
 import { ApplyChangesetContext } from '../types'
 import { ChangesetFileError } from '../../errors'
 
-export const applyLoadChangesetTask = (): ListrTask => {
+export const createLoadChangesetTask = (): ListrTask => {
   return {
     title: 'Load changeset data',
     task: async (context: ApplyChangesetContext, task) => {
