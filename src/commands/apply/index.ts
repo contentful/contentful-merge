@@ -12,7 +12,12 @@ import { OutputFormatter, renderFilePaths } from '../../engine/utils'
 import { renderErrorOutputForApply } from '../../engine/utils/render-error-output'
 import crypto from 'crypto'
 import { renderOutput } from '../../engine/apply-changeset/render-output'
-import { trackApplyCommandCompleted, trackApplyCommandFailed, trackApplyCommandStarted } from '../../analytics'
+import {
+  analyticsCloseAndFlush,
+  trackApplyCommandCompleted,
+  trackApplyCommandFailed,
+  trackApplyCommandStarted,
+} from '../../analytics'
 
 const sequenceKey = crypto.randomUUID()
 
@@ -51,7 +56,7 @@ export default class Apply extends Command {
 
     trackApplyCommandStarted({
       space_key: flags.space,
-      target_environment_key: flags.target,
+      target_environment_key: flags.environment,
       sequence_key: sequenceKey,
     })
 
@@ -122,5 +127,9 @@ export default class Apply extends Command {
   protected async finally(): Promise<any> {
     await this.writeFileLog()
     this.log(renderFilePaths({ logFilePath: this.logFilePath }))
+
+    // analyticsCloseAndFlush has a very short timeout because it will
+    // otherwise trigger a rerender of the listr tasks on error exits
+    await Promise.allSettled([analyticsCloseAndFlush(2000)])
   }
 }

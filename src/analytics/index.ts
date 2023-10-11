@@ -1,13 +1,14 @@
 import { EventProperties } from '@segment/analytics-core/src/events/interfaces'
 import { Analytics } from '@segment/analytics-node'
 import crypto from 'crypto'
+import { parseStringAsBoolean } from '../engine/utils/string-to-boolean'
 
 const writeKey = 'YiSkRXCjHUpIDIk9wfbWhoGEGpR99ZXE'
 const userId = crypto.randomUUID()
 
 const analytics = new Analytics({
   writeKey,
-  disable: !!process.env.DISABLE_ANALYTICS,
+  disable: process.env.DISABLE_ANALYTICS ? parseStringAsBoolean(process.env.DISABLE_ANALYTICS) : false,
 })
 
 export async function analyticsCloseAndFlush(timeout: number) {
