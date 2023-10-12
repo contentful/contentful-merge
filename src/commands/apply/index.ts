@@ -1,4 +1,4 @@
-import { Command, Config, Flags } from '@oclif/core'
+import { Command, Config, Flags, ux } from '@oclif/core'
 import { MemoryLogger } from '../../engine/logger/memory-logger'
 import { createTransformHandler } from '../../engine/logger/create-transform-handler'
 import { createClient } from '../../engine/client'
@@ -12,6 +12,8 @@ import { OutputFormatter, renderFilePaths } from '../../engine/utils'
 import { renderErrorOutputForApply } from '../../engine/utils/render-error-output'
 import crypto from 'crypto'
 import { renderOutput } from '../../engine/apply-changeset/render-output'
+import { loadChangeset } from '../../engine/apply-changeset/load-changeset'
+import { renderWarnings, collectWarnings } from '../../engine/apply-changeset/warnings'
 import {
   analyticsCloseAndFlush,
   trackApplyCommandCompleted,
@@ -25,6 +27,7 @@ export default class Apply extends Command {
   static description = 'Apply Changeset'
   private logFilePath: string | undefined
   private logger: MemoryLogger
+  private terminatedByUser = false
 
   constructor(argv: string[], config: Config) {
     super(argv, config)
@@ -53,6 +56,22 @@ export default class Apply extends Command {
 
   async run(): Promise<void> {
     const { flags } = await this.parse(Apply)
+
+    const changeset = await loadChangeset(flags.file)
+
+    const confirmation = renderWarnings(
+      collectWarnings({
+        changeset,
+        environmentId: flags.environment,
+      })
+    )
+
+    const answer = await ux.prompt(confirmation, { default: 'Y' })
+
+    if (!['Y', 'y'].includes(answer)) {
+      this.terminatedByUser = true
+      return
+    }
 
     trackApplyCommandStarted({
       space_key: flags.space,
@@ -125,6 +144,7 @@ export default class Apply extends Command {
   }
 
   protected async finally(): Promise<any> {
+    if (this.terminatedByUser) return
     await this.writeFileLog()
     this.log(renderFilePaths({ logFilePath: this.logFilePath }))
 
