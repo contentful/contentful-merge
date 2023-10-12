@@ -6,6 +6,7 @@ import { createEntity } from '../actions/create-entity'
 import { ApplyChangesetContext } from '../types'
 import { pluralizeEntry } from '../../utils'
 import { isString } from 'lodash'
+import { publishEntity } from '../actions/publish-entity'
 
 export const createAddEntitiesTask = (): ListrTask => {
   return {
@@ -25,10 +26,12 @@ export const createAddEntitiesTask = (): ListrTask => {
       const result = await Promise.all(
         entries.map(async (item) => {
           return limiter(async () => {
-            const idOfAdded = await createEntity({ client, environmentId, logger, item, responseCollector, task })
+            const createdEntry = await createEntity({ client, environmentId, logger, item, responseCollector, task })
             task.title = `Adding ${++count}/${entityCount} entries (failures: ${responseCollector.errorsLength})`
 
-            return idOfAdded
+            await publishEntity({ client, entity: createdEntry, environmentId, logger, responseCollector, task })
+
+            return createdEntry.sys.id
           })
         })
       )
