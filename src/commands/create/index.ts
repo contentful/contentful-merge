@@ -216,8 +216,6 @@ export default class Create extends Command {
     await this.writeFileLog()
     this.log(renderFilePaths({ changesetPath: this.changesetFilePath, logFilePath: this.logFilePath }))
 
-    // analyticsCloseAndFlush has a very short timeout because it will
-    // otherwise trigger a rerender of the listr tasks on error exits
     await Promise.allSettled([Sentry.close(2000), analyticsCloseAndFlush(2000)])
   }
 }
