@@ -42,4 +42,14 @@ describe('createPatch', () => {
     const patch = createPatch({ targetEntry, sourceEntry })
     expect(patch).to.deep.equal([{ op: 'remove', path: '/fields/modules/en-US/2' }])
   })
+  it('creates a patch with ignored metadata', () => {
+    const sourceEntry = sourceEntriesFixture.items[0] as unknown as Entry<any>
+    const targetEntry = sourceEntriesFixture.items[0] as unknown as Entry<any>
+
+    sourceEntry.metadata = {
+      tags: [{ sys: { id: 'tag1', type: 'Link', linkType: 'Tag' } }],
+    }
+    const patch = createPatch({ targetEntry, sourceEntry })
+    expect(patch).to.length(0)
+  })
 })
