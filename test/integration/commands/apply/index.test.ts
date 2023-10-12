@@ -71,7 +71,6 @@ describe('create command', () => {
 
   fancy
     .stdout() // to print the output during testing use `.stdout({ print: true })`
-    .createTestContentType(() => testContext.targetEnvironment)
     .runApplyCommand(() => testContext)
     .it('should apply empty changeset', (ctx) => {
       fs.writeFileSync('out', ctx.stdout.toString())
@@ -84,6 +83,7 @@ describe('create command', () => {
 
   fancy
     .stdout()
+    .createTestContentType(() => testContext.targetEnvironment)
     .runApplyCommand(() => testContextTwoAdditions)
     .it('should apply changeset with 2 additions', (ctx) => {
       expect(ctx.stdout).to.contain('Changeset successfully applied 🎉')
@@ -94,6 +94,7 @@ describe('create command', () => {
 
   fancy
     .stdout()
+    .createTestContentType(() => testContext.targetEnvironment)
     .runApplyCommand(() => testContextInvalidToken)
     .it('should fail applying if token is invalid', (ctx) => {
       expect(ctx.stdout).to.contain('✔ Deleting 0 entries')
