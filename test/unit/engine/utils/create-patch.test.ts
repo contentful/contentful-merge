@@ -19,6 +19,11 @@ describe('createPatch', () => {
     const patch = createPatch({ targetEntry, sourceEntry })
     expect(patch).to.deep.equal([
       {
+        op: 'replace',
+        path: '/fields/modules/en-US/4/sys/id',
+        value: '6gFiJvssqQ62CMYqECOu2M',
+      },
+      {
         op: 'add',
         path: '/fields/modules/en-US/5',
         value: {
