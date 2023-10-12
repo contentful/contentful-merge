@@ -1,17 +1,18 @@
 import { Entry } from 'contentful'
-import { create as createDiffer, Delta, formatters as diffFormatters, Patch } from '@contentful/jsondiffpatch'
-
-const format: (delta: Delta | undefined) => Patch = diffFormatters.jsonpatch.format
-
-const entryDiff = createDiffer({
-  propertyFilter: function (name: string) {
-    return !['sys'].includes(name)
-  },
-  textDiff: {
-    minLength: Number.MAX_SAFE_INTEGER,
-  },
-})
+import { generateJSONPatch, pathInfo } from 'generate-json-patch'
 
 export const createPatch = ({ targetEntry, sourceEntry }: { targetEntry: Entry<any>; sourceEntry: Entry<any> }) => {
-  return format(entryDiff.diff(targetEntry, sourceEntry))
+  // Temp ignore until the types from generate-json-patch are fixed
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  return generateJSONPatch(targetEntry, sourceEntry, {
+    propertyFilter: function (name: string, context) {
+      const { length } = pathInfo(context.path)
+      // ignore sys prop on root level
+      if (length === 1) {
+        return !['sys', 'metadata'].includes(name)
+      }
+      return true
+    },
+  })
 }

@@ -12,6 +12,12 @@ import { OutputFormatter, renderFilePaths } from '../../engine/utils'
 import { renderErrorOutputForApply } from '../../engine/utils/render-error-output'
 import crypto from 'crypto'
 import { renderOutput } from '../../engine/apply-changeset/render-output'
+import {
+  analyticsCloseAndFlush,
+  trackApplyCommandCompleted,
+  trackApplyCommandFailed,
+  trackApplyCommandStarted,
+} from '../../analytics'
 
 const sequenceKey = crypto.randomUUID()
 
@@ -48,6 +54,12 @@ export default class Apply extends Command {
   async run(): Promise<void> {
     const { flags } = await this.parse(Apply)
 
+    trackApplyCommandStarted({
+      space_key: flags.space,
+      target_environment_key: flags.environment,
+      sequence_key: sequenceKey,
+    })
+
     const logHandler = createTransformHandler(this.logger)
 
     const client = createClient({
@@ -76,19 +88,36 @@ export default class Apply extends Command {
 
     console.log(OutputFormatter.headline(`\nStart applying changeset to ${chalk.yellow(flags.environment)} 📥`))
 
-    // const startTime = performance.now()
+    const startTime = performance.now()
     await applyChangesetTask(context).run()
-    // const endTime = performance.now()
+    const endTime = performance.now()
 
-    // const duration = ((endTime - startTime) / 1000).toFixed(1)
-    // const usedMemory = process.memoryUsage().heapUsed / 1024 / 1024
+    trackApplyCommandCompleted({
+      space_key: flags.space,
+      target_environment_key: flags.target,
+      sequence_key: sequenceKey,
+      duration: endTime - startTime,
+      num_changeset_items: context.changeset.items.length,
+      num_added_items: context.processedEntities.entries.added.length,
+      num_removed_items: context.processedEntities.entries.deleted.length,
+      num_changed_items: context.processedEntities.entries.updated.length,
+    })
 
     const output = await renderOutput(context)
     this.log(output)
   }
 
   async catch(error: any) {
-    await this.parse(Apply)
+    const { flags } = await this.parse(Apply)
+
+    trackApplyCommandFailed({
+      space_key: flags.space,
+      target_environment_key: flags.target,
+      sequence_key: sequenceKey,
+      error_name: error.name,
+      error_message: error.message,
+      ...(error.details ? { error_details: JSON.stringify(error.details) } : {}),
+    })
 
     const output = renderErrorOutputForApply(error)
 
@@ -98,5 +127,9 @@ export default class Apply extends Command {
   protected async finally(): Promise<any> {
     await this.writeFileLog()
     this.log(renderFilePaths({ logFilePath: this.logFilePath }))
+
+    // analyticsCloseAndFlush has a very short timeout because it will
+    // otherwise trigger a rerender of the listr tasks on error exits
+    await Promise.allSettled([analyticsCloseAndFlush(2000)])
   }
 }
