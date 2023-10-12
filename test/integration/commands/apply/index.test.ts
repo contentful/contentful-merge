@@ -82,7 +82,7 @@ describe('create command', () => {
     })
 
   fancy
-    .stdout()
+    .stdout({ print: true })
     .createTestContentType(() => testContext.targetEnvironment)
     .runApplyCommand(() => testContextTwoAdditions)
     .it('should apply changeset with 2 additions', (ctx) => {
