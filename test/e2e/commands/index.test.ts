@@ -30,9 +30,10 @@ describe('Command flow - create and apply', () => {
     createTestContext = environmentsContext
     applyTestContext = {
       spaceId: testSpace.sys.id,
-      targetEnvironmentId: createTestContext.targetEnvironment.sys.id,
+      targetEnvironment: createTestContext.targetEnvironment,
       changesetFilePath,
       cmaToken,
+      teardown: environmentsContext.teardown,
     }
   })
 
