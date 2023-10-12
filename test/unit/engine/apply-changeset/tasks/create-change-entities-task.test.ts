@@ -1,12 +1,11 @@
 import { initializeTask } from '../../../test-utils'
 import { expect } from 'chai'
-import { applyChangeEntitiesTask } from '../../../../../src/engine/apply-changeset/tasks/apply-change-entities-task'
 import { beforeEach } from 'mocha'
 import { UpdatedChangesetItem } from '../../../../../src/engine/types'
 import { createLinkObject } from '../../../../../src/engine/utils/create-link-object'
-import * as sinon from 'sinon'
 import { createApplyChangesetContext } from '../../../fixtures/apply-changeset-context-fixture'
 import { ApplyChangesetContext } from '../../../../../src/engine/apply-changeset/types'
+import { ApplyChangesetTasks } from '../../../../../src/engine/apply-changeset/tasks'
 
 describe('applyChangeEntitiesTask', () => {
   let context: ApplyChangesetContext
@@ -55,7 +54,7 @@ describe('applyChangeEntitiesTask', () => {
 
     context.changeset.items.push(updatedChangesetItem)
 
-    const task = initializeTask(applyChangeEntitiesTask(), context)
+    const task = initializeTask(ApplyChangesetTasks.createChangeEntitiesTask(), context)
     let error = null
     try {
       await task.run()

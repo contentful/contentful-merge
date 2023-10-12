@@ -7,7 +7,7 @@ import { pluralizeEntry } from '../../utils/pluralize'
 import { EntityType } from '../../types'
 
 export function cleanEntity(entry: Entry<any>): any {
-  return { ...entry, sys: pick(entry.sys, ['id', 'type', 'contentType']) }
+  return { ...entry, sys: pick(entry.sys, ['id', 'type', 'contentType']), metadata: undefined }
 }
 
 type FetchAddedEntitiesTaskProps = {
@@ -19,7 +19,7 @@ export function createFetchAddedEntitiesTask({ entityType }: FetchAddedEntitiesT
     title: 'Fetching full payload for added entries',
     task: async (context: CreateChangesetContext, task) => {
       const { client, affectedEntities, sourceEnvironmentId, changeset, requestBatchSize, logger } = context
-      logger.log(LogLevel.INFO, 'Start createFetchAddedEntitiesTask')
+      logger.log(LogLevel.INFO, 'Start fetchAddedEntitiesTask')
 
       const {
         [entityType]: { added },

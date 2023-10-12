@@ -1,18 +1,18 @@
 import { expect } from 'chai'
 import { initializeTask } from '../../../test-utils'
 import { CreateChangesetContext } from '../../../../../src/engine/create-changeset/types'
-import { createEntitiesTask } from '../../../../../src/engine/create-changeset/tasks/create-entities-task'
 import { createCreateChangesetContext } from '../../../fixtures/create-changeset-context-fixture'
 import { EnvironmentIdFixture } from '../../../fixtures/environment-id-fixtures'
+import { CreateChangesetTasks } from '../../../../../src/engine/create-changeset/tasks'
 
-describe('createEntitiesTask', () => {
+describe('fetchPartialEntitiesTask', () => {
   let context: CreateChangesetContext
   beforeEach(() => {
     context = createCreateChangesetContext()
   })
   it("fetches all entries' sys info of the source environment and collects them in the 'source' section of the context", async () => {
     const task = initializeTask(
-      createEntitiesTask({
+      CreateChangesetTasks.createFetchPartialEntitiesTask({
         scope: 'source',
         environmentId: EnvironmentIdFixture.source,
         entityType: 'entries',
@@ -28,7 +28,7 @@ describe('createEntitiesTask', () => {
   })
   it("fetches all entries' sys info of the target environment and collects them in 'target' section of the context", async () => {
     const task = initializeTask(
-      createEntitiesTask({
+      CreateChangesetTasks.createFetchPartialEntitiesTask({
         scope: 'target',
         environmentId: EnvironmentIdFixture.target,
         entityType: 'entries',

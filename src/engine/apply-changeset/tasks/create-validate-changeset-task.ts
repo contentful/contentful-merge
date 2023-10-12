@@ -1,11 +1,12 @@
 import { ListrTask } from 'listr2'
 import { ApplyChangesetContext } from '../types'
-import { changesetExceedsLimits } from '../../utils/exceeds-limits'
+import { changesetExceedsLimits } from '../../validations/exceeds-limits'
 import { LimitsExceededForApplyError } from '../../errors'
+import { containsMetadata } from '../../validations/contains-metadata'
 
-export const applyComputeIdsTask = (): ListrTask => {
+export const createValidateChangesetTask = (): ListrTask => {
   return {
-    title: `Counting number of changes between environments`,
+    title: `Validating changeset`,
     task: async (context: ApplyChangesetContext) => {
       const exceedsLimits = changesetExceedsLimits(context)
 
@@ -13,6 +14,8 @@ export const applyComputeIdsTask = (): ListrTask => {
       if (exceedsLimits) {
         throw new LimitsExceededForApplyError(context)
       }
+
+      containsMetadata(context)
 
       return Promise.resolve(context)
     },
