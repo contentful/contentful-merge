@@ -17,7 +17,7 @@ describe('create command', () => {
   }
 
   const changesetPath = './changeset.json'
-  const changesetPathAddItems = './test/integration/commands/apply/add-2-items-changeset.json'
+  const changesetPathAddItems = './add-2-items-changeset.json'
 
   let testContext: ApplyTestContext
   let testSpace: Space
@@ -82,7 +82,7 @@ describe('create command', () => {
     })
 
   fancy
-    .stdout({ print: true })
+    .stdout()
     .createTestContentType(() => testContext.targetEnvironment)
     .runApplyCommand(() => testContextTwoAdditions)
     .it('should apply changeset with 2 additions', (ctx) => {
