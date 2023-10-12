@@ -94,7 +94,6 @@ describe('create command', () => {
 
   fancy
     .stdout()
-    .createTestContentType(() => testContext.targetEnvironment)
     .runApplyCommand(() => testContextInvalidToken)
     .it('should fail applying if token is invalid', (ctx) => {
       expect(ctx.stdout).to.contain('✔ Deleting 0 entries')
