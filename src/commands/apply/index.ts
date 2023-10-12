@@ -15,20 +15,13 @@ import crypto from 'crypto'
 import { renderOutput } from '../../engine/apply-changeset/render-output'
 import {
   analyticsCloseAndFlush,
+  initSentry,
   trackApplyCommandCompleted,
   trackApplyCommandFailed,
   trackApplyCommandStarted,
 } from '../../analytics'
-import { ProfilingIntegration } from '@sentry/profiling-node'
-import { config } from '../../config'
 
-Sentry.init({
-  dsn: 'https://5bc27276ac684a56bab07632be10a455@o2239.ingest.sentry.io/4505312653410304',
-  tracesSampleRate: 1.0,
-  profilesSampleRate: 1.0,
-  integrations: [new ProfilingIntegration()],
-  environment: config.environment,
-})
+initSentry()
 
 const sequenceKey = crypto.randomUUID()
 
