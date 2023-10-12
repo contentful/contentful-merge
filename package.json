@@ -19,7 +19,6 @@
     "/oclif.manifest.json"
   ],
   "dependencies": {
-    "@contentful/jsondiffpatch": "^1.4.1",
     "@oclif/core": "^2.11.6",
     "@oclif/plugin-help": "^5.2.15",
     "@oclif/plugin-plugins": "^3.1.8",
@@ -32,6 +31,7 @@
     "contentful-collection": "^0.0.4",
     "contentful-sdk-core": "^7.1.0",
     "fast-json-patch": "^3.1.1",
+    "generate-json-patch": "^1.1.0",
     "listr2": "^6.6.1",
     "lodash": "^4.17.21",
     "p-limit": "^3.1.0",
