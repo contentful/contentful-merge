@@ -33,7 +33,7 @@ type GetEntryParams = ParamEnvironment & { entryId: string; query?: EntriesQuery
 type DeleteEntryParams = ParamEnvironment & { entryId: string }
 type CreateEntryParams = ParamEnvironment & { entryId: string; contentType: string; entry: Omit<EntryProps, 'sys'> }
 type UpdateEntryParams = ParamEnvironment & { entryId: string; contentType: string; entry: EntryProps }
-type PublishEntryParams = ParamEnvironment & { entryId: string; entry: EntryProps }
+type PublishEntryParams = ParamEnvironment & { entryId: string; entryVersion: number }
 
 const cleanQuery = (query?: Record<string, any>) => pickBy(query, (v) => v !== undefined)
 
@@ -130,11 +130,11 @@ export const createClient = ({
           })
           return result.data as EntryProps<any>
         },
-        publish: async ({ environment, entry, entryId }: PublishEntryParams) => {
+        publish: async ({ environment, entryVersion, entryId }: PublishEntryParams) => {
           count.cma++
-          return cmaClient.put(`${environment}/entries/${entryId}/published`, entry, {
+          return cmaClient.put(`${environment}/entries/${entryId}/published`, undefined, {
             headers: {
-              'X-Contentful-Version': entry.sys.version,
+              'X-Contentful-Version': entryVersion,
             },
           })
         },
