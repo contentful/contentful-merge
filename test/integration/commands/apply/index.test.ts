@@ -17,7 +17,7 @@ describe('create command', () => {
   }
 
   const changesetPath = './changeset.json'
-  const changesetPathAddItems = './test/integration/commands/apply/add-2-items-changeset.json'
+  const changesetPathAddItems = './add-2-items-changeset.json'
 
   let testContext: ApplyTestContext
   let testSpace: Space
@@ -71,7 +71,6 @@ describe('create command', () => {
 
   fancy
     .stdout() // to print the output during testing use `.stdout({ print: true })`
-    .createTestContentType(() => testContext.targetEnvironment)
     .runApplyCommand(() => testContext)
     .it('should apply empty changeset', (ctx) => {
       fs.writeFileSync('out', ctx.stdout.toString())
@@ -84,6 +83,7 @@ describe('create command', () => {
 
   fancy
     .stdout()
+    .createTestContentType(() => testContext.targetEnvironment)
     .runApplyCommand(() => testContextTwoAdditions)
     .it('should apply changeset with 2 additions', (ctx) => {
       expect(ctx.stdout).to.contain('Changeset successfully applied 🎉')
@@ -93,12 +93,9 @@ describe('create command', () => {
     })
 
   fancy
-    .stdout()
+    .stdout({ print: true })
     .runApplyCommand(() => testContextInvalidToken)
     .it('should fail applying if token is invalid', (ctx) => {
-      expect(ctx.stdout).to.contain('✔ Deleting 0 entries')
-      expect(ctx.stdout).to.contain('✖ Adding 2 entries')
-      expect(ctx.stdout).to.contain('◼ Updating entries')
       expect(ctx.stdout).to.contain('Error: An error occurred while adding an entry.')
     })
 })

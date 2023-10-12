@@ -11,7 +11,7 @@
     },
     "target": {
       "sys": {
-        "id": "c0yew5rdiwpc",
+        "id": "85lod169gyol",
         "linkType": "Environment",
         "type": "Link"
       }
@@ -28,9 +28,6 @@
         }
       },
       "data": {
-        "metadata": {
-          "tags": []
-        },
         "sys": {
           "id": "new-entry-2",
           "type": "Entry",
@@ -62,9 +59,6 @@
         }
       },
       "data": {
-        "metadata": {
-          "tags": []
-        },
         "sys": {
           "id": "new-entry",
           "type": "Entry",
