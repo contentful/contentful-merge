@@ -19,7 +19,7 @@
     "/oclif.manifest.json"
   ],
   "dependencies": {
-    "@oclif/core": "^2.11.6",
+    "@oclif/core": "^3.0.9",
     "@oclif/plugin-help": "^5.2.15",
     "@oclif/plugin-plugins": "^3.1.8",
     "@segment/analytics-node": "^1.1.0",
