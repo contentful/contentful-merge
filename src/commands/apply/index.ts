@@ -74,10 +74,10 @@ export default class Apply extends Command {
       })
     )
 
-    console.log(warnings)
+    this.log(warnings)
 
     if (flags.yes) {
-      console.log('[Skipping confirmation because --yes flag was provided]')
+      this.log('[Skipping confirmation because --yes flag was provided]')
     } else {
       const confirmation = chalk.bold(`${chalk.green('?')} Are you sure you want to merge? ${chalk.gray('(Y/n)')}`)
       const answer = await ux.prompt(confirmation, { default: 'Y' })
@@ -120,7 +120,7 @@ export default class Apply extends Command {
       },
     }
 
-    console.log(OutputFormatter.headline(`\nStart applying changeset to ${chalk.yellow(flags.environment)} 📥`))
+    this.log(OutputFormatter.headline(`\nStart applying changeset to ${chalk.yellow(flags.environment)} 📥`))
 
     const startTime = performance.now()
     await applyChangesetTask(context).run()

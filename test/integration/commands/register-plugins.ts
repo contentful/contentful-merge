@@ -105,6 +105,7 @@ export default fancy
             testContext.targetEnvironmentId,
             '--cma-token',
             testContext.cmaToken,
+            '--yes',
           ],
           {} as unknown as Config // Runtime config, but not required for tests.
         )
