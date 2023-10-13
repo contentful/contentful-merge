@@ -71,6 +71,11 @@ export default class Create extends Command {
   async run(): Promise<void> {
     const { flags } = await this.parse(Create)
 
+    if (flags.source === flags.target) {
+      this.log('Source and target environment need to be different.')
+      process.exit(1)
+    }
+
     Sentry.configureScope((scope) => {
       scope.setTag('command', 'create')
       scope.setTag('spaceId', flags.space)
