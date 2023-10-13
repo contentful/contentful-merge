@@ -37,7 +37,10 @@ export default class Apply extends Command {
 
   static hidden = true
 
-  static examples = ['contentful-merge apply  --space "<space-id>" --environment "staging" --file changeset.json']
+  static examples = [
+    'contentful-merge apply  --space "<space-id>" --environment "staging" --file changeset.json',
+    'contentful-merge apply  --space "<space-id>" --environment "staging" --file changeset.json --yes',
+  ]
 
   static flags = {
     space: Flags.string({ description: 'Space id', required: true }),
@@ -47,6 +50,11 @@ export default class Apply extends Command {
       description: 'CMA token, defaults to env: $CMA_TOKEN',
       required: true,
       env: 'CMA_TOKEN',
+    }),
+    yes: Flags.boolean({
+      description: 'Skips any confirmation before applying the changeset',
+      required: false,
+      default: false,
     }),
   }
 
@@ -59,18 +67,25 @@ export default class Apply extends Command {
 
     const changeset = await loadChangeset(flags.file)
 
-    const confirmation = renderWarnings(
+    const warnings = renderWarnings(
       collectWarnings({
         changeset,
         environmentId: flags.environment,
       })
     )
 
-    const answer = await ux.prompt(confirmation, { default: 'Y' })
+    console.log(warnings)
 
-    if (!['Y', 'y'].includes(answer)) {
-      this.terminatedByUser = true
-      return
+    if (flags.yes) {
+      console.log('[Skipping confirmation because --yes flag was provided]')
+    } else {
+      const confirmation = chalk.bold(`${chalk.green('?')} Are you sure you want to merge? ${chalk.gray('(Y/n)')}`)
+      const answer = await ux.prompt(confirmation, { default: 'n' })
+
+      if (!['Y', 'y'].includes(answer)) {
+        this.terminatedByUser = true
+        return
+      }
     }
 
     trackApplyCommandStarted({

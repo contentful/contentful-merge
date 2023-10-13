@@ -15,8 +15,7 @@ export function renderWarnings(warnings: Warning[]) {
 
   output += warnings.map((warning) => `${WARNINGS[warning]}`).join('\n')
 
-  output += '\n\n'
-  output += chalk.bold(`${chalk.green('?')} Are you sure you want to merge? ${chalk.gray('(Y/n)')}`)
+  output += '\n'
 
   return output
 }
