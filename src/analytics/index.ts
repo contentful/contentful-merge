@@ -1,6 +1,19 @@
 import { EventProperties } from '@segment/analytics-core/src/events/interfaces'
 import { Analytics } from '@segment/analytics-node'
 import crypto from 'crypto'
+import * as Sentry from '@sentry/node'
+import { ProfilingIntegration } from '@sentry/profiling-node'
+import { config } from '../config'
+
+export function initSentry() {
+  Sentry.init({
+    dsn: 'https://5bc27276ac684a56bab07632be10a455@o2239.ingest.sentry.io/4505312653410304',
+    tracesSampleRate: 1.0,
+    profilesSampleRate: 1.0,
+    integrations: [new ProfilingIntegration()],
+    environment: config.environment,
+  })
+}
 
 const writeKey = 'YiSkRXCjHUpIDIk9wfbWhoGEGpR99ZXE'
 const userId = crypto.randomUUID()
