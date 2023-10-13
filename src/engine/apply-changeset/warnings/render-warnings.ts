@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import wrapAnsi from 'wrap-ansi'
 import { Warning } from '../types'
 
 const inform = chalk.bold.yellow
@@ -13,7 +14,8 @@ export function renderWarnings(warnings: Warning[]) {
   output += chalk.bold(`The changeset will be applied with the following constraints:\n`)
   output += '\n'
 
-  output += warnings.map((warning) => `${WARNINGS[warning]}`).join('\n')
+  // This makes sure that line breaks don't break words
+  output += warnings.map((warning) => wrapAnsi(WARNINGS[warning], process.stdout.columns)).join('\n')
 
   output += '\n'
 

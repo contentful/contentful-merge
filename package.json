@@ -35,7 +35,8 @@
     "listr2": "^6.6.1",
     "lodash": "^4.17.21",
     "p-limit": "^3.1.0",
-    "semantic-release": "^21.0.7"
+    "semantic-release": "^21.0.7",
+    "wrap-ansi": "7.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.6.7",
@@ -50,6 +51,7 @@
     "@types/chai": "^4",
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.4.6",
+    "@types/wrap-ansi": "3.0.0",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "chai": "^4",
     "contentful-management": "^10.39.2",

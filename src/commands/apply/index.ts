@@ -80,7 +80,7 @@ export default class Apply extends Command {
       console.log('[Skipping confirmation because --yes flag was provided]')
     } else {
       const confirmation = chalk.bold(`${chalk.green('?')} Are you sure you want to merge? ${chalk.gray('(Y/n)')}`)
-      const answer = await ux.prompt(confirmation, { default: 'n' })
+      const answer = await ux.prompt(confirmation, { default: 'Y' })
 
       if (!['Y', 'y'].includes(answer)) {
         this.terminatedByUser = true
