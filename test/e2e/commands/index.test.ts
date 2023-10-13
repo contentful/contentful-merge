@@ -4,6 +4,22 @@ import fs from 'fs'
 import { ApplyTestContext, TestContext, createEnvironments } from './../../integration/commands/bootstrap'
 import fancy from './../../integration/commands/register-plugins'
 
+async function validateUpdatedEntriesInTargetEnvironment(createTestContext: TestContext) {
+  const allDataFromTargetEnvironment = await createTestContext.targetEnvironment.getEntries()
+
+  expect(allDataFromTargetEnvironment.total).to.be.equal(2)
+
+  const updatedEntry = allDataFromTargetEnvironment.items.find((entry) => entry.sys.id === 'entry-1')
+  const newEntry = allDataFromTargetEnvironment.items.find((entry) => entry.sys.id === 'new-entry')
+  const deletedEntry = allDataFromTargetEnvironment.items.find((entry) => entry.sys.id === 'entry-to-be-deleted')
+
+  expect(updatedEntry?.sys.publishedVersion).to.be.equal(3)
+  expect(updatedEntry?.sys.version).to.be.equal(4)
+  expect(updatedEntry?.fields.title['en-US']).to.be.equal('updated-title')
+  expect(newEntry?.sys.publishedVersion).to.be.equal(1)
+  expect(deletedEntry).to.be.undefined
+}
+
 describe('Command flow - create and apply', () => {
   const spaceId = process.env.CONTENTFUL_SPACE_ID!
   if (!spaceId) {
@@ -57,10 +73,12 @@ describe('Command flow - create and apply', () => {
   fancy
     .stdout()
     .runApplyCommand(() => applyTestContext)
-    .it('should add new entries to environment if specified in changeset', (ctx) => {
+    .it('should add new entries to environment if specified in changeset', async (ctx) => {
       expect(ctx.stdout).to.contain('Changeset successfully applied 🎉')
       expect(ctx.stdout).to.contain('1 added entry')
       expect(ctx.stdout).to.contain('1 updated entry')
       expect(ctx.stdout).to.contain('1 deleted entry')
+
+      await validateUpdatedEntriesInTargetEnvironment(createTestContext)
     })
 })
