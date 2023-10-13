@@ -46,9 +46,10 @@ describe('Command flow - create and apply', () => {
     createTestContext = environmentsContext
     applyTestContext = {
       spaceId: testSpace.sys.id,
-      targetEnvironmentId: createTestContext.targetEnvironment.sys.id,
+      targetEnvironment: createTestContext.targetEnvironment,
       changesetFilePath,
       cmaToken,
+      teardown: environmentsContext.teardown,
     }
   })
 
@@ -67,6 +68,16 @@ describe('Command flow - create and apply', () => {
     .runCreateCommand(() => createTestContext)
     .it('the changeset was created', () => {
       expect(fs.existsSync(changesetFilePath)).to.be.true
+    })
+
+  fancy
+    .stdout()
+    .runApplyCommand(() => ({
+      ...applyTestContext,
+      cmaToken: 'invalid-token',
+    }))
+    .it('should fail to apply changes with invalid token', async (ctx) => {
+      expect(ctx.stdout).to.contain('Error: An error occurred while deleting an entry.')
     })
 
   fancy

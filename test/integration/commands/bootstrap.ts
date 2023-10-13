@@ -12,10 +12,12 @@ export type TestContext = {
 }
 
 export type ApplyTestContext = {
-  targetEnvironmentId: string
+  targetEnvironment: Environment
   spaceId: string
   cmaToken: string
+  cdaToken?: string
   changesetFilePath: string
+  teardown: () => Promise<void>
 }
 
 const waitForKeyReady = async (apiKey: ApiKey): Promise<void> => {
