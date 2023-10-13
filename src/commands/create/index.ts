@@ -1,6 +1,5 @@
 import { Command, Config, Flags } from '@oclif/core'
 import * as Sentry from '@sentry/node'
-import { ProfilingIntegration } from '@sentry/profiling-node'
 import chalk from 'chalk'
 import crypto from 'crypto'
 import * as fs from 'node:fs/promises'
@@ -10,6 +9,7 @@ import {
   trackCreateCommandCompleted,
   trackCreateCommandStarted,
   trackCreateCommandFailed,
+  initSentry,
 } from '../../analytics'
 import { createClient } from '../../engine/client'
 import { createChangesetTask } from '../../engine/create-changeset'
@@ -20,17 +20,10 @@ import { writeLog } from '../../engine/logger/write-log'
 import { createChangeset } from '../../engine/utils/create-changeset'
 import { renderOutput } from '../../engine/create-changeset/render-output'
 import { OutputFormatter } from '../../engine/utils/output-formatter'
-import { config } from '../../config'
 import { renderErrorOutputForCreate } from '../../engine/utils/render-error-output'
 import { renderFilePaths } from '../../engine/utils'
 
-Sentry.init({
-  dsn: 'https://5bc27276ac684a56bab07632be10a455@o2239.ingest.sentry.io/4505312653410304',
-  tracesSampleRate: 1.0,
-  profilesSampleRate: 1.0,
-  integrations: [new ProfilingIntegration()],
-  environment: config.environment,
-})
+initSentry()
 
 const limits = {
   all: 500,

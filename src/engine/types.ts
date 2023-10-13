@@ -4,6 +4,7 @@ import { createClient } from './client'
 import { ResponseStatusCollector } from './client/response-status-collector'
 import { ILogger } from './logger/types'
 import { MemoryLogger } from './logger/memory-logger'
+import { Entry } from 'contentful'
 
 export type Client = ReturnType<typeof createClient>
 
@@ -81,3 +82,6 @@ export type BaseActionParams = {
 export type CommandType = 'create-changeset' | 'apply-changeset'
 
 export type EntityType = Exclude<keyof ReturnType<typeof createClient>['cda'], 'requestCounts'>
+
+type EntryWithoutMetadata = Omit<Entry<any>, 'metadata'>
+export type EntryWithOptionalMetadata = EntryWithoutMetadata & { metadata?: any }

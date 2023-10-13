@@ -3,6 +3,7 @@ import { MemoryLogger } from '../../engine/logger/memory-logger'
 import { createTransformHandler } from '../../engine/logger/create-transform-handler'
 import { createClient } from '../../engine/client'
 import { ResponseStatusCollector } from '../../engine/client/response-status-collector'
+import * as Sentry from '@sentry/node'
 import { createChangeset } from '../../engine/utils/create-changeset'
 import { ApplyChangesetContext } from '../../engine/apply-changeset/types'
 import chalk from 'chalk'
@@ -16,10 +17,13 @@ import { loadChangeset } from '../../engine/apply-changeset/load-changeset'
 import { renderWarnings, collectWarnings } from '../../engine/apply-changeset/warnings'
 import {
   analyticsCloseAndFlush,
+  initSentry,
   trackApplyCommandCompleted,
   trackApplyCommandFailed,
   trackApplyCommandStarted,
 } from '../../analytics'
+
+initSentry()
 
 const sequenceKey = crypto.randomUUID()
 
@@ -88,6 +92,12 @@ export default class Apply extends Command {
       }
     }
 
+    Sentry.configureScope((scope) => {
+      scope.setTag('command', 'apply')
+      scope.setTag('spaceId', flags.space)
+      scope.setTag('targetEnvironmentId', flags.environment)
+    })
+
     trackApplyCommandStarted({
       space_key: flags.space,
       target_environment_key: flags.environment,
@@ -123,8 +133,21 @@ export default class Apply extends Command {
     this.log(OutputFormatter.headline(`\nStart applying changeset to ${chalk.yellow(flags.environment)} 📥`))
 
     const startTime = performance.now()
+    const transaction = Sentry.startTransaction({
+      op: 'apply',
+      name: 'Apply Changeset',
+    })
+
     await applyChangesetTask(context).run()
+    transaction?.finish()
     const endTime = performance.now()
+    const duration = ((endTime - startTime) / 1000).toFixed(1)
+
+    Sentry.setTag('added', context.processedEntities.entries.added.length)
+    Sentry.setTag('removed', context.processedEntities.entries.deleted.length)
+    Sentry.setTag('changed', context.processedEntities.entries.updated.length)
+    Sentry.setTag('cmaRequest', client.requestCounts().cma)
+    Sentry.setTag('duration', `${duration}`)
 
     trackApplyCommandCompleted({
       space_key: flags.space,
@@ -155,6 +178,8 @@ export default class Apply extends Command {
 
     const output = renderErrorOutputForApply(error)
 
+    Sentry.captureException(error)
+
     this.log(output)
   }
 
@@ -163,8 +188,6 @@ export default class Apply extends Command {
     await this.writeFileLog()
     this.log(renderFilePaths({ logFilePath: this.logFilePath }))
 
-    // analyticsCloseAndFlush has a very short timeout because it will
-    // otherwise trigger a rerender of the listr tasks on error exits
-    await Promise.allSettled([analyticsCloseAndFlush(2000)])
+    await Promise.allSettled([Sentry.close(2000), analyticsCloseAndFlush(2000)])
   }
 }
