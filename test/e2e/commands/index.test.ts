@@ -72,6 +72,19 @@ describe('Command flow - create and apply', () => {
 
   fancy
     .stdout()
+    .runApplyCommand(() => ({
+      ...applyTestContext,
+      cmaToken: 'invalid-token',
+    }))
+    .it('should fail to apply changes with invalid token', async (ctx) => {
+      expect(ctx.stdout).to.contain('Error: An error occurred while deleting an entry.')
+      expect(ctx.stdout).to.contain('Deleting 1 entry')
+      expect(ctx.stdout).to.contain('Adding entries')
+      expect(ctx.stdout).to.contain('Updating entries')
+    })
+
+  fancy
+    .stdout()
     .runApplyCommand(() => applyTestContext)
     .it('should add new entries to environment if specified in changeset', async (ctx) => {
       expect(ctx.stdout).to.contain('Changeset successfully applied 🎉')
