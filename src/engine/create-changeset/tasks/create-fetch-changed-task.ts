@@ -1,16 +1,17 @@
 import { ListrTask } from 'listr2'
 import { chunk } from 'lodash'
-import { BaseContext, UpdatedChangesetItem, EntityType } from '../../types'
+import { BaseContext, UpdatedChangesetItem, EntityType, EntryWithOptionalMetadata } from '../../types'
 import { createLinkObject } from '../../utils/create-link-object'
 import type { CreateChangesetContext } from '../types'
 import { createPatch } from '../../utils/create-patch'
 import { pluralizeEntry } from '../../utils/pluralize'
+import { ContentType, Entry } from 'contentful'
 
-type GetEntryPatchParams = {
+type GetEntityPatchParams = {
   context: BaseContext
   source: string
   target: string
-  entryIds: string[]
+  entityIds: string[]
   entityType: EntityType
 }
 
@@ -23,36 +24,47 @@ async function getEntityPatches({
   context,
   source,
   target,
-  entryIds,
+  entityIds,
   entityType,
-}: GetEntryPatchParams): Promise<UpdatedChangesetItem[]> {
+}: GetEntityPatchParams): Promise<UpdatedChangesetItem[]> {
   const {
     client: { cda },
   } = context
-  const query = { 'sys.id[in]': entryIds.join(','), locale: '*' }
+  const query = { 'sys.id[in]': entityIds.join(','), locale: '*' }
 
   const api = cda[entityType]
 
-  const sourceEntries = await api.getMany({ environment: source, query }).then((response) => response.items)
-  const targetEntries = await api.getMany({ environment: target, query }).then((response) => response.items)
+  const sourceEntities = (await api.getMany({ environment: source, query }).then((response) => response.items)) as (
+    | Entry<any>
+    | ContentType
+  )[]
+  const targetEntities = (await api.getMany({ environment: target, query }).then((response) => response.items)) as (
+    | Entry<any>
+    | ContentType
+  )[]
 
   const result: UpdatedChangesetItem[] = []
 
-  for (const entryId of entryIds) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const sourceEntry = sourceEntries.find((entry) => entry.sys.id === entryId)
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const targetEntry = targetEntries.find((entry) => entry.sys.id === entryId)
+  for (const entityId of entityIds) {
+    const sourceEntity = sourceEntities.find((entry) => entry.sys.id === entityId)
+    const targetEntity = targetEntities.find((entry) => entry.sys.id === entityId)
 
-    if (sourceEntry && targetEntry) {
-      const cleanedSourceEntry = sourceEntry.metadata ? { ...sourceEntry, metadata: undefined } : sourceEntry
-      const cleanedTargetEntry = targetEntry.metadata ? { ...targetEntry, metadata: undefined } : targetEntry
+    if (sourceEntity && targetEntity) {
+      const isEntryWithOptionalMetadata = (entity: any): entity is EntryWithOptionalMetadata => {
+        return entity && 'metadata' in entity
+      }
 
-      const patch = createPatch({ targetEntry: cleanedTargetEntry, sourceEntry: cleanedSourceEntry })
+      const cleanedSourceEntity = isEntryWithOptionalMetadata(sourceEntity)
+        ? { ...sourceEntity, metadata: undefined }
+        : sourceEntity
+
+      const cleanedTargetEntity = isEntryWithOptionalMetadata(targetEntity)
+        ? { ...targetEntity, metadata: undefined }
+        : targetEntity
+
+      const patch = createPatch({ targetEntity: cleanedTargetEntity, sourceEntity: cleanedSourceEntity })
       result.push({
-        ...createLinkObject(entryId, 'update', EntityTypeMap[entityType]),
+        ...createLinkObject(entityId, 'update', EntityTypeMap[entityType]),
         patch,
       })
     }
@@ -79,6 +91,8 @@ export const createFetchChangedEntitiesTask = ({ entityType }: FetchChangedTaskP
       } = affectedEntities
 
       const numberOfMaybeChanged = maybeChanged.length
+      // TODO This task title is not completely accurate, as it could
+      // also fetching content type payloads
       task.title = `Fetching full payload for ${numberOfMaybeChanged} ${pluralizeEntry(
         numberOfMaybeChanged
       )} to be compared`
@@ -99,7 +113,7 @@ export const createFetchChangedEntitiesTask = ({ entityType }: FetchChangedTaskP
           context,
           source: sourceEnvironmentId,
           target: targetEnvironmentId,
-          entryIds: chunk,
+          entityIds: chunk,
           entityType,
         })
 
