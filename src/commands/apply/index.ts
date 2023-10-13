@@ -88,6 +88,7 @@ export default class Apply extends Command {
 
       if (!['Y', 'y'].includes(answer)) {
         this.terminatedByUser = true
+        this.log(chalk.bold.yellow('⚠️  Merge aborted'))
         return
       }
     }
