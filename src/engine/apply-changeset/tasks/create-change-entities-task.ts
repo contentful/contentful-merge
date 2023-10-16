@@ -24,7 +24,7 @@ export const createChangeEntitiesTask = (): ListrTask => {
         items.map(async (item) => {
           return limiter(async () => {
             const idofUpdated = await updateEntity({ client, environmentId, logger, item, responseCollector, task })
-            task.title = `Updating ${++count}/${entityCount} entries (failures: ${responseCollector.errorsLength})`
+            task.title = `Updating ${++count}/${entityCount} entries`
 
             return idofUpdated
           })
