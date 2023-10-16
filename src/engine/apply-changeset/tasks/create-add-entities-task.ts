@@ -27,7 +27,7 @@ export const createAddEntitiesTask = (): ListrTask => {
         entries.map(async (item) => {
           return limiter(async () => {
             const createdEntry = await createEntity({ client, environmentId, logger, item, responseCollector, task })
-            task.title = `Adding ${++count}/${entityCount} entries (failures: ${responseCollector.errorsLength})`
+            task.title = `Adding ${++count}/${entityCount} entries`
 
             await publishEntity({ client, entity: createdEntry, environmentId, logger, responseCollector, task })
 

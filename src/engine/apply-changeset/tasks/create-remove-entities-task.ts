@@ -25,7 +25,7 @@ export const createRemoveEntitiesTask = (): ListrTask => {
         ids.map(async (id) => {
           return limiter(async () => {
             const idOfDeleted = await deleteEntity({ client, environmentId, logger, id, responseCollector, task })
-            task.title = `Deleting ${++count}/${entityCount} entries (failures: ${responseCollector.errorsLength})`
+            task.title = `Deleting ${++count}/${entityCount} entries`
 
             return idOfDeleted
           })
