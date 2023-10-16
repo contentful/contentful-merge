@@ -17,3 +17,5 @@ export interface ApplyChangesetContext extends BaseContext {
   responseCollector: ResponseStatusCollector
   limit: number
 }
+
+export type Warning = 'IMMEDIATE_PUBLISH' | 'MASTER_IS_TARGET' | 'OLD_CREATION_DATE' | 'ENVIRONMENTS_DONT_MATCH'
