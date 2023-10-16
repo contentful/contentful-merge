@@ -82,3 +82,31 @@ describe('Apply Command', () => {
     expect(writeFileStub.called).to.be.true
   })
 })
+
+fancy
+  .stdout()
+  .do(() =>
+    new ApplyCommand(
+      ['--space', 'some-space-id', '--environment', 'target-env-id', '--cma-token', 'some-cma-token', '--yes'],
+      {} as unknown as Config // Runtime config, but not required for tests.
+    ).run()
+  )
+  .it('should print validations and skips confirmation if --yes flag is set', (output) => {
+    expect(output.stdout).to.contain('The changeset will be applied with the following constraints:')
+    expect(output.stdout).to.include('[Skipping confirmation because --yes flag was provided]')
+  })
+
+fancy
+  .stdout()
+  .stdin('Y\n', 10) // small delay to make sure the stdin is read
+  .do(() =>
+    new ApplyCommand(
+      ['--space', 'some-space-id', '--environment', 'target-env-id', '--cma-token', 'some-cma-token'],
+      {} as unknown as Config // Runtime config, but not required for tests.
+    ).run()
+  )
+  .it('should print validations and and ask for user confirmation before merge', (output) => {
+    expect(output.stdout).to.contain('The changeset will be applied with the following constraints:')
+    process.stdin.once('data', (data) => expect(data.toString()).to.equal('Y\n'))
+    expect(output.stdout).not.to.include('[Skipping confirmation because --yes flag was provided]')
+  })
