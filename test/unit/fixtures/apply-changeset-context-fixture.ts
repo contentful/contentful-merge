@@ -9,7 +9,7 @@ import { ResponseStatusCollector } from '../../../src/engine/client/response-sta
 export const createApplyChangesetContext = (context?: Partial<ApplyChangesetContext>): ApplyChangesetContext => ({
   client: createMockClient(),
   accessToken: '<access-token>',
-  changeset: createChangeset(EnvironmentIdFixture.source, EnvironmentIdFixture.target),
+  changeset: createChangeset(EnvironmentIdFixture.source, EnvironmentIdFixture.target, 'some-space-id'),
   spaceId: '<space-id>',
   environmentId: EnvironmentIdFixture.target,
   inputPath: '<input-path>',

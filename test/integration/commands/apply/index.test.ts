@@ -4,7 +4,7 @@ import fs from 'fs'
 import { ApplyTestContext, createCdaToken, createEnvironments } from './../bootstrap'
 import fancy from './../register-plugins'
 import { createChangeset } from '../../../../src/engine/utils/create-changeset'
-import addTwoItemsChangeset from './add-2-items-changeset.json'
+import { createAddTwoItemsChangeset } from '../fixtures/add-two-items-changeset'
 
 describe('create command', () => {
   const spaceId = process.env.CONTENTFUL_SPACE_ID!
@@ -17,7 +17,7 @@ describe('create command', () => {
   }
 
   const changesetPath = './changeset.json'
-  const changesetPathAddItems = './add-2-items-changeset.json'
+  const changesetPathAddItems = './add-two-items-changeset.json'
 
   let testContext: ApplyTestContext
   let testSpace: Space
@@ -48,8 +48,11 @@ describe('create command', () => {
       changesetFilePath: changesetPathAddItems,
     }
 
-    addTwoItemsChangeset.sys.target.sys.id = testContext.targetEnvironment.sys.id
-    fs.writeFileSync(changesetPathAddItems, JSON.stringify(addTwoItemsChangeset, null, 2))
+    const addTwoItemsChangeset = createAddTwoItemsChangeset(
+      environmentsContext.sourceEnvironment.sys.id,
+      testContext.targetEnvironment.sys.id,
+      testSpace.sys.id
+    )
 
     testContextInvalidToken = {
       ...testContext,
@@ -57,24 +60,31 @@ describe('create command', () => {
       cmaToken: 'invalid-token',
     }
 
-    const changeset = createChangeset(testContext.targetEnvironment.sys.id, testContext.targetEnvironment.sys.id)
+    const changeset = createChangeset(
+      testContext.targetEnvironment.sys.id,
+      testContext.targetEnvironment.sys.id,
+      testContext.spaceId
+    )
+
     fs.writeFileSync(changesetPath, JSON.stringify(changeset, null, 2))
+    fs.writeFileSync(changesetPathAddItems, JSON.stringify(addTwoItemsChangeset, null, 2))
 
     cdaTokenWithOnlyMasterAccess = await createCdaToken(testSpace, ['master'])
   })
 
   after(async () => {
-    await Promise.all([testContext.teardown(), cdaTokenWithOnlyMasterAccess.delete()])
+    await Promise.all([
+      testContext.teardown(),
+      cdaTokenWithOnlyMasterAccess.delete(),
+      fs.promises.rm(changesetPath, { force: true }),
+      fs.promises.rm(changesetPathAddItems, { force: true }),
+    ])
   })
-
-  afterEach(() => fs.promises.rm(changesetPath, { force: true }))
 
   fancy
     .stdout() // to print the output during testing use `.stdout({ print: true })`
     .runApplyCommand(() => testContext)
     .it('should apply empty changeset', (ctx) => {
-      fs.writeFileSync('out', ctx.stdout.toString())
-
       expect(ctx.stdout).to.contain('Changeset successfully applied 🎉')
       expect(ctx.stdout).to.contain('0 added entries')
       expect(ctx.stdout).to.contain('0 updated entries')

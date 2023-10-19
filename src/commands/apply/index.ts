@@ -75,6 +75,7 @@ export default class Apply extends Command {
       collectWarnings({
         changeset,
         environmentId: flags.environment,
+        spaceId: flags.space,
       })
     )
 
@@ -125,7 +126,7 @@ export default class Apply extends Command {
       spaceId: flags.space,
       environmentId: flags.environment,
       inputPath: flags.file,
-      changeset: createChangeset(flags.source, flags.target),
+      changeset,
       processedEntities: {
         entries: { added: [], deleted: [], updated: [] },
       },

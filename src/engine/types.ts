@@ -45,6 +45,13 @@ export type Changeset = {
   sys: {
     type: 'Changeset'
     createdAt: string
+    space: {
+      sys: {
+        type: 'Link'
+        linkType: 'Space'
+        id: string
+      }
+    }
     source: {
       sys: {
         type: 'Link'

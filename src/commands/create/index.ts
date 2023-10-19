@@ -133,7 +133,7 @@ export default class Create extends Command {
           nonChanged: 0,
         },
       },
-      changeset: createChangeset(flags.source, flags.target),
+      changeset: createChangeset(flags.source, flags.target, flags.space),
       limits,
     }
 

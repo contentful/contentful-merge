@@ -8,7 +8,7 @@ import { createMockClient } from './create-mock-client'
 export const createCreateChangesetContext = (context?: Partial<CreateChangesetContext>): CreateChangesetContext => ({
   client: createMockClient(),
   accessToken: '<access-token>',
-  changeset: createChangeset(EnvironmentIdFixture.source, EnvironmentIdFixture.target),
+  changeset: createChangeset(EnvironmentIdFixture.source, EnvironmentIdFixture.target, 'some-space-id'),
   spaceId: '<space-id>',
   sourceEnvironmentId: EnvironmentIdFixture.source,
   targetEnvironmentId: EnvironmentIdFixture.target,

@@ -18,4 +18,9 @@ export interface ApplyChangesetContext extends BaseContext {
   limit: number
 }
 
-export type Warning = 'IMMEDIATE_PUBLISH' | 'MASTER_IS_TARGET' | 'OLD_CREATION_DATE' | 'ENVIRONMENTS_DONT_MATCH'
+export type Warning =
+  | 'IMMEDIATE_PUBLISH'
+  | 'MASTER_IS_TARGET'
+  | 'OLD_CREATION_DATE'
+  | 'SPACES_DONT_MATCH'
+  | 'ENVIRONMENTS_DONT_MATCH'
