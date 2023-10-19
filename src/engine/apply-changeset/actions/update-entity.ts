@@ -43,6 +43,6 @@ export const updateEntity = async ({
     logger.log(LogLevel.ERROR, `update entry ${item.entity.sys.id} failed with ${error}`)
     responseCollector.add(error.code, error)
 
-    throw new UpdateEntryError({ id: item.entity.sys.id, details: error.response?.data })
+    throw new UpdateEntryError({ id: item.entity.sys.id, originalError: error.response?.data })
   }
 }
