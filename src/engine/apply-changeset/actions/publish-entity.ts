@@ -30,6 +30,6 @@ export const publishEntity = async ({
     logger.log(LogLevel.ERROR, `publish entry ${entity.sys.id} failed with ${error}`)
     responseCollector.add(error.code, error)
 
-    throw new PublishEntryError({ id: entity.sys.id, details: error.response?.data })
+    throw new PublishEntryError({ id: entity.sys.id, originalError: error.response?.data })
   }
 }

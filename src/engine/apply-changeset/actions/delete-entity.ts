@@ -39,6 +39,6 @@ export const deleteEntity = async ({
     logger.log(LogLevel.ERROR, `delete entry ${id} failed with ${error}`)
     responseCollector.add(error.code, error)
 
-    throw new DeleteEntryError({ id, details: error.response?.data })
+    throw new DeleteEntryError({ id, originalError: error.response?.data })
   }
 }

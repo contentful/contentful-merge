@@ -54,6 +54,8 @@ export function renderErrorOutputForApply(error: Error) {
       `\nThe changeset was only partially applied. The merge was stopped due to the following error (entry id: ${error.entryId}):`
     )
 
+    if (error.extra) output += red(`\n\n${error.extra}`)
+
     output += red(errorDetails)
   }
 
