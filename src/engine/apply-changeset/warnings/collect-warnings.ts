@@ -7,19 +7,23 @@ const MASTER_ENV = 'master'
 export function collectWarnings({
   changeset,
   environmentId,
+  spaceId,
 }: {
   changeset: Changeset
   environmentId: string
+  spaceId: string
 }): Warning[] {
   const targetEnv = environmentId
+  const targetSpace = spaceId
   const targetEnvFromChangeset = changeset.sys.target.sys.id
+  const targetSpaceFromChangeset = changeset.sys.space.sys.id
   const createdAt = changeset.sys.createdAt
 
   return [
     ...staticWarnings(),
     ...checkApplyingToMaster(targetEnv),
     ...checkChangesetAge(createdAt),
-    ...checkTargetsMatch(targetEnv, targetEnvFromChangeset),
+    ...checkTargetsMatch({ targetSpace, targetSpaceFromChangeset, targetEnv, targetEnvFromChangeset }),
   ]
 }
 
@@ -37,7 +41,19 @@ function checkChangesetAge(createdAt: string): Warning[] {
   return []
 }
 
-function checkTargetsMatch(targetEnv: string, targetEnvFromChangeset: string): Warning[] {
+// This check is combined as environment mismatch only matters if the space matches
+function checkTargetsMatch({
+  targetEnv,
+  targetSpace,
+  targetEnvFromChangeset,
+  targetSpaceFromChangeset,
+}: {
+  targetEnv: string
+  targetSpace: string
+  targetEnvFromChangeset: string
+  targetSpaceFromChangeset: string
+}): Warning[] {
+  if (targetSpace !== targetSpaceFromChangeset) return ['SPACES_DONT_MATCH']
   if (targetEnv !== targetEnvFromChangeset) return ['ENVIRONMENTS_DONT_MATCH']
   return []
 }

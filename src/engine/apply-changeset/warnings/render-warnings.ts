@@ -28,6 +28,9 @@ const WARNINGS: Record<Warning, string> = {
   OLD_CREATION_DATE: `${warning} The changeset was ${warn(
     'created over 24 hours ago'
   )}. If the content in the target environment has been modified since then, this could lead to a merge failure.`,
+  SPACES_DONT_MATCH: `${warning} The provided ${warn(
+    'space does not match'
+  )} the space in the changeset file. This inconsistency could lead to a merge failure.`,
   ENVIRONMENTS_DONT_MATCH: `${warning} The provided ${warn(
     'environment does not match'
   )} the target environment in the changeset file. This inconsistency could lead to a merge failure.`,

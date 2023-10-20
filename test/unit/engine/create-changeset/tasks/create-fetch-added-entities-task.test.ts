@@ -41,6 +41,13 @@ describe('fetchAddedEntitiesTask', () => {
               type: 'Link',
             },
           },
+          space: {
+            sys: {
+              id: 'some-space-id',
+              linkType: 'Space',
+              type: 'Link',
+            },
+          },
           target: {
             sys: {
               id: 'qa',
@@ -107,7 +114,7 @@ describe('fetchAddedEntitiesTask', () => {
     })
   })
   it('fetches the full payload of all added entries and adds it to the changeset', async () => {
-    context.changeset = createChangeset(EnvironmentIdFixture.source, EnvironmentIdFixture.target)
+    context.changeset = createChangeset(EnvironmentIdFixture.source, EnvironmentIdFixture.target, 'some-space-id')
 
     const task = initializeTask(
       CreateChangesetTasks.createFetchAddedEntitiesTask({
