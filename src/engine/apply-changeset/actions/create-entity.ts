@@ -32,6 +32,6 @@ export const createEntity = async ({
     logger.log(LogLevel.ERROR, `add entry ${item.entity.sys.id} failed with ${error}`)
     responseCollector.add(error.code, error)
 
-    throw new AddEntryError({ id: item.entity.sys.id, details: error.response?.data })
+    throw new AddEntryError({ id: item.entity.sys.id, originalError: error.response?.data })
   }
 }

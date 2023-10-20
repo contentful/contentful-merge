@@ -55,14 +55,21 @@ export class ContentModelDivergedError extends ContentfulError {
 
 export interface MergeEntityErrorContext {
   id: string
-  details: Record<any, any>
+  originalError: Record<any, any>
+  extra?: string
 }
 
 export class MergeEntityError extends ContentfulError {
   public entryId: string
+  public extra: string | undefined
   constructor(message: string, context: MergeEntityErrorContext) {
-    super(message, context.details)
+    super(message, context.originalError)
+    this.extra = context.extra
     this.entryId = context.id
+
+    if (context.originalError.sys?.id?.includes('AccessTokenInvalid')) {
+      this.extra = `The CMA token you provided is invalid. Please make sure that your token is correct and not expired.`
+    }
   }
 }
 
