@@ -86,6 +86,9 @@ export class DeleteEntryError extends MergeEntityError {
 }
 export class AddEntryError extends MergeEntityError {
   constructor(context: MergeEntityErrorContext) {
+    if (context.originalError.sys?.id?.includes('VersionMismatch')) {
+      context.extra = `The entry you are trying to add already exists in the selected environment.`
+    }
     super(`An error occurred while adding an entry.`, context)
   }
 }
