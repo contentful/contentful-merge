@@ -153,6 +153,13 @@ The created changeset will be saved in JSON format in a file called `changeset.j
   "sys": {
     "type": "Changeset",
     "createdAt": "<date of changeset creation>",
+    "space": {
+      "sys": {
+        "id": "<space id>",
+        "linkType": "Space",
+        "type": "Link"
+      }
+    },
     "source": {
       "sys": {
         "id": "<source environment id>",
@@ -232,12 +239,13 @@ If you want to see the data structure in practice, run the `create` command and 
 
 At the moment we have a limit amount of entries that can be in the generated changeset
 
-| Change Type    | Limit |  
+| Change Type    | Limit |
 |----------------|-------|
 | Add            | 300   |
 | Delete         | 300   |
-| update         | 300   |
-| Combined       | 500   |
+| Update         | 300   |
+|                |       |
+| Total          | 500   |
 
 
 ## FAQ
