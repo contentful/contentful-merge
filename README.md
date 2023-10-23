@@ -99,6 +99,7 @@ USAGE
 ```
 ## Commands
 * [`contentful-merge create`](#contentful-merge-create)
+* [`contentful-merge apply`](#contentful-merge-apply)
 * [`contentful-merge help [COMMANDS]`](#contentful-merge-help-commands)
 
 #### `contentful-merge create`
@@ -124,6 +125,30 @@ EXAMPLES
   $ contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token>
 ```
 
+#### `contentful-merge apply`
+
+
+```
+Apply Changeset
+
+USAGE
+  $ contentful-merge apply --space <value> --environment <value> --cma-token <value> [--file <value>] [--yes]
+
+FLAGS
+  --cma-token=<value>    (required) CMA token, defaults to env: $CMA_TOKEN
+  --environment=<value>  (required) Target environment id
+  --file=<value>         [default: changeset.json] File path to changeset file
+  --space=<value>        (required) Space id
+  --yes                  Skips any confirmation before applying the changeset
+
+DESCRIPTION
+  Apply Changeset
+
+EXAMPLES
+  $ contentful-merge apply  --space "<space-id>" --environment "staging" --file changeset.json
+
+  $ contentful-merge apply  --space "<space-id>" --environment "staging" --file changeset.json --yes
+```
 
 #### `contentful-merge help [COMMANDS]`
 
@@ -239,6 +264,11 @@ At the moment we have a limit amount of entries that can be in the generated cha
 | update         | 300   |
 | Combined       | 500   |
 
+Further limitations:
+* Tags, Assets, Comments and Tasks are not compared and are not copied from one environment to another.
+* We only consider published entries, thus entries that are in the draft state are not going to be included. If one tries to add an entry that is already on the target environment but in draft state it will result in an error.
+* Entries when added are immediately published.
+* Locales must be match on the source and target environment.
 
 ## FAQ
 
@@ -253,14 +283,6 @@ As the CDA is used to fetch and compare entries, only published changes will be 
 **I have run the `create` command several times, but only see one `changeset.json` file created.**
 
 Currently, the `changeset.json` file is overwritten every time you run the `create` command in the same directory.
-
-## What's next
-
-Are you wondering what to do with the created changeset?
-Our next step is to provide an `apply` command where you can apply the changeset to your target environment.
-This will allow you to merge content from one environment to the other.
-
-Stay tuned for [updates](https://www.contentful.com/developers/changelog/)!
 
 ## Feedback
 
