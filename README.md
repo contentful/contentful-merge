@@ -268,7 +268,7 @@ Further limitations:
 * Tags, Assets, Comments and Tasks are not compared and are not copied from one environment to another.
 * We only consider published entries, thus entries that are in the draft state are not going to be included. If one tries to add an entry that is already on the target environment but in draft state it will result in an error.
 * Entries when added are immediately published.
-* Locales must be match on the source and target environment.
+* Locales must be the same in the source and target environment.
 
 ## FAQ
 
