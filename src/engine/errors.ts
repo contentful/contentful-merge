@@ -42,6 +42,17 @@ export class LimitsExceededForApplyError extends ContentfulError {
   }
 }
 
+export class LocaleMissingForApplyError extends ContentfulError {
+  constructor(context: ApplyChangesetContext) {
+    const message = `The source environment does not contain the same locales as the target environment.`
+    const details = {
+      sourceEnvironment: context.changeset.sys.source.sys.id,
+      targetEnvironment: context.environmentId,
+    }
+    super(message, details)
+  }
+}
+
 export class ContentModelDivergedError extends ContentfulError {
   public divergedContentTypeIds: string[]
   constructor(divergedContentTypeIds: string[]) {
