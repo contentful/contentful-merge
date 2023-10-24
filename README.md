@@ -264,6 +264,8 @@ At the moment we have a limit amount of entries that can be in the generated cha
 | update         | 300   |
 | Combined       | 500   |
 
+For apply command one can merge at most 100 changes at once.
+
 Further limitations:
 * Tags, Assets, Comments, Workflows and Tasks are not compared and are not copied from one environment to another.
 * We only consider published entries during comparison, thus entries that are in draft state will not be compared.
