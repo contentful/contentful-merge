@@ -6,10 +6,10 @@ import * as fs from 'node:fs/promises'
 import path from 'node:path'
 import {
   analyticsCloseAndFlush,
-  trackCreateCommandCompleted,
-  trackCreateCommandStarted,
-  trackCreateCommandFailed,
   initSentry,
+  trackCreateCommandCompleted,
+  trackCreateCommandFailed,
+  trackCreateCommandStarted,
 } from '../../analytics'
 import { createClient } from '../../engine/client'
 import { createChangesetTask } from '../../engine/create-changeset'
@@ -19,9 +19,8 @@ import { MemoryLogger } from '../../engine/logger/memory-logger'
 import { writeLog } from '../../engine/logger/write-log'
 import { createChangeset } from '../../engine/utils/create-changeset'
 import { renderOutput } from '../../engine/create-changeset/render-output'
-import { OutputFormatter } from '../../engine/utils/output-formatter'
 import { renderErrorOutputForCreate } from '../../engine/utils/render-error-output'
-import { renderFilePaths } from '../../engine/utils'
+import { OutputFormatter, renderFilePaths } from '../../engine/utils'
 
 initSentry()
 
@@ -39,12 +38,11 @@ export default class Create extends Command {
 
   private changesetFilePath: string | undefined
   private logFilePath: string | undefined
-  private logger: MemoryLogger
+  private readonly logger: MemoryLogger
 
   constructor(argv: string[], config: Config) {
     super(argv, config)
 
-    this.changesetFilePath
     this.logger = new MemoryLogger('create-changeset')
   }
 
@@ -53,10 +51,11 @@ export default class Create extends Command {
   ]
 
   static flags = {
-    space: Flags.string({ description: 'Space id', required: true }),
-    source: Flags.string({ description: 'Source environment id', required: true }),
-    target: Flags.string({ description: 'Target environment id', required: true }),
+    space: Flags.string({ default: undefined, description: 'Space id', required: true }),
+    source: Flags.string({ default: undefined, description: 'Source environment id', required: true }),
+    target: Flags.string({ default: undefined, description: 'Target environment id', required: true }),
     'cda-token': Flags.string({
+      default: undefined,
       description: 'CDA token, defaults to env: $CDA_TOKEN',
       required: true,
       env: 'CDA_TOKEN',

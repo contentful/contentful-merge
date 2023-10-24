@@ -4,7 +4,6 @@ import { createTransformHandler } from '../../engine/logger/create-transform-han
 import { createClient } from '../../engine/client'
 import { ResponseStatusCollector } from '../../engine/client/response-status-collector'
 import * as Sentry from '@sentry/node'
-import { createChangeset } from '../../engine/utils/create-changeset'
 import { ApplyChangesetContext } from '../../engine/apply-changeset/types'
 import chalk from 'chalk'
 import { applyChangesetTask } from '../../engine/apply-changeset'
@@ -14,7 +13,7 @@ import { renderErrorOutputForApply } from '../../engine/utils/render-error-outpu
 import crypto from 'crypto'
 import { renderOutput } from '../../engine/apply-changeset/render-output'
 import { loadChangeset } from '../../engine/apply-changeset/load-changeset'
-import { renderWarnings, collectWarnings } from '../../engine/apply-changeset/warnings'
+import { collectWarnings, renderWarnings } from '../../engine/apply-changeset/warnings'
 import {
   analyticsCloseAndFlush,
   initSentry,
@@ -30,7 +29,7 @@ const sequenceKey = crypto.randomUUID()
 export default class Apply extends Command {
   static description = 'Apply Changeset'
   private logFilePath: string | undefined
-  private logger: MemoryLogger
+  private readonly logger: MemoryLogger
   private terminatedByUser = false
 
   constructor(argv: string[], config: Config) {
@@ -39,18 +38,17 @@ export default class Apply extends Command {
     this.logger = new MemoryLogger('apply-changeset')
   }
 
-  static hidden = true
-
   static examples = [
     'contentful-merge apply  --space "<space-id>" --environment "staging" --file changeset.json',
     'contentful-merge apply  --space "<space-id>" --environment "staging" --file changeset.json --yes',
   ]
 
   static flags = {
-    space: Flags.string({ description: 'Space id', required: true }),
-    environment: Flags.string({ description: 'Target environment id', required: true }),
+    space: Flags.string({ default: undefined, description: 'Space id', required: true }),
+    environment: Flags.string({ default: undefined, description: 'Target environment id', required: true }),
     file: Flags.string({ description: 'File path to changeset file', required: false, default: 'changeset.json' }),
     'cma-token': Flags.string({
+      default: undefined,
       description: 'CMA token, defaults to env: $CMA_TOKEN',
       required: true,
       env: 'CMA_TOKEN',
