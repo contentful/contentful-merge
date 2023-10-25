@@ -119,7 +119,7 @@ export default class Apply extends Command {
       logger: this.logger,
       client,
       responseCollector,
-      limit: 100,
+      limit: 500,
       accessToken: flags.token,
       spaceId: flags.space,
       environmentId: flags.environment,
