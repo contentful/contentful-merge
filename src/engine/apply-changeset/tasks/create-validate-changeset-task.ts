@@ -1,16 +1,21 @@
 import { ListrTask } from 'listr2'
 import { ApplyChangesetContext } from '../types'
 import { changesetExceedsLimits } from '../../validations/exceeds-limits'
-import { LimitsExceededForApplyError, LocaleMissingForApplyError } from '../../errors'
+import { LimitsExceededForApplyError, LocaleMissingForApplyError, AuthorizationErrorForApply } from '../../errors'
 import { containsMetadata } from '../../validations/contains-metadata'
 
 async function validateLocales(context: ApplyChangesetContext) {
   const sourceEnvironmentId = context.changeset.sys.source.sys.id
+  let sourceLocales, targetLocales
 
-  const [sourceLocales, targetLocales] = await Promise.all([
-    context.client.cma.locales.getMany({ environment: sourceEnvironmentId }),
-    context.client.cma.locales.getMany({ environment: context.environmentId }),
-  ])
+  try {
+    ;[sourceLocales, targetLocales] = await Promise.all([
+      context.client.cma.locales.getMany({ environment: sourceEnvironmentId }),
+      context.client.cma.locales.getMany({ environment: context.environmentId }),
+    ])
+  } catch (err) {
+    throw new AuthorizationErrorForApply(context)
+  }
 
   if (sourceLocales.items.length !== targetLocales.items.length) {
     return false
