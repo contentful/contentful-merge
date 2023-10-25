@@ -3,6 +3,7 @@ import { createChangeEntitiesTask } from './create-change-entities-task'
 import { createLoadChangesetTask } from './create-load-changeset-task'
 import { createRemoveEntitiesTask } from './create-remove-entities-task'
 import { createValidateChangesetTask } from './create-validate-changeset-task'
+import { createValidateAccessTask } from './create-validate-access-task'
 
 /**
  * @description This module imports various task-creation functions related to applying changesets.
@@ -11,6 +12,7 @@ import { createValidateChangesetTask } from './create-validate-changeset-task'
  * @property {function} createLoadChangesetTask
  * @property {function} createChangeEntitiesTask
  * @property {function} createAddEntitiesTask
+ * @property {function} createValidateAccessTask
  */
 
 export const ApplyChangesetTasks = {
@@ -19,4 +21,5 @@ export const ApplyChangesetTasks = {
   createLoadChangesetTask,
   createChangeEntitiesTask,
   createAddEntitiesTask,
+  createValidateAccessTask,
 }

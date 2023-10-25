@@ -10,6 +10,7 @@ export const applyChangesetTask = (context: ApplyChangesetContext): Listr => {
         task: (ctx, task): Listr => {
           return task.newListr(
             [
+              ApplyChangesetTasks.createValidateAccessTask(),
               ApplyChangesetTasks.createLoadChangesetTask(),
               ApplyChangesetTasks.createValidateChangesetTask(),
               ApplyChangesetTasks.createRemoveEntitiesTask(),

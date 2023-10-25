@@ -106,6 +106,8 @@ describe('create command', () => {
     .stdout({ print: true })
     .runApplyCommand(() => testContextInvalidToken)
     .it('should fail applying if token is invalid', (ctx) => {
-      expect(ctx.stdout).to.contain('Error: An error occurred while adding an entry.')
+      expect(ctx.stdout).to.contain(
+        'Error: The CMA token you provided is invalid. Please make sure that your token is correct and not expired.'
+      )
     })
 })
