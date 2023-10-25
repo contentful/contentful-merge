@@ -1,4 +1,4 @@
-import { ILogger, LogEntry, LogLevel } from './types'
+import { ILogger, LogEntry, LogLevel, LogMessage } from './types'
 import { CommandType } from '../types'
 
 export class MemoryLogger implements ILogger {
@@ -18,6 +18,14 @@ export class MemoryLogger implements ILogger {
       msg: msg,
       level,
     })
+  }
+
+  public info(message?: LogMessage): void {
+    this.log(LogLevel.INFO, message)
+  }
+
+  public error(message?: LogMessage): void {
+    this.log(LogLevel.ERROR, message)
   }
 
   public toString(): string {

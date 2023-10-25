@@ -1,5 +1,4 @@
 import { EntryProps } from 'contentful-management'
-import { LogLevel } from '../../logger/types'
 import { BaseActionParams } from '../../types'
 import { PublishEntryError } from '../../errors'
 
@@ -23,11 +22,11 @@ export const publishEntity = async ({
     })
 
     task.output = `✨ successfully published ${entity.sys.id}`
-    logger.log(LogLevel.INFO, `entry ${entity.sys.id} successfully published on environment: ${environmentId}`)
+    logger.info(`entry ${entity.sys.id} successfully published on environment: ${environmentId}`)
     return entity.sys.id
   } catch (error: any) {
     task.output = `🚨 failed to publish ${entity.sys.id}`
-    logger.log(LogLevel.ERROR, `publish entry ${entity.sys.id} failed with ${error}`)
+    logger.error(`publish entry ${entity.sys.id} failed with ${error}`)
     responseCollector.add(error.code, error)
 
     throw new PublishEntryError({ id: entity.sys.id, originalError: error.response?.data })

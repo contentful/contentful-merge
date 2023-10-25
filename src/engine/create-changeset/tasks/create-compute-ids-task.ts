@@ -1,5 +1,4 @@
 import { ListrTask } from 'listr2'
-import { LogLevel } from '../../logger/types'
 import { CreateChangesetContext } from '../types'
 import { doesExceedLimits } from '../../validations/exceeds-limits'
 import { EntityType } from '../../types'
@@ -14,7 +13,7 @@ export const createComputeIdsTask = ({ entityType }: ComputeIdsTaskProps): Listr
     title: `Counting number of ${entityType} changes between environments`,
     task: async (context: CreateChangesetContext) => {
       const { sourceData, targetData, logger } = context
-      logger.log(LogLevel.INFO, `Start computeIdsTask ${[entityType]}`)
+      logger.info(`Start computeIdsTask ${[entityType]}`)
 
       const added = new Set(sourceData[entityType].ids.filter((item) => !targetData[entityType].ids.includes(item)))
       const removed = new Set(targetData[entityType].ids.filter((item) => !sourceData[entityType].ids.includes(item)))

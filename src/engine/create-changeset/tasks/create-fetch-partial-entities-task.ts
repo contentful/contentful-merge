@@ -1,7 +1,6 @@
 import type { ListrTaskWrapper } from 'listr2'
 import { ListrTask } from 'listr2'
 import pLimit from 'p-limit'
-import { LogLevel } from '../../logger/types'
 import { Comparable, CreateChangesetContext, EntityData, EnvironmentScope } from '../types'
 import { EntityType } from '../../types'
 
@@ -75,10 +74,16 @@ export function createFetchPartialEntitiesTask({ scope, environmentId, entityTyp
   return {
     title: `Reading the ${scope} environment "${environmentId}"`,
     task: async (context: CreateChangesetContext, task) => {
-      context.logger.log(LogLevel.INFO, `Start fetchPartialEntitiesTask for ${entityType}`)
+      context.logger.info(`Start fetchPartialEntitiesTask for ${entityType}`)
       const additionalFields = entityType === 'entries' ? ['sys.contentType.sys.id'] : []
-      const result = await execute({ context, task, scope, environmentId, entityType, additionalFields })
-      context[`${scope}Data`][entityType] = result
+      context[`${scope}Data`][entityType] = await execute({
+        context,
+        task,
+        scope,
+        environmentId,
+        entityType,
+        additionalFields,
+      })
       return context
     },
   }

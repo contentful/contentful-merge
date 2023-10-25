@@ -1,5 +1,4 @@
 import { DeleteEntryError } from '../../errors'
-import { LogLevel } from '../../logger/types'
 import { BaseActionParams } from '../../types'
 
 type CreateEntityParams = BaseActionParams & {
@@ -32,11 +31,11 @@ export const deleteEntity = async ({
       entryId: id,
     })
     task.output = `✨ successfully deleted ${id}`
-    logger.log(LogLevel.INFO, `entry ${id} successfully deleted on environment: ${environmentId}`)
+    logger.info(`entry ${id} successfully deleted on environment: ${environmentId}`)
     return id
   } catch (error: any) {
     task.output = `🚨 failed to delete ${id}`
-    logger.log(LogLevel.ERROR, `delete entry ${id} failed with ${error}`)
+    logger.error(`delete entry ${id} failed with ${error}`)
     responseCollector.add(error.code, error)
 
     throw new DeleteEntryError({ id, originalError: error.response?.data })
