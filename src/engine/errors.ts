@@ -14,6 +14,14 @@ export interface LimitsExceededContext {
   affectedEntities: AffectedEntities
 }
 
+export class AuthorizationErrorForApply extends ContentfulError {
+  constructor(context: ApplyChangesetContext, extra?: any) {
+    const message = `The CMA token you provided is invalid. Please make sure that your token is correct and not expired.`
+
+    super(message, { context, extra })
+  }
+}
+
 export class LimitsExceededForCreateError extends ContentfulError {
   constructor(context: LimitsExceededContext) {
     const entries = context.affectedEntities.entries
@@ -37,6 +45,17 @@ export class LimitsExceededForApplyError extends ContentfulError {
     const details = {
       limit: context.limit,
       amount: context.changeset.items.length,
+    }
+    super(message, details)
+  }
+}
+
+export class LocaleMissingForApplyError extends ContentfulError {
+  constructor(context: ApplyChangesetContext) {
+    const message = `The source environment does not contain the same locales as the target environment.`
+    const details = {
+      sourceEnvironment: context.changeset.sys.source.sys.id,
+      targetEnvironment: context.environmentId,
     }
     super(message, details)
   }

@@ -77,7 +77,9 @@ describe('Command flow - create and apply', () => {
       cmaToken: 'invalid-token',
     }))
     .it('should fail to apply changes with invalid token', async (ctx) => {
-      expect(ctx.stdout).to.contain('Error: An error occurred while deleting an entry.')
+      expect(ctx.stdout).to.contain(
+        'Error: The CMA token you provided is invalid. Please make sure that your token is correct and not expired.'
+      )
     })
 
   fancy

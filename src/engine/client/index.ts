@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ContentTypeCollection, Entry, EntryCollection } from 'contentful'
+import { ContentTypeCollection, Entry, EntryCollection, Locale, LocaleCollection } from 'contentful'
 import { EntryProps } from 'contentful-management'
 import { createHttpClient, getUserAgentHeader } from 'contentful-sdk-core'
 import { pickBy } from 'lodash'
@@ -137,6 +137,13 @@ export const createClient = ({
               'X-Contentful-Version': entryVersion,
             },
           })
+        },
+      },
+      locales: {
+        getMany: async ({ environment }: ParamEnvironment) => {
+          count.cma++
+          const result = await cmaClient.get(`${environment}/locales`)
+          return result.data as LocaleCollection
         },
       },
     },
