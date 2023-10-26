@@ -1,5 +1,5 @@
 import { ApplyChangesetContext } from '../apply-changeset/types'
-import { AuthorizationErrorForApply } from '../errors'
+import { AuthorizationErrorForApply, ContentfulError } from '../errors'
 
 export async function validateLocales(context: ApplyChangesetContext) {
   const sourceEnvironmentId = context.changeset.sys.source.sys.id
@@ -10,8 +10,13 @@ export async function validateLocales(context: ApplyChangesetContext) {
       context.client.cma.locales.getMany({ environment: sourceEnvironmentId }),
       context.client.cma.locales.getMany({ environment: context.environmentId }),
     ])
-  } catch (err) {
-    throw new AuthorizationErrorForApply(context)
+  } catch (err: any) {
+    context.responseCollector.add(err.code, err)
+
+    if (err.response?.status === 401) {
+      throw new AuthorizationErrorForApply(context, { originalError: err.data })
+    }
+    throw new ContentfulError('Unexpected error has ocurred', { originalError: err.data, context })
   }
 
   if (sourceLocales.items.length !== targetLocales.items.length) {

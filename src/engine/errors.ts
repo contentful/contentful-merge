@@ -15,10 +15,10 @@ export interface LimitsExceededContext {
 }
 
 export class AuthorizationErrorForApply extends ContentfulError {
-  constructor(context: ApplyChangesetContext) {
+  constructor(context: ApplyChangesetContext, extra?: any) {
     const message = `The CMA token you provided is invalid. Please make sure that your token is correct and not expired.`
 
-    super(message, context)
+    super(message, { context, extra })
   }
 }
 
