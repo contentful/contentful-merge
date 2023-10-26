@@ -1,6 +1,5 @@
 import { EntryProps } from 'contentful-management'
 import { omit } from 'lodash'
-import { LogLevel } from '../../logger/types'
 import { AddedChangesetItem, BaseActionParams } from '../../types'
 import { AddEntryError } from '../../errors'
 
@@ -25,11 +24,11 @@ export const createEntity = async ({
     })
 
     task.output = `✨ successfully created ${createdEntry.sys.id}`
-    logger.log(LogLevel.INFO, `entry ${item.entity.sys.id} successfully published on environment: ${environmentId}`)
+    logger.info(`entry ${item.entity.sys.id} successfully published on environment: ${environmentId}`)
     return createdEntry
   } catch (error: any) {
     task.output = `🚨 failed to create ${item.entity.sys.id}`
-    logger.log(LogLevel.ERROR, `add entry ${item.entity.sys.id} failed with ${error}`)
+    logger.error(`add entry ${item.entity.sys.id} failed with ${error}`)
     responseCollector.add(error.code, error)
 
     throw new AddEntryError({ id: item.entity.sys.id, originalError: error.response?.data })
