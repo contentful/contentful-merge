@@ -1,9 +1,8 @@
 import { Entry } from 'contentful'
 import { ListrTask } from 'listr2'
 import { chunk, pick } from 'lodash'
-import { LogLevel } from '../../logger/types'
 import { CreateChangesetContext } from '../types'
-import { pluralizeEntry } from '../../utils/pluralize'
+import { pluralizeEntry } from '../../utils'
 import { EntityType } from '../../types'
 
 export function cleanEntity(entry: Entry<any>): any {
@@ -19,7 +18,7 @@ export function createFetchAddedEntitiesTask({ entityType }: FetchAddedEntitiesT
     title: 'Fetching full payload for added entries',
     task: async (context: CreateChangesetContext, task) => {
       const { client, affectedEntities, sourceEnvironmentId, changeset, requestBatchSize, logger } = context
-      logger.log(LogLevel.INFO, 'Start fetchAddedEntitiesTask')
+      logger.info('Start fetchAddedEntitiesTask')
 
       const {
         [entityType]: { added },

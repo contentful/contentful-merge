@@ -1,5 +1,4 @@
 import jsonpatch from 'fast-json-patch'
-import { LogLevel } from '../../logger/types'
 import { BaseActionParams, UpdatedChangesetItem } from '../../types'
 import { UpdateEntryError } from '../../errors'
 
@@ -36,11 +35,11 @@ export const updateEntity = async ({
       entryVersion: updatedEntry.sys.version,
     })
     task.output = `✨ successfully updated ${item.entity.sys.id}`
-    logger.log(LogLevel.INFO, `entry ${item.entity.sys.id} successfully updated on environment: ${environmentId}`)
+    logger.info(`entry ${item.entity.sys.id} successfully updated on environment: ${environmentId}`)
     return item.entity.sys.id
   } catch (error: any) {
     task.output = `🚨 failed to update ${item.entity.sys.id}`
-    logger.log(LogLevel.ERROR, `update entry ${item.entity.sys.id} failed with ${error}`)
+    logger.error(`update entry ${item.entity.sys.id} failed with ${error}`)
     responseCollector.add(error.code, error)
 
     throw new UpdateEntryError({ id: item.entity.sys.id, originalError: error.response?.data })

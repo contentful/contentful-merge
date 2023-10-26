@@ -24,8 +24,8 @@ describe('MemoryLogger', () => {
     expect(result[1].level).to.equal('ERROR')
   })
   it('returns readable string logs', () => {
-    logger.log(LogLevel.INFO, 'Have a nice day')
-    logger.log(LogLevel.ERROR, new Error('Oh oh, something went wrong'))
+    logger.info('Have a nice day')
+    logger.error(new Error('Oh oh, something went wrong'))
 
     expect(logger.toString()).to.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z\t(INFO|ERROR)\t.+$/)
   })

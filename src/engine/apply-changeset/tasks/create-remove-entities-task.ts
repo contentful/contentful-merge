@@ -1,6 +1,5 @@
 import { ListrTask } from 'listr2'
 import pLimit from 'p-limit'
-import { LogLevel } from '../../logger/types'
 import { deleteEntity } from '../actions/delete-entity'
 import { ApplyChangesetContext } from '../types'
 import { pluralizeEntry } from '../../utils'
@@ -11,7 +10,7 @@ export const createRemoveEntitiesTask = (): ListrTask => {
     title: 'Deleting entries',
     task: async (context: ApplyChangesetContext, task) => {
       const { client, changeset, environmentId, logger, responseCollector } = context
-      logger.log(LogLevel.INFO, 'Start createRemoveEntitiesTask')
+      logger.info('Start createRemoveEntitiesTask')
       const ids = changeset.items.filter((item) => item.changeType === 'delete').map((item) => item.entity.sys.id)
       const entityCount = ids.length
 

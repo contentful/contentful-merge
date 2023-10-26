@@ -11,8 +11,12 @@ export type LogEntry = {
   level: LogLevel
 }
 
+export type LogMessage = string | Error | undefined
+
 export interface ILogger {
-  log: (level: LogLevel, message?: string | Error | undefined) => void
+  log: (level: LogLevel, message?: LogMessage) => void
+  info: (message?: LogMessage) => void
+  error: (message?: LogMessage) => void
   toString: () => string
   toJSONString: () => string
   toJSON: () => Array<LogEntry>
