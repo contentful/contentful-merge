@@ -174,7 +174,7 @@ COMMANDS
 
 > ⚠️ As this project is still in beta, the data structure might still change down the line ⚠️
 
-The created changeset will be saved in JSON format in a file specified with the output-file flag. It has the following basic structure:
+The created changeset will be saved in JSON format in a file specified with the output-file flag or if the flag is not provided in a file called `changeset-[DATE]-[SPACE]-[SOURCE]-[TARGET].json`. It has the following basic structure:
 ```javascript
 {
   "sys": {
