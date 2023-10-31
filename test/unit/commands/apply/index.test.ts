@@ -11,6 +11,8 @@ import { writeLog } from '../../../../src/engine/logger/write-log'
 import { LimitsExceededForApplyError } from '../../../../src/engine/errors'
 import { ApplyChangesetContext } from '../../../../src/engine/apply-changeset/types'
 import { createApplyChangesetContext } from '../../fixtures/apply-changeset-context-fixture'
+import * as client from '../../../../src/engine/client'
+import { createMockClient } from '../../fixtures/create-mock-client'
 
 const cmd = new ApplyCommand(
   [],
@@ -21,6 +23,7 @@ describe('Apply Command', () => {
   let writeFileStub: sinon.SinonStub
   let parseStub: sinon.SinonStub
   let readFileStub: sinon.SinonStub
+  let createClientStub: sinon.SinonStub
 
   // We need to mock fs so we don't write log files during test runs
   beforeEach(() => {
@@ -32,11 +35,14 @@ describe('Apply Command', () => {
     })
     readFileStub = sinon.stub(fs, 'readFile')
     readFileStub.resolves(JSON.stringify(createApplyChangesetContext().changeset))
+    createClientStub = sinon.stub(client, 'createClient')
+    createClientStub.returns(createMockClient())
 
     afterEach(() => {
       writeFileStub.restore()
       parseStub.restore()
       readFileStub.restore()
+      createClientStub.restore()
     })
   })
 
