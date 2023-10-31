@@ -10,14 +10,12 @@
 
 <p align="center">
   <a href="#introduction">Introduction</a> |
-  <a href="#warning-this-project-is-still-in-beta-warning">Beta disclaimer</a> |
   <a href="#features">Features</a> |
   <a href="#installation">Installation</a> |
   <a href="#usage">Usage</a> |
   <a href="#commands">Commands</a> |
   <a href="#data-structure">Data structure</a> |
   <a href="#faq">FAQ</a> |
-  <a href="#whats-next">What's next</a> |
   <a href="#feedback">Feedback</a> |
   <a href="#code-of-conduct">Code of Conduct</a> |
   <a href="#license">License</a>
@@ -51,14 +49,6 @@
 The <b>contentful-merge</b> CLI tool lets you compare entries across environments. It tells you how many entries are in the source and target environments, and how many of those have been added, deleted or updated. A detailed changeset is saved in a file.
 
 ![](images/recording.gif)
-
-_____________________
-
-### :warning: This project is still in beta :warning:
-This means:
-- Use at your own risk! It might still be a bit rough around the edges, and we might introduce breaking changes.
-- We want to know how people are using this tool, so that we can prioritize what to focus on next. We therefore collect some [analytics](src/analytics/index.ts) data.
-- <b>We would love your feedback!</b> [Here](https://forms.gle/uVj4sG2jKmQHotRd6) is a form where you can tell us about your experience and let us know which additional features you would like.
 
 _____________________
 
@@ -170,10 +160,9 @@ COMMANDS
 
 ## Data structure
 
-> ⚠️ As this project is still in beta, the data structure might still change down the line ⚠️
 
 The created changeset will be saved in JSON format in a file called `changeset.json` in the directory that you run the command in. It has the following basic structure:
-```javascript
+```json
 {
   "sys": {
     "type": "Changeset",
@@ -207,7 +196,7 @@ The created changeset will be saved in JSON format in a file called `changeset.j
 ```
 
 The actual changes are in the `items` array. They have the following structure:
-```javascript
+```json
 // delete
 {
   "changeType": "delete",
@@ -262,7 +251,7 @@ If you want to see the data structure in practice, run the `create` command and 
 
 ## Limitations
 
-At the moment we have a limit amount of entries that can be in the generated changeset
+At the moment we have a [limit amount](./src/commands/create/index.ts#L27) of entries that can be in the generated changeset
 
 | Change Type    | Limit |
 |----------------|-------|
