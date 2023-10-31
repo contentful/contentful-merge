@@ -9,6 +9,7 @@ export type TestContext = {
   cdaToken: string
   spaceId: string
   teardown: () => Promise<void>
+  changesetFilePath: string
 }
 
 export type ApplyTestContext = {
@@ -74,6 +75,7 @@ export const createEnvironments = async (testSpace: Space): Promise<TestContext 
   console.log('setup finished\n')
 
   return {
+    changesetFilePath: './changeset.json',
     sourceEnvironment,
     targetEnvironment,
     cdaToken: apiKey.accessToken,

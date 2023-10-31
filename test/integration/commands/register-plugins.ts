@@ -79,6 +79,8 @@ export default fancy
             testContext.targetEnvironment.sys.id,
             '--cda-token',
             cdaToken || testContext.cdaToken,
+            '--output-file',
+            testContext.changesetFilePath,
           ],
           {} as unknown as Config // Runtime config, but not required for tests.
         )
