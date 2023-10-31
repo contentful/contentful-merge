@@ -19,8 +19,8 @@ export const createMockClient = (): LocalClient => ({
       update: sinon.stub().resolves({}),
     },
     locales: {
-      getMany: sinon.stub().resolves({ items: [ { code: 'de' }] }),
-    }
+      getMany: sinon.stub().resolves({ items: [{ code: 'de' }] }),
+    },
   },
   cda: {
     requestCounts: sinon.stub().returns(0),
