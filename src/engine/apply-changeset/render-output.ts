@@ -14,7 +14,7 @@ export async function renderOutput(context: ApplyChangesetContext) {
   output += OutputFormatter.headline('Changeset successfully applied 🎉')
 
   output += `\n ${icons.greenCheckmark} ${OutputFormatter.formatNumber(
-    amountOfChanges
+    amountOfChanges,
   )} changes applied in the environment "${context.environmentId}"`
 
   output += '\n'

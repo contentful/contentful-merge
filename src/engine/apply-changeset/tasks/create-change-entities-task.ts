@@ -27,7 +27,7 @@ export const createChangeEntitiesTask = (): ListrTask => {
 
             return idofUpdated
           })
-        })
+        }),
       )
 
       const updatedEntities = result.filter(isString)
