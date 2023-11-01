@@ -50,6 +50,10 @@ The <b>contentful-merge</b> CLI tool lets you compare entries across environment
 
 ![](images/recording.gif)
 
+### Tracking
+- We want to know how people are using this tool, so that we can prioritize what to focus on next. We therefore collect some [analytics](src/analytics/index.ts) data.
+- <b>We would love your feedback!</b> [Here](https://forms.gle/uVj4sG2jKmQHotRd6) is a form where you can tell us about your experience and let us know which additional features you would like.
+
 _____________________
 
 ## Features
