@@ -39,7 +39,7 @@
     "wrap-ansi": "7.0.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.6.7",
+    "@commitlint/cli": "^18.2.0",
     "@commitlint/config-conventional": "^18.0.0",
     "@contentful/integration-test-utils": "^2.0.1",
     "@oclif/test": "^3.0.3",
