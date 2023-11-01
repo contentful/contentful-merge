@@ -99,20 +99,21 @@ USAGE
 Create Entries Changeset
 
 USAGE
-  $ contentful-merge create --space <value> --source <value> --target <value> --cda-token <value>
+  $ contentful-merge create --space <value> --source <value> --target <value> --cda-token <value> [--request-batch-size <value>] [--output-file <value>]
 
 FLAGS
-  --space=<value>      [required] Space id
-  --source=<value>     [required] Source environment id
-  --target=<value>     [required] Target environment id
-  --cda-token=<value>  [required, defaults to env: $CDA_TOKEN] CDA token
-  --request-batch-size=<value>  [optional, default value: 1000] Limit for every single request
+  --cda-token=<value>           (required) CDA token, defaults to env: $CDA_TOKEN
+  --output-file=<value>         File path to changeset file
+  --request-batch-size=<value>  [default: 1000] Limit for every single request
+  --source=<value>              (required) Source environment id
+  --space=<value>               (required) Space id
+  --target=<value>              (required) Target environment id
 
 DESCRIPTION
   Create Entries Changeset
 
 EXAMPLES
-  $ contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token>
+  $ contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --output-file <output file path>
 ```
 
 #### `contentful-merge apply`
@@ -127,7 +128,7 @@ USAGE
 FLAGS
   --cma-token=<value>    (required) CMA token, defaults to env: $CMA_TOKEN
   --environment=<value>  (required) Target environment id
-  --file=<value>         [default: changeset.json] File path to changeset file
+  --file=<value>         (required) File path to changeset file
   --space=<value>        (required) Space id
   --yes                  Skips any confirmation before applying the changeset
 
@@ -154,6 +155,7 @@ USAGE
   $ contentful-merge [COMMAND]
 
 COMMANDS
+  apply   Apply Changeset
   create  Create Entries Changeset
   help    Display help for contentful-merge.
 ```
@@ -161,8 +163,8 @@ COMMANDS
 ## Data structure
 
 
-The created changeset will be saved in JSON format in a file called `changeset.json` in the directory that you run the command in. It has the following basic structure:
-```json
+The created changeset will be saved in JSON format in a file specified with the output-file flag or if the flag is not provided in a file called `changeset-[DATE]-[SPACE]-[SOURCE]-[TARGET].json`. It has the following basic structure:
+```javascript
 {
   "sys": {
     "type": "Changeset",

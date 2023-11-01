@@ -96,7 +96,17 @@ describe('Apply Command', () => {
     .stdout()
     .do(() =>
       new ApplyCommand(
-        ['--space', 'some-space-id', '--environment', 'target-env-id', '--cma-token', 'some-cma-token', '--yes'],
+        [
+          '--space',
+          'some-space-id',
+          '--environment',
+          'target-env-id',
+          '--cma-token',
+          'some-cma-token',
+          '--yes',
+          '--file',
+          'some-file-path',
+        ],
         {} as unknown as Config // Runtime config, but not required for tests.
       ).run()
     )
@@ -110,7 +120,16 @@ describe('Apply Command', () => {
     .stdin('Y\n', 10) // small delay to make sure the stdin is read
     .do(() =>
       new ApplyCommand(
-        ['--space', 'some-space-id', '--environment', 'target-env-id', '--cma-token', 'some-cma-token'],
+        [
+          '--space',
+          'some-space-id',
+          '--environment',
+          'target-env-id',
+          '--cma-token',
+          'some-cma-token',
+          '--file',
+          'some-file-path',
+        ],
         {} as unknown as Config // Runtime config, but not required for tests.
       ).run()
     )

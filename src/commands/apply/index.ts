@@ -46,7 +46,7 @@ export default class Apply extends Command {
   static flags = {
     space: Flags.string({ default: undefined, description: 'Space id', required: true }),
     environment: Flags.string({ default: undefined, description: 'Target environment id', required: true }),
-    file: Flags.string({ description: 'File path to changeset file', required: false, default: 'changeset.json' }),
+    file: Flags.string({ description: 'File path to changeset file', required: true, default: undefined }),
     'cma-token': Flags.string({
       default: undefined,
       description: 'CMA token, defaults to env: $CMA_TOKEN',
