@@ -79,6 +79,7 @@ describe('create command', () => {
   after(async () => {
     await Promise.all([
       testContext.teardown(),
+      cdaTokenWithOnlyMasterAccess.sys.id !== INTEGRATION_TEST_KEY_MASTER && cdaTokenWithOnlyMasterAccess.delete(),
       fs.promises.rm(changesetPath, { force: true }),
       fs.promises.rm(changesetPathAddItems, { force: true }),
     ])

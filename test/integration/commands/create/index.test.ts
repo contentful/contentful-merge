@@ -35,7 +35,10 @@ describe('create command', () => {
   })
 
   after(async () => {
-    await Promise.all([testContext.teardown()])
+    await Promise.all([
+      cdaTokenWithOnlyMasterAccess.sys.id !== INTEGRATION_TEST_KEY_MASTER && cdaTokenWithOnlyMasterAccess.delete(),
+      testContext.teardown(),
+    ])
   })
 
   afterEach(() => fs.promises.rm(changesetPath, { force: true }))
