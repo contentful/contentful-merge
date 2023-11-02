@@ -49,7 +49,7 @@ const execute = async ({ context, environmentId, task, entityType, additionalFie
         requestsDone++
         task.output = `Fetching ${requestsDone * requestBatchSize}/${total} ${entityType}`
         result.push(...response.items)
-      })
+      }),
     )
   }
   await Promise.all(promises)

@@ -17,7 +17,7 @@ describe('fetchPartialEntitiesTask', () => {
         environmentId: EnvironmentIdFixture.source,
         entityType: 'entries',
       }),
-      context
+      context,
     )
 
     expect(context.sourceData.entries.comparables.length).to.equal(0)
@@ -33,7 +33,7 @@ describe('fetchPartialEntitiesTask', () => {
         environmentId: EnvironmentIdFixture.target,
         entityType: 'entries',
       }),
-      context
+      context,
     )
 
     expect(context.targetData.entries.comparables.length).to.equal(0)

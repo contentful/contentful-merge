@@ -28,7 +28,7 @@ export const createRemoveEntitiesTask = (): ListrTask => {
 
             return idOfDeleted
           })
-        })
+        }),
       )
 
       const deletedEntities = result.filter(isString)

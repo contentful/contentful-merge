@@ -126,7 +126,7 @@ export class UpdateEntryError extends MergeEntityError {
 export class ChangesetFileError extends ContentfulError {
   constructor(changesetFilePath: string) {
     super(
-      `There is no changeset at the path you provided ("${changesetFilePath}").\nPlease provide the path to an existing changeset to the "--file" flag and try again.`
+      `There is no changeset at the path you provided ("${changesetFilePath}").\nPlease provide the path to an existing changeset to the "--file" flag and try again.`,
     )
   }
 }

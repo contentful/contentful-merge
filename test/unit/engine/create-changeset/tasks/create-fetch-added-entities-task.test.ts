@@ -120,7 +120,7 @@ describe('fetchAddedEntitiesTask', () => {
       CreateChangesetTasks.createFetchAddedEntitiesTask({
         entityType: 'entries',
       }),
-      context
+      context,
     )
 
     const addedItems = context.changeset.items.filter(matchChangeType('add')) as AddedChangesetItem[]
@@ -134,8 +134,8 @@ describe('fetchAddedEntitiesTask', () => {
           item.data !== undefined &&
           item.data.sys !== undefined &&
           item.data.fields !== undefined &&
-          item.data.metadata !== undefined
-      )
+          item.data.metadata !== undefined,
+      ),
     )
   })
   it('does not fetch anything for changed entries', async () => {
@@ -143,7 +143,7 @@ describe('fetchAddedEntitiesTask', () => {
       CreateChangesetTasks.createFetchAddedEntitiesTask({
         entityType: 'entries',
       }),
-      context
+      context,
     )
 
     const changedItems = context.changeset.items.filter(matchChangeType('update'))
@@ -159,7 +159,7 @@ describe('fetchAddedEntitiesTask', () => {
       CreateChangesetTasks.createFetchAddedEntitiesTask({
         entityType: 'entries',
       }),
-      context
+      context,
     )
 
     const deletedItems = context.changeset.items.filter(matchChangeType('delete'))

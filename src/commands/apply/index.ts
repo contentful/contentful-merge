@@ -74,7 +74,7 @@ export default class Apply extends Command {
         changeset,
         environmentId: flags.environment,
         spaceId: flags.space,
-      })
+      }),
     )
 
     this.log(warnings)

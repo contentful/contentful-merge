@@ -94,12 +94,12 @@ export const createFetchChangedEntitiesTask = ({ entityType }: FetchChangedTaskP
       // TODO This task title is not completely accurate, as it could
       // also fetching content type payloads
       task.title = `Fetching full payload for ${numberOfMaybeChanged} ${pluralizeEntry(
-        numberOfMaybeChanged
+        numberOfMaybeChanged,
       )} to be compared`
 
       const idChunks = chunk(
         maybeChanged.map((c) => c.sys.id),
-        requestBatchSize
+        requestBatchSize,
       )
 
       let iterator = 0
@@ -131,7 +131,7 @@ export const createFetchChangedEntitiesTask = ({ entityType }: FetchChangedTaskP
       if (entityType === 'entries') {
         changeset.items.push(
           ...removed.map((item) => createLinkObject(item, 'delete', EntityTypeMap[entityType])),
-          ...added.map((item) => createLinkObject(item, 'add', EntityTypeMap[entityType]))
+          ...added.map((item) => createLinkObject(item, 'add', EntityTypeMap[entityType])),
         )
       }
 

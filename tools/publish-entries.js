@@ -13,7 +13,7 @@ const client = contentful.createClient(
     accessToken: process.env.CMA_TOKEN,
     space: SPACE,
   },
-  { type: 'plain' }
+  { type: 'plain' },
 )
 
 const PARAMS = { spaceId: SPACE, environmentId: ENVIRONMENT }
@@ -30,7 +30,7 @@ async function publishEntries(entryIds) {
         } catch (e) {
           console.log(`failed publishing ${entryId} with ${e.statusText}`)
         }
-      })
+      }),
     )
   }
   return Promise.all(promises)

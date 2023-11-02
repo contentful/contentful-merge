@@ -16,7 +16,7 @@ import { createMockClient } from '../../fixtures/create-mock-client'
 
 const cmd = new ApplyCommand(
   [],
-  {} as unknown as Config // Runtime config, but not required for tests.
+  {} as unknown as Config, // Runtime config, but not required for tests.
 )
 
 describe('Apply Command', () => {
@@ -107,8 +107,8 @@ describe('Apply Command', () => {
           '--file',
           'some-file-path',
         ],
-        {} as unknown as Config // Runtime config, but not required for tests.
-      ).run()
+        {} as unknown as Config, // Runtime config, but not required for tests.
+      ).run(),
     )
     .it('should print validations and skips confirmation if --yes flag is set', (output) => {
       expect(output.stdout).to.contain('The changeset will be applied with the following constraints:')
@@ -130,8 +130,8 @@ describe('Apply Command', () => {
           '--file',
           'some-file-path',
         ],
-        {} as unknown as Config // Runtime config, but not required for tests.
-      ).run()
+        {} as unknown as Config, // Runtime config, but not required for tests.
+      ).run(),
     )
     .it('should print validations and and ask for user confirmation before merge', (output) => {
       expect(output.stdout).to.contain('The changeset will be applied with the following constraints:')
