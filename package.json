@@ -36,7 +36,7 @@
     "lodash": "^4.17.21",
     "p-limit": "^3.1.0",
     "semantic-release": "^22.0.6",
-    "wrap-ansi": "7.0.0"
+    "wrap-ansi": "9.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.2.0",
