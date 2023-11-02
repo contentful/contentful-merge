@@ -6,7 +6,7 @@ import { EntityType } from '../../types'
 
 type ExecuteParams = {
   context: CreateChangesetContext
-  task: ListrTaskWrapper<CreateChangesetContext, any>
+  task: ListrTaskWrapper<CreateChangesetContext, any, any>
   scope: EnvironmentScope
   environmentId: string
   entityType: EntityType

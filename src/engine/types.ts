@@ -83,7 +83,7 @@ export type BaseActionParams = {
   environmentId: string
   logger: ILogger
   responseCollector: ResponseStatusCollector
-  task: ListrTaskWrapper<any, any>
+  task: ListrTaskWrapper<any, any, any>
 }
 
 export type CommandType = 'create-changeset' | 'apply-changeset'
