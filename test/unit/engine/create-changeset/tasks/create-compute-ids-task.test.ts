@@ -176,7 +176,7 @@ describe('computeIdsTask', () => {
     expect(context.affectedEntities.entries.added).not.includes('Dy6jo5j4goU2C4sc8Kwkk')
     expect(context.affectedEntities.entries.removed).not.includes('Dy6jo5j4goU2C4sc8Kwkk')
     expect(context.affectedEntities.entries.maybeChanged.map(({ sys: { id } }) => id)).not.includes(
-      'Dy6jo5j4goU2C4sc8Kwkk'
+      'Dy6jo5j4goU2C4sc8Kwkk',
     )
   })
 })

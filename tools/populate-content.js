@@ -10,7 +10,7 @@ const client = contentful.createClient(
     accessToken: process.env.CMA_TOKEN,
     space: SPACE,
   },
-  { type: 'plain' }
+  { type: 'plain' },
 )
 
 const spinner = ora(`creating content on ${SPACE}:${ENVIRONMENT}`).start()
@@ -35,7 +35,7 @@ const createAndPublishPage = async ({ title, content }) => {
       environmentId: ENVIRONMENT,
       entryId: entry.sys.id,
     },
-    entry
+    entry,
   )
 }
 
@@ -60,8 +60,8 @@ const run = async () => {
         createAndPublishPage({
           content,
           title: title + index,
-        })
-      )
+        }),
+      ),
     )
   }
   spinner.stopAndPersist()

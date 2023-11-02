@@ -9,7 +9,7 @@ const client = contentful.createClient(
     accessToken: process.env.CMA_TOKEN,
     space: SPACE,
   },
-  { type: 'plain' }
+  { type: 'plain' },
 )
 
 const updateAndPublishContent = async ({ title, content, id }) => {
@@ -33,7 +33,7 @@ const updateAndPublishContent = async ({ title, content, id }) => {
       environmentId: ENVIRONMENT,
       entryId: entry.sys.id,
     },
-    entry
+    entry,
   )
 
   await client.entry.publish(
@@ -42,7 +42,7 @@ const updateAndPublishContent = async ({ title, content, id }) => {
       environmentId: ENVIRONMENT,
       entryId: entry.sys.id,
     },
-    entry
+    entry,
   )
 }
 

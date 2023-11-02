@@ -82,7 +82,7 @@ export default fancy
             '--output-file',
             testContext.changesetFilePath,
           ],
-          {} as unknown as Config // Runtime config, but not required for tests.
+          {} as unknown as Config, // Runtime config, but not required for tests.
         )
         try {
           await cmd.run()
@@ -109,7 +109,7 @@ export default fancy
             testContext.cmaToken,
             '--yes',
           ],
-          {} as unknown as Config // Runtime config, but not required for tests.
+          {} as unknown as Config, // Runtime config, but not required for tests.
         )
         try {
           await cmd.run()

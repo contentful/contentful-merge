@@ -3,7 +3,7 @@ import { BaseChangesetItem, ChangesetChangeType, ChangesetEntityLink } from '../
 export const createLinkObject = <T extends ChangesetChangeType>(
   id: string,
   changeType: T,
-  linkType: 'Entry' | 'ContentType'
+  linkType: 'Entry' | 'ContentType',
 ): ChangesetEntityLink & BaseChangesetItem<T> => ({
   changeType,
   entity: {

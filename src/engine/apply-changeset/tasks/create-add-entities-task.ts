@@ -32,7 +32,7 @@ export const createAddEntitiesTask = (): ListrTask => {
 
             return createdEntry.sys.id
           })
-        })
+        }),
       )
 
       const addedEntities = result.filter(isString)

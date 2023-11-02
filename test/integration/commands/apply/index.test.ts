@@ -51,7 +51,7 @@ describe('create command', () => {
     const addTwoItemsChangeset = createAddTwoItemsChangeset(
       environmentsContext.sourceEnvironment.sys.id,
       testContext.targetEnvironment.sys.id,
-      testSpace.sys.id
+      testSpace.sys.id,
     )
 
     testContextInvalidToken = {
@@ -63,7 +63,7 @@ describe('create command', () => {
     const changeset = createChangeset(
       testContext.targetEnvironment.sys.id,
       testContext.targetEnvironment.sys.id,
-      testContext.spaceId
+      testContext.spaceId,
     )
 
     fs.writeFileSync(changesetPath, JSON.stringify(changeset, null, 2))
@@ -107,7 +107,7 @@ describe('create command', () => {
     .runApplyCommand(() => testContextInvalidToken)
     .it('should fail applying if token is invalid', (ctx) => {
       expect(ctx.stdout).to.contain(
-        'Error: The CMA token you provided is invalid. Please make sure that your token is correct and not expired.'
+        'Error: The CMA token you provided is invalid. Please make sure that your token is correct and not expired.',
       )
     })
 })
