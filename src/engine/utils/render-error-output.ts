@@ -51,7 +51,7 @@ export function renderErrorOutputForApply(error: Error) {
   if (error instanceof MergeEntityError) {
     const errorDetails = `\n\n${JSON.stringify(error.details, null, 2)}`
     output += red(
-      `\nThe changeset was only partially applied. The merge was stopped due to the following error (entry id: ${error.entryId}):`
+      `\nThe changeset was only partially applied. The merge was stopped due to the following error (entry id: ${error.entryId}):`,
     )
 
     if (error.extra) output += red(`\n\n${error.extra}`)
@@ -104,7 +104,7 @@ export function renderErrorOutputForCreate(error: Error) {
   if (error instanceof ContentModelDivergedError) {
     let errorDetails = '\n\n'
     errorDetails += `Diverged ${pluralizeContentType(error.details.amount)}: ${renderDivergedContentTypes(
-      error.divergedContentTypeIds
+      error.divergedContentTypeIds,
     )}\n`
 
     output += errorDetails

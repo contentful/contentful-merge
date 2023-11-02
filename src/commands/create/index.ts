@@ -139,8 +139,8 @@ export default class Create extends Command {
 
     console.log(
       OutputFormatter.headline(
-        `\nStart changeset creation for ${chalk.yellow(flags.source)} => ${chalk.yellow(flags.target)} 🎬`
-      )
+        `\nStart changeset creation for ${chalk.yellow(flags.source)} => ${chalk.yellow(flags.target)} 🎬`,
+      ),
     )
 
     const startTime = performance.now()

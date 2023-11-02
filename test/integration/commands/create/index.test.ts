@@ -66,7 +66,7 @@ describe('create command', () => {
     .stdout()
     .runCreateCommand(
       () => testContext,
-      () => 'invalid-cda-token'
+      () => 'invalid-cda-token',
     )
     .it('fails and informs on 401 (invalid token)', (ctx) => {
       expect(ctx.stdout).to.contain('Request failed with status code 401')
@@ -76,7 +76,7 @@ describe('create command', () => {
     .stdout()
     .runCreateCommand(
       () => testContext,
-      () => cdaTokenWithOnlyMasterAccess.accessToken
+      () => cdaTokenWithOnlyMasterAccess.accessToken,
     )
     .it('fails and informs on 404', (ctx) => {
       expect(ctx.stdout).to.contain('Request failed with status code 404')

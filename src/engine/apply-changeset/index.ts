@@ -16,7 +16,7 @@ export const applyChangesetTask = (context: ApplyChangesetContext): Listr => {
               ApplyChangesetTasks.createAddEntitiesTask(),
               ApplyChangesetTasks.createChangeEntitiesTask(),
             ],
-            { concurrent: false }
+            { concurrent: false },
           )
         },
       },
@@ -28,6 +28,6 @@ export const applyChangesetTask = (context: ApplyChangesetContext): Listr => {
         collapseSubtasks: false,
         showErrorMessage: false,
       },
-    }
+    },
   )
 }

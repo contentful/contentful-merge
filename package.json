@@ -35,7 +35,7 @@
     "listr2": "^6.6.1",
     "lodash": "^4.17.21",
     "p-limit": "^3.1.0",
-    "semantic-release": "^21.0.7",
+    "semantic-release": "^22.0.6",
     "wrap-ansi": "7.0.0"
   },
   "devDependencies": {
@@ -62,9 +62,9 @@
     "lint-staged": "^14.0.0",
     "mocha": "^10.2.0",
     "mocha-junit-reporter": "^2.2.1",
-    "oclif": "^3",
+    "oclif": "^4",
     "ora": "^7.0.1",
-    "prettier": "^2.8.8",
+    "prettier": "^3.0.0",
     "shx": "^0.3.3",
     "sinon": "^17.0.0",
     "ts-node": "^10.9.1",

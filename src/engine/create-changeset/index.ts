@@ -43,7 +43,7 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
                     {
                       ...subTaskOptions,
                       rendererOptions: { ...subTaskOptions.rendererOptions, collapseSubtasks: true },
-                    }
+                    },
                   )
                 },
               },
@@ -73,14 +73,14 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
                         entityType: 'entries',
                       }),
                     ],
-                    subTaskOptions
+                    subTaskOptions,
                   )
                 },
               },
             ],
             {
               concurrent: false,
-            }
+            },
           )
         },
       },
@@ -92,6 +92,6 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
         collapseSubtasks: false,
         showErrorMessage: false,
       },
-    }
+    },
   )
 }

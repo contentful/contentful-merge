@@ -20,7 +20,7 @@ export const createComputeIdsTask = ({ entityType }: ComputeIdsTaskProps): Listr
 
       const maybeChanged = targetData[entityType].comparables.filter((targetComparable) => {
         const sourceComparable = sourceData[entityType].comparables.find(
-          (value) => value.sys.id === targetComparable.sys.id
+          (value) => value.sys.id === targetComparable.sys.id,
         )
 
         if (sourceComparable) {

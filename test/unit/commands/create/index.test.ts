@@ -16,7 +16,7 @@ import { writeLog } from '../../../../src/engine/logger/write-log'
 
 const cmd = new CreateCommand(
   [],
-  {} as unknown as Config // Runtime config, but not required for tests.
+  {} as unknown as Config, // Runtime config, but not required for tests.
 )
 
 describe('Create Command', () => {
@@ -49,7 +49,7 @@ describe('Create Command', () => {
     .it('should inform that api keys need access to all compared environments', (ctx) => {
       expect(ctx.stdout).to.contain('Changeset could not be created 💔')
       expect(ctx.stdout).to.contain(
-        'An authorisation issue occurred. Please make sure the API key you provided has access to both environments.'
+        'An authorisation issue occurred. Please make sure the API key you provided has access to both environments.',
       )
     })
 
@@ -80,7 +80,7 @@ describe('Create Command', () => {
     .it('should inform on diverged content models', (ctx) => {
       expect(ctx.stdout).to.contain('Changeset could not be created 💔')
       expect(ctx.stdout).to.contain(
-        'The content models of the source and target environment are different. Before merging entries between environments, please make sure the content models are identical. We suggest using the Merge App to compare content models of different environments. Read more about the Merge App here: https://www.contentful.com/marketplace/app/merge.'
+        'The content models of the source and target environment are different. Before merging entries between environments, please make sure the content models are identical. We suggest using the Merge App to compare content models of different environments. Read more about the Merge App here: https://www.contentful.com/marketplace/app/merge.',
       )
       expect(ctx.stdout).to.contain(`Diverged content types: test-content-type, test-content-type-2`)
     })
