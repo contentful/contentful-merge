@@ -62,7 +62,7 @@
     "lint-staged": "^14.0.0",
     "mocha": "^10.2.0",
     "mocha-junit-reporter": "^2.2.1",
-    "oclif": "^3",
+    "oclif": "^4",
     "ora": "^7.0.1",
     "prettier": "^2.8.8",
     "shx": "^0.3.3",
