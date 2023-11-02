@@ -3,6 +3,9 @@ import { createClient } from 'contentful'
 import { ApiKey, Environment } from 'contentful-management'
 import { CreateApiKeyProps, Space } from 'contentful-management/types'
 
+export const INTEGRATION_TEST_KEY = '5HAbGYZ6iZWiDXGxMtvsrW'
+export const INTEGRATION_TEST_KEY_MASTER = '5DH7JdIDD4k6sF05Z3VPe2'
+
 export type TestContext = {
   sourceEnvironment: Environment
   targetEnvironment: Environment
@@ -60,8 +63,46 @@ export const createCdaToken = async (space: Space, environmentIds: string[]): Pr
   return apiKey
 }
 
+export const updateCdaToken = async (cdaTokenId: string, space: Space, environmentIds: string[]): Promise<ApiKey> => {
+  console.log('fetching api key...')
+  let apiKey: ApiKey
+
+  try {
+    apiKey = await space.getApiKey(cdaTokenId)
+
+    environmentIds.forEach((envId) => {
+      apiKey.environments.push({
+        sys: {
+          type: 'Link',
+          linkType: 'Environment',
+          id: envId,
+        },
+      })
+    })
+
+    await apiKey.update()
+  } catch (e) {
+    console.log('failed to fetch key', e)
+    apiKey = await createCdaToken(space, environmentIds)
+  }
+
+  return apiKey
+}
+
+const removeEnvironmentsFromKey = async (apiKey: ApiKey, environments: Environment[]) => {
+  if (apiKey.sys.id !== INTEGRATION_TEST_KEY) {
+    await apiKey.delete()
+  }
+
+  apiKey.environments = apiKey.environments.filter((env) => !environments.map((e) => e.sys.id).includes(env.sys.id))
+  await apiKey.update()
+}
+
 const teardown = async ({ apiKey, environments }: { apiKey?: ApiKey; environments: Environment[] }): Promise<void> => {
-  await Promise.allSettled([apiKey && apiKey.delete(), ...environments.map((env) => env.delete())])
+  await Promise.allSettled([
+    apiKey && removeEnvironmentsFromKey(apiKey, environments),
+    ...environments.map((env) => env.delete()),
+  ])
 }
 
 export const createEnvironments = async (testSpace: Space): Promise<TestContext | undefined> => {
@@ -70,8 +111,11 @@ export const createEnvironments = async (testSpace: Space): Promise<TestContext 
   const sourceEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + '_source_environment')
   console.log('creating target environment...')
   const targetEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + '_target_environment')
-  console.log('creating API keys...')
-  const apiKey = await createCdaToken(testSpace, [targetEnvironment.sys.id, sourceEnvironment.sys.id])
+  console.log('obtaining API keys...')
+  const apiKey = await updateCdaToken(INTEGRATION_TEST_KEY, testSpace, [
+    targetEnvironment.sys.id,
+    sourceEnvironment.sys.id,
+  ])
   console.log('setup finished\n')
 
   return {
