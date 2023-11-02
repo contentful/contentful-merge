@@ -10,8 +10,6 @@
     "target": "es2019",
     "resolveJsonModule": true
   },
-  "include": [
-    "src/**/*"
-  ],
+  "include": ["src/**/*"],
   "exclude": ["tools/**/*"]
 }
