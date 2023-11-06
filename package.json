@@ -59,7 +59,7 @@
     "eslint-config-prettier": "^9.0.0",
     "fancy-test": "^3.0.1",
     "husky": "^8.0.3",
-    "lint-staged": "^14.0.0",
+    "lint-staged": "^15.0.2",
     "mocha": "^10.2.0",
     "mocha-junit-reporter": "^2.2.1",
     "oclif": "^3.17.1",
