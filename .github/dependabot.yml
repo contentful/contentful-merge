@@ -12,3 +12,6 @@ updates:
       include: scope
     ignore:
       - dependency-name: '@salesforce/dev-scripts'
+      - dependency-name: 'oclif'
+        versions:
+          - '>=3.17.1'
