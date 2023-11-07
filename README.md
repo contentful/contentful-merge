@@ -261,11 +261,11 @@ At the moment we have a [limit amount](./src/commands/create/index.ts#L27) of en
 
 | Change Type    | Limit |
 |----------------|-------|
-| Add            | 300   |
-| Delete         | 300   |
-| Update         | 300   |
+| Add            | 1000  |
+| Delete         | 5000  |
+| Update         | 5000  |
 |                |       |
-| Total          | 500   |
+| Total          | 5000  |
 
 For apply command one can merge at most 500 changes at once.
 

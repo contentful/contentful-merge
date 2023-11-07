@@ -12,7 +12,6 @@ oclif.manifest.json
 changeset.json
 changeset-*.json
 .envrc
-.envrc
 .env
 .commands
 .tool-versions
