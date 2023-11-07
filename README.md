@@ -46,7 +46,7 @@
 
 **Contentful Merge**
 
-The <b>contentful-merge</b> CLI tool lets you compare entries across environments. It tells you how many entries are in the source and target environments, and how many of those have been added, deleted or updated. A detailed changeset is saved in a file.
+The <b>contentful-merge</b> CLI tool allows you to compare and merge entries across environments in a Contentful space. It can be used to create a changeset of all entry differences between two environments, and to apply this changeset to another environment, thereby effectively syncing the content of two environments.
 
 ![](images/recording.gif)
 
@@ -284,10 +284,6 @@ Make sure your CDA token has access to both environments, otherwise the CDA may 
 **I have made draft changes in my environment, but I don't see those in the changeset.**
 
 As the CDA is used to fetch and compare entries, only published changes will be taken into account. Draft changes are not available via the CDA.
-
-**I have run the `create` command several times, but only see one `changeset.json` file created.**
-
-Currently, the `changeset.json` file is overwritten every time you run the `create` command in the same directory.
 
 ## Feedback
 
