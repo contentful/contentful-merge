@@ -261,7 +261,7 @@ At the moment we have a [limit amount](./src/commands/create/index.ts#L27) of en
 
 | Change Type    | Limit |
 |----------------|-------|
-| Add            | 1000  |
+| Add            | 2000  |
 | Delete         | 5000  |
 | Update         | 5000  |
 |                |       |
