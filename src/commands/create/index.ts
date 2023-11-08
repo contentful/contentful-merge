@@ -25,10 +25,10 @@ import { OutputFormatter, renderFilePaths } from '../../engine/utils'
 initSentry()
 
 const limits = {
-  all: 500,
-  changed: 300,
-  added: 300,
-  removed: 300,
+  all: 5000,
+  changed: 5000,
+  added: 2000,
+  removed: 5000,
 }
 
 const sequenceKey = crypto.randomUUID()
