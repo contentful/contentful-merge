@@ -8,7 +8,7 @@ import { ApplyChangesetContext } from '../../engine/apply-changeset/types'
 import chalk from 'chalk'
 import { applyChangesetTask } from '../../engine/apply-changeset'
 import { writeLog } from '../../engine/logger/write-log'
-import { OutputFormatter, renderFilePaths } from '../../engine/utils'
+import { detectErrorLevel, OutputFormatter, renderFilePaths } from '../../engine/utils'
 import { renderErrorOutputForApply } from '../../engine/utils/render-error-output'
 import crypto from 'crypto'
 import { renderOutput } from '../../engine/apply-changeset/render-output'
@@ -21,6 +21,7 @@ import {
   trackApplyCommandFailed,
   trackApplyCommandStarted,
 } from '../../analytics'
+import { config } from '../../config'
 
 initSentry()
 
@@ -119,7 +120,7 @@ export default class Apply extends Command {
       logger: this.logger,
       client,
       responseCollector,
-      limit: 500,
+      limit: config.limits.all,
       accessToken: flags.token,
       spaceId: flags.space,
       environmentId: flags.environment,
@@ -178,7 +179,9 @@ export default class Apply extends Command {
 
     const output = renderErrorOutputForApply(error)
 
-    Sentry.captureException(error)
+    Sentry.captureException(error, {
+      level: detectErrorLevel(error),
+    })
 
     this.log(output)
   }
