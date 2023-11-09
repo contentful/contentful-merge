@@ -21,6 +21,7 @@ import {
   trackApplyCommandFailed,
   trackApplyCommandStarted,
 } from '../../analytics'
+import { config } from '../../config'
 
 initSentry()
 
@@ -119,7 +120,7 @@ export default class Apply extends Command {
       logger: this.logger,
       client,
       responseCollector,
-      limit: 500,
+      limit: config.limits.all,
       accessToken: flags.token,
       spaceId: flags.space,
       environmentId: flags.environment,
