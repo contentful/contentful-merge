@@ -1,6 +1,11 @@
 import { ApplyChangesetContext } from './apply-changeset/types'
 import { AffectedEntities } from './create-changeset/types'
 
+/*
+ * Custom error classes, make sure they are reported with the right level
+ * ./utils/detect-error-level.ts
+ */
+
 export class ContentfulError extends Error {
   details: any
   constructor(message: string, details?: any) {

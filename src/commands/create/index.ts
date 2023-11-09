@@ -20,7 +20,7 @@ import { writeLog } from '../../engine/logger/write-log'
 import { createChangeset } from '../../engine/utils/create-changeset'
 import { renderOutput } from '../../engine/create-changeset/render-output'
 import { renderErrorOutputForCreate } from '../../engine/utils/render-error-output'
-import { OutputFormatter, renderFilePaths } from '../../engine/utils'
+import { detectErrorLevel, OutputFormatter, renderFilePaths } from '../../engine/utils'
 
 initSentry()
 
@@ -207,7 +207,9 @@ export default class Create extends Command {
 
     const output = renderErrorOutputForCreate(error)
 
-    Sentry.captureException(error)
+    Sentry.captureException(error, {
+      level: detectErrorLevel(error),
+    })
 
     this.log(output)
   }
