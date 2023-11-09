@@ -21,15 +21,9 @@ import { createChangeset } from '../../engine/utils/create-changeset'
 import { renderOutput } from '../../engine/create-changeset/render-output'
 import { renderErrorOutputForCreate } from '../../engine/utils/render-error-output'
 import { detectErrorLevel, OutputFormatter, renderFilePaths } from '../../engine/utils'
+import { config } from '../../config'
 
 initSentry()
-
-const limits = {
-  all: 5000,
-  changed: 5000,
-  added: 2000,
-  removed: 5000,
-}
 
 const sequenceKey = crypto.randomUUID()
 
@@ -81,7 +75,7 @@ export default class Create extends Command {
       scope.setTag('spaceId', flags.space)
       scope.setTag('sourceEnvironmentId', flags.source)
       scope.setTag('targetEnvironmentId', flags.target)
-      scope.setExtra('limits', limits)
+      scope.setExtra('limits', config.limits)
     })
     trackCreateCommandStarted({
       space_key: flags.space,
@@ -134,7 +128,7 @@ export default class Create extends Command {
         },
       },
       changeset: createChangeset(flags.source, flags.target, flags.space),
-      limits,
+      limits: config.limits,
     }
 
     console.log(

@@ -257,7 +257,7 @@ If you want to see the data structure in practice, run the `create` command and 
 
 ## Limitations
 
-At the moment we have a [limit amount](./src/commands/create/index.ts#L27) of entries that can be in the generated changeset
+At the moment we have a [limit amount](./src/config.base.ts#L2) of entries that can be in the generated changeset
 
 | Change Type    | Limit |
 |----------------|-------|
