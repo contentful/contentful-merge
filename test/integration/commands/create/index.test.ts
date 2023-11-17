@@ -1,7 +1,7 @@
 import { expect } from '@oclif/test'
 import { ApiKey, Space, createClient } from 'contentful-management'
 import fs from 'fs'
-import { INTEGRATION_TEST_KEY_MASTER, TestContext, createCdaToken, createEnvironments } from './../bootstrap'
+import { CDA_ACCESS_TOKEN_MASTER_FOR_TEST, TestContext, createCdaToken, createEnvironments } from './../bootstrap'
 import fancy from './../register-plugins'
 
 describe('create command', () => {
@@ -28,7 +28,7 @@ describe('create command', () => {
 
     testContext = environmentsContext
     try {
-      cdaTokenWithOnlyMasterAccess = await testSpace.getApiKey(INTEGRATION_TEST_KEY_MASTER)
+      cdaTokenWithOnlyMasterAccess = await testSpace.getApiKey(CDA_ACCESS_TOKEN_MASTER_FOR_TEST)
     } catch (e) {
       cdaTokenWithOnlyMasterAccess = await createCdaToken(testSpace, ['master'])
     }
@@ -36,7 +36,7 @@ describe('create command', () => {
 
   after(async () => {
     await Promise.all([
-      cdaTokenWithOnlyMasterAccess.sys.id !== INTEGRATION_TEST_KEY_MASTER && cdaTokenWithOnlyMasterAccess.delete(),
+      cdaTokenWithOnlyMasterAccess.sys.id !== CDA_ACCESS_TOKEN_MASTER_FOR_TEST && cdaTokenWithOnlyMasterAccess.delete(),
       testContext.teardown(),
     ])
   })

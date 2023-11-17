@@ -3,8 +3,8 @@ import { createClient } from 'contentful'
 import { ApiKey, Environment } from 'contentful-management'
 import { CreateApiKeyProps, Space } from 'contentful-management/types'
 
-export const INTEGRATION_TEST_KEY = '5HAbGYZ6iZWiDXGxMtvsrW'
-export const INTEGRATION_TEST_KEY_MASTER = '5DH7JdIDD4k6sF05Z3VPe2'
+export const CDA_ACCESS_TOKEN_FOR_TEST = '5HAbGYZ6iZWiDXGxMtvsrW'
+export const CDA_ACCESS_TOKEN_MASTER_FOR_TEST = '5DH7JdIDD4k6sF05Z3VPe2'
 
 export type TestContext = {
   sourceEnvironment: Environment
@@ -90,7 +90,7 @@ export const updateCdaToken = async (cdaTokenId: string, space: Space, environme
 }
 
 const removeEnvironmentsFromKey = async (apiKey: ApiKey, environments: Environment[]) => {
-  if (apiKey.sys.id !== INTEGRATION_TEST_KEY) {
+  if (apiKey.sys.id !== CDA_ACCESS_TOKEN_FOR_TEST) {
     await apiKey.delete()
   }
 
@@ -112,7 +112,7 @@ export const createEnvironments = async (testSpace: Space): Promise<TestContext 
   console.log('creating target environment...')
   const targetEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + '_target_environment')
   console.log('obtaining API keys...')
-  const apiKey = await updateCdaToken(INTEGRATION_TEST_KEY, testSpace, [
+  const apiKey = await updateCdaToken(CDA_ACCESS_TOKEN_FOR_TEST, testSpace, [
     targetEnvironment.sys.id,
     sourceEnvironment.sys.id,
   ])
