@@ -20,16 +20,10 @@ import { writeLog } from '../../engine/logger/write-log'
 import { createChangeset } from '../../engine/utils/create-changeset'
 import { renderOutput } from '../../engine/create-changeset/render-output'
 import { renderErrorOutputForCreate } from '../../engine/utils/render-error-output'
-import { OutputFormatter, renderFilePaths } from '../../engine/utils'
+import { detectErrorLevel, OutputFormatter, renderFilePaths } from '../../engine/utils'
+import { config } from '../../config'
 
 initSentry()
-
-const limits = {
-  all: 500,
-  changed: 300,
-  added: 300,
-  removed: 300,
-}
 
 const sequenceKey = crypto.randomUUID()
 
@@ -81,7 +75,7 @@ export default class Create extends Command {
       scope.setTag('spaceId', flags.space)
       scope.setTag('sourceEnvironmentId', flags.source)
       scope.setTag('targetEnvironmentId', flags.target)
-      scope.setExtra('limits', limits)
+      scope.setExtra('limits', config.limits)
     })
     trackCreateCommandStarted({
       space_key: flags.space,
@@ -134,7 +128,7 @@ export default class Create extends Command {
         },
       },
       changeset: createChangeset(flags.source, flags.target, flags.space),
-      limits,
+      limits: config.limits,
     }
 
     console.log(
@@ -207,7 +201,9 @@ export default class Create extends Command {
 
     const output = renderErrorOutputForCreate(error)
 
-    Sentry.captureException(error)
+    Sentry.captureException(error, {
+      level: detectErrorLevel(error),
+    })
 
     this.log(output)
   }
