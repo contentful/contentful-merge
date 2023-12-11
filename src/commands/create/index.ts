@@ -42,7 +42,7 @@ export default class Create extends Command {
   }
 
   static examples = [
-    'contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --output-file <output file path>',
+    'contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --output-file <output file path> --content-type <content type id>',
   ]
 
   static flags = {
@@ -57,6 +57,7 @@ export default class Create extends Command {
     }),
     'request-batch-size': Flags.integer({ description: 'Limit for every single request', default: 1000 }),
     'output-file': Flags.string({ default: undefined, description: 'File path to changeset file', required: false }),
+    'content-type': Flags.string({ default: undefined, description: 'Content type id', required: false }),
   }
 
   private async writeFileLog() {
@@ -97,6 +98,7 @@ export default class Create extends Command {
     const context: CreateChangesetContext = {
       logger: this.logger,
       client,
+      contentType: flags['content-type'],
       accessToken: flags.token,
       spaceId: flags.space,
       sourceEnvironmentId: flags.source,
