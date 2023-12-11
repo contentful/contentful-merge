@@ -107,6 +107,7 @@ USAGE
 
 FLAGS
   --cda-token=<value>           (required) CDA token, defaults to env: $CDA_TOKEN
+  --content-type=<value>        Content type id
   --output-file=<value>         File path to changeset file
   --request-batch-size=<value>  [default: 1000] Limit for every single request
   --source=<value>              (required) Source environment id
@@ -117,7 +118,7 @@ DESCRIPTION
   Create Entries Changeset
 
 EXAMPLES
-  $ contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --output-file <output file path>
+  $ contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --output-file <output file path> --content-type "<content-type>"
 ```
 
 #### `contentful-merge apply`
