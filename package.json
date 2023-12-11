@@ -27,6 +27,7 @@
     "@sentry/profiling-node": "^1.1.2",
     "axios": "^0.27.2",
     "chalk": "^4.1.2",
+    "clean-stack": "^3.0.1",
     "contentful": "^10.4.0",
     "contentful-collection": "^0.0.4",
     "contentful-sdk-core": "^7.1.0",
