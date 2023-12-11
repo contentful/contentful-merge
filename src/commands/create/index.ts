@@ -202,7 +202,9 @@ export default class Create extends Command {
 
     const output = renderErrorOutputForCreate(error)
 
-    error.stack = cleanStack(error.stack, { pretty: true })
+    if (error.stack) {
+      error.stack = cleanStack(error.stack, { pretty: true })
+    }
 
     Sentry.captureException(error, {
       level: detectErrorLevel(error),
