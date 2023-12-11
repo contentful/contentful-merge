@@ -22,6 +22,7 @@ import { renderOutput } from '../../engine/create-changeset/render-output'
 import { renderErrorOutputForCreate } from '../../engine/utils/render-error-output'
 import { detectErrorLevel, OutputFormatter, renderFilePaths } from '../../engine/utils'
 import { config } from '../../config'
+import cleanStack from 'clean-stack'
 
 initSentry()
 
@@ -200,6 +201,10 @@ export default class Create extends Command {
     })
 
     const output = renderErrorOutputForCreate(error)
+
+    if (error.stack) {
+      error.stack = cleanStack(error.stack, { pretty: true })
+    }
 
     Sentry.captureException(error, {
       level: detectErrorLevel(error),

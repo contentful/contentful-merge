@@ -22,6 +22,7 @@ import {
   trackApplyCommandStarted,
 } from '../../analytics'
 import { config } from '../../config'
+import cleanStack from 'clean-stack'
 
 initSentry()
 
@@ -178,6 +179,10 @@ export default class Apply extends Command {
     })
 
     const output = renderErrorOutputForApply(error)
+
+    if (error.stack) {
+      error.stack = cleanStack(error.stack, { pretty: true })
+    }
 
     Sentry.captureException(error, {
       level: detectErrorLevel(error),
