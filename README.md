@@ -259,15 +259,15 @@ If you want to see the data structure in practice, run the `create` command and 
 
 At the moment we have a [limit amount](./src/config.base.ts#L2) of entries that can be in the generated changeset
 
-| Change Type    | Limit |
-|----------------|-------|
-| Add            | 2000  |
-| Delete         | 5000  |
-| Update         | 5000  |
-|                |       |
-| Total          | 5000  |
+| Change Type    | Limit   |
+|----------------|---------|
+| Add            | 10 000  |
+| Delete         | 10 000  |
+| Update         | 10 000  |
+|                |         |
+| Total          | 10 000  |
 
-For apply command one can merge at most 500 changes at once.
+For apply command one can merge at most 10 000 changes at once.
 
 Further limitations:
 * Tags, Assets, Comments, Workflows and Tasks are not compared and are not copied from one environment to another.
