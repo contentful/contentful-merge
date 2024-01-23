@@ -54,7 +54,7 @@
     "@types/wrap-ansi": "3.0.0",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "chai": "^4",
-    "contentful-management": "^10.39.2",
+    "contentful-management": "^11.13.0",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^9.0.0",
     "fancy-test": "^3.0.1",
