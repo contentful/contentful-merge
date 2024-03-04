@@ -5,6 +5,7 @@ import {
   LimitsExceededForApplyError,
   LimitsExceededForCreateError,
   LocaleMissingForApplyError,
+  AuthorizationErrorForApply,
 } from '../errors'
 import { SeverityLevel } from '@sentry/types/types/severity'
 
@@ -15,6 +16,7 @@ const WarnErrorClasses = [
   ContentModelDivergedError,
   ChangesetFileError,
   ContainsMetadataError,
+  AuthorizationErrorForApply,
 ]
 
 export function detectErrorLevel(exception: any): SeverityLevel {

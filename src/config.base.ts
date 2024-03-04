@@ -1,8 +1,8 @@
 export const configBase = {
   limits: {
-    all: 5000,
-    changed: 5000,
-    added: 2000,
-    removed: 5000,
+    all: 10000,
+    changed: 10000,
+    added: 10000,
+    removed: 10000,
   },
 }
