@@ -68,10 +68,10 @@ export function renderErrorOutputForCreate(error: Error) {
 
   output += OutputFormatter.headline('Changeset could not be created 💔')
   output += '\n'
-
   if (error instanceof AxiosError && error.code === 'ERR_BAD_REQUEST') {
     // TODO Add different error messages for different axios errors.
     errorMessage +=
+      error.response?.data.message ??
       'An authorisation issue occurred. Please make sure the API key you provided has access to both environments.'
   } else if (error instanceof Error) {
     errorMessage += error.message

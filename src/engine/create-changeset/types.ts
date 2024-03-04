@@ -37,6 +37,8 @@ export type AffectedKeys = keyof AffectedEntityData
 
 export type AffectedEntities = Record<EntityType, AffectedEntityData>
 
+export type Operations = 'add' | 'delete' | 'update'
+
 export interface CreateChangesetContext extends BaseContext {
   sourceEnvironmentId: string
   targetEnvironmentId: string
@@ -58,6 +60,10 @@ export interface CreateChangesetContext extends BaseContext {
   }
 
   requestBatchSize: number
+
+  queryEntries?: string[]
+
+  allowedOperations: Operations[]
 }
 
 export type SkipHandler = (context: CreateChangesetContext) => boolean
