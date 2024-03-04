@@ -29,9 +29,8 @@ async function getEntityPatches({
 }: GetEntityPatchParams): Promise<UpdatedChangesetItem[]> {
   const {
     client: { cda },
-    contentType,
   } = context
-  const query = { content_type: contentType, 'sys.id[in]': entityIds.join(','), locale: '*' }
+  const query = { 'sys.id[in]': entityIds.join(','), locale: '*' }
 
   const api = cda[entityType]
 

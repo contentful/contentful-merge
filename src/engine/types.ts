@@ -76,7 +76,6 @@ export interface BaseContext {
   accessToken: string
   spaceId: string
   limit?: number
-  contentType?: string
 }
 
 export type BaseActionParams = {

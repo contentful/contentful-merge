@@ -120,7 +120,7 @@ DESCRIPTION
   Create Entries Changeset
 
 EXAMPLES
-  $ contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --output-file <output file path> --query-entries "content_type=<content_type_id>" --query-entries "sys.id=<entry_id>" --allowed-operations=add --allowed-operations=remove
+  $ contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --output-file <output file path> --query-entries "content_type=<content_type_id>" --query-entries "sys.id=<entry_id>" --allowed-operations=add --allowed-operations=delete
 ```
 
 #### `contentful-merge apply`
