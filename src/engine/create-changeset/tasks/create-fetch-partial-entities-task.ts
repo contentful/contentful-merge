@@ -11,9 +11,27 @@ type ExecuteParams = {
   environmentId: string
   entityType: EntityType
   additionalFields: string[]
+  queryEntries?: string[]
 }
 
-const execute = async ({ context, environmentId, task, entityType, additionalFields = [] }: ExecuteParams) => {
+function clearQueryEntries(queryEntries?: string[]) {
+  if (!queryEntries) return {}
+  return queryEntries.reduce((acc, entry) => {
+    const splitInput = entry.split(':')
+    const key = splitInput[0].trim()
+    const value = splitInput[1].trim()
+    return { ...acc, [key]: value }
+  }, {})
+}
+
+const execute = async ({
+  context,
+  environmentId,
+  task,
+  entityType,
+  additionalFields = [],
+  queryEntries,
+}: ExecuteParams) => {
   const {
     client: { cda },
     requestBatchSize,
@@ -26,7 +44,10 @@ const execute = async ({ context, environmentId, task, entityType, additionalFie
 
   const api = cda[entityType]
 
-  const { total } = await api.getMany({ environment: environmentId, query: { limit: 0 } })
+  const { total } = await api.getMany({
+    environment: environmentId,
+    query: { limit: 0, ...clearQueryEntries(queryEntries) },
+  })
 
   const promises = []
   let requestsDone = 0
@@ -44,6 +65,7 @@ const execute = async ({ context, environmentId, task, entityType, additionalFie
             select: ['sys.id', 'sys.updatedAt', ...additionalFields],
             limit: requestBatchSize,
             skip: requestBatchSize * i,
+            ...clearQueryEntries(queryEntries),
           },
         })
         requestsDone++
@@ -64,13 +86,19 @@ type EntitiesTaskProps = {
   scope: EnvironmentScope
   environmentId: string
   entityType: EntityType
+  queryEntries?: string[]
 }
 
 // This function fetches only id and updatedAt properties of all
 // entities. With this information, we are able to determine which
 // entities differ between environments, so that in next steps we can
 // fetch only those completely.
-export function createFetchPartialEntitiesTask({ scope, environmentId, entityType }: EntitiesTaskProps): ListrTask {
+export function createFetchPartialEntitiesTask({
+  scope,
+  environmentId,
+  entityType,
+  queryEntries,
+}: EntitiesTaskProps): ListrTask {
   return {
     title: `Reading the ${scope} environment "${environmentId}"`,
     task: async (context: CreateChangesetContext, task) => {
@@ -83,6 +111,7 @@ export function createFetchPartialEntitiesTask({ scope, environmentId, entityTyp
         environmentId,
         entityType,
         additionalFields,
+        queryEntries,
       })
       return context
     },

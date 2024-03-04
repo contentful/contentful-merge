@@ -104,39 +104,44 @@ export const createFetchChangedEntitiesTask = ({ entityType }: FetchChangedTaskP
 
       let iterator = 0
 
-      for (const chunk of idChunks) {
-        task.output = `Fetching ${requestBatchSize} ${entityType} ${
-          ++iterator * requestBatchSize
-        }/${numberOfMaybeChanged}`
-        // eslint-disable-next-line no-await-in-loop
-        const changedObjects = await getEntityPatches({
-          context,
-          source: sourceEnvironmentId,
-          target: targetEnvironmentId,
-          entityIds: chunk,
-          entityType,
-        })
+      if (context.allowedOperations.includes('update')) {
+        for await (const chunk of idChunks) {
+          task.output = `Fetching ${requestBatchSize} ${entityType} ${
+            ++iterator * requestBatchSize
+          }/${numberOfMaybeChanged}`
 
-        const withChange = changedObjects.filter((o) => o.patch.length > 0)
-        // changed means: entries have actual changed content
-        entityTypeStatistics.changed += withChange.length
-        // nonChanged means: entries have different sys.updatedAt but identical content
-        entityTypeStatistics.nonChanged += changedObjects.length - withChange.length
-        changed.push(...withChange.map((item) => item.entity.sys.id))
-        if (entityType === 'entries') {
-          changeset.items.push(...withChange)
+          const changedObjects = await getEntityPatches({
+            context,
+            source: sourceEnvironmentId,
+            target: targetEnvironmentId,
+            entityIds: chunk,
+            entityType,
+          })
+
+          const withChange = changedObjects.filter((o) => o.patch.length > 0)
+          // changed means: entries have actual changed content
+          entityTypeStatistics.changed += withChange.length
+          // nonChanged means: entries have different sys.updatedAt but identical content
+          entityTypeStatistics.nonChanged += changedObjects.length - withChange.length
+          changed.push(...withChange.map((item) => item.entity.sys.id))
+          if (entityType === 'entries') {
+            changeset.items.push(...withChange)
+          }
         }
       }
 
+      const removedEntries = context.allowedOperations.includes('delete') ? removed : []
+      const addedEntries = context.allowedOperations.includes('add') ? added : []
+
       if (entityType === 'entries') {
         changeset.items.push(
-          ...removed.map((item) => createLinkObject(item, 'delete', EntityTypeMap[entityType])),
-          ...added.map((item) => createLinkObject(item, 'add', EntityTypeMap[entityType])),
+          ...removedEntries.map((item) => createLinkObject(item, 'delete', EntityTypeMap[entityType])),
+          ...addedEntries.map((item) => createLinkObject(item, 'add', EntityTypeMap[entityType])),
         )
       }
 
-      entityTypeStatistics.added = added.length
-      entityTypeStatistics.removed = removed.length
+      entityTypeStatistics.removed = removedEntries.length
+      entityTypeStatistics.added = addedEntries.length
 
       return Promise.resolve(context)
     },

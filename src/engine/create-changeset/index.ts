@@ -56,11 +56,13 @@ export const createChangesetTask = (context: CreateChangesetContext): Listr => {
                         scope: 'source',
                         environmentId: ctx.sourceEnvironmentId,
                         entityType: 'entries',
+                        queryEntries: ctx.queryEntries,
                       }),
                       CreateChangesetTasks.createFetchPartialEntitiesTask({
                         scope: 'target',
                         environmentId: ctx.targetEnvironmentId,
                         entityType: 'entries',
+                        queryEntries: ctx.queryEntries,
                       }),
                       CreateChangesetTasks.createComputeIdsTask({
                         entityType: 'entries',
