@@ -21,7 +21,7 @@
   "dependencies": {
     "@oclif/core": "^3.0.9",
     "@oclif/plugin-help": "^6.0.4",
-    "@oclif/plugin-plugins": "^4.0.2",
+    "@oclif/plugin-plugins": "^5.0.16",
     "@segment/analytics-node": "^2.0.0",
     "@sentry/node": "^7.61.0",
     "@sentry/profiling-node": "^7.100.1",
