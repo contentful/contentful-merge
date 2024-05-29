@@ -71,8 +71,12 @@ export function renderErrorOutputForCreate(error: Error) {
 
   if (error instanceof AxiosError && error.code === 'ERR_BAD_REQUEST') {
     // TODO Add different error messages for different axios errors.
-    errorMessage +=
-      'An authorisation issue occurred. Please make sure the API key you provided has access to both environments.'
+    if (error.response?.status === 414) {
+      errorMessage += 'A request was too big. Try to limit the request size with --request-batch-size.'
+    } else {
+      errorMessage +=
+        'An authorisation issue occurred. Please make sure the API key you provided has access to both environments.'
+    }
   } else if (error instanceof Error) {
     errorMessage += error.message
   } else {
