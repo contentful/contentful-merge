@@ -5,14 +5,19 @@ import { createHttpClient, getUserAgentHeader } from 'contentful-sdk-core'
 import { pickBy } from 'lodash'
 import { ClientLogHandler } from '../logger/types'
 import { stripSys } from '../utils/strip-sys'
+import { resolve } from 'path'
+import { homedir } from 'os'
+import findUp from 'find-up'
 
 import ContentfulSdkCorePKGJson from 'contentful-sdk-core/package.json'
+import { readFileSync } from 'fs'
 
 type CreateClientParams = {
   space: string
   cdaToken?: string
   cmaToken?: string
   logHandler: ClientLogHandler
+  host?: string
 }
 
 type PageAbleParam = {
@@ -43,6 +48,51 @@ const FEATURE = 'merge-library'
 const APPLICATION = `contentful-merge/${VERSION}`
 const INTEGRATION = 'cli'
 const USER_AGENT = getUserAgentHeader(SDK, APPLICATION, INTEGRATION, FEATURE)
+let configPath
+
+function getConfigPath() {
+  const pathOverride = process.env.CONTENTFUL_CONFIG_FILE
+  if (pathOverride) {
+    return pathOverride
+  }
+  const contentfulrc = '.contentfulrc.json'
+  const defaultPath = resolve(homedir(), contentfulrc)
+  const nestedConfigPath = findUp.sync(contentfulrc)
+  configPath = nestedConfigPath || defaultPath
+  return configPath
+}
+
+function loadRuntimeConfig() {
+  const configPath = getConfigPath()
+  let configFileContent
+
+  try {
+    const content = readFileSync(configPath)
+    configFileContent = JSON.parse(content.toString())
+  } catch (e: any) {
+    if (e.code !== 'ENOENT') {
+      throw e
+    }
+
+    configFileContent = {}
+  }
+
+  return configFileContent
+}
+
+const getHosts = (host: string) => {
+  if (host.indexOf('api.eu.contentful.com') > -1) {
+    return {
+      cmaHost: 'api.eu.contentful.com',
+      cdnHost: 'cdn.eu.contentful.com',
+    }
+  }
+
+  return {
+    cmaHost: 'api.contentful.com',
+    cdnHost: 'cdn.contentful.com',
+  }
+}
 
 export const createClient = ({
   space,
@@ -50,7 +100,12 @@ export const createClient = ({
   cmaToken = 'CMA_TOKEN_NOT_SET',
   logHandler,
   sequenceKey,
+  host,
 }: CreateClientParams & { sequenceKey: string }) => {
+  const config = loadRuntimeConfig()
+
+  const { cmaHost, cdnHost } = getHosts(host || config.host || 'api.contentful.com')
+
   const cdaClient = createHttpClient(axios, {
     accessToken: cdaToken,
     space,
@@ -61,7 +116,7 @@ export const createClient = ({
       'CF-Sequence': sequenceKey,
       'X-Contentful-User-Agent': USER_AGENT,
     },
-    baseURL: `https://cdn.contentful.com/spaces/${space}/environments/`,
+    baseURL: `https://${cdnHost}/spaces/${space}/environments/`,
     logHandler: (level, data) => logHandler(level, `CDA ${data}`),
   })
 
@@ -75,7 +130,7 @@ export const createClient = ({
       'CF-Sequence': sequenceKey,
       'X-Contentful-User-Agent': USER_AGENT,
     },
-    baseURL: `https://api.contentful.com/spaces/${space}/environments/`,
+    baseURL: `https://${cmaHost}/spaces/${space}/environments/`,
     logHandler: (level, data) => logHandler(level, `CMA ${data}`),
   })
 

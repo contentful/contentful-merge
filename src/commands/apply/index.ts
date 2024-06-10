@@ -60,6 +60,7 @@ export default class Apply extends Command {
       required: false,
       default: false,
     }),
+    host: Flags.string({ default: 'api.contentful.com', description: 'Contentful API host', required: false }),
   }
 
   private async writeFileLog() {
@@ -108,7 +109,7 @@ export default class Apply extends Command {
 
     const logHandler = createTransformHandler(this.logger)
 
-    const client = createClient({
+    const client = await createClient({
       cmaToken: flags['cma-token'],
       space: flags.space,
       logHandler,

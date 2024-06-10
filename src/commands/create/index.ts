@@ -57,6 +57,7 @@ export default class Create extends Command {
     }),
     'request-batch-size': Flags.integer({ description: 'Limit for every single request', default: 1000 }),
     'output-file': Flags.string({ default: undefined, description: 'File path to changeset file', required: false }),
+    host: Flags.string({ default: 'api.contentful.com', description: 'Contentful API host', required: false }),
   }
 
   private async writeFileLog() {
