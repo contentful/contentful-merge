@@ -74,8 +74,8 @@ export function renderErrorOutputForCreate(error: Error) {
       errorMessage += 'A request was too big. Try to limit the request size with --request-batch-size.'
     } else {
       errorMessage +=
-      error.response?.data.message ??
-      'An authorisation issue occurred. Please make sure the API key you provided has access to both environments.'
+        error.response?.data.message ??
+        'An authorisation issue occurred. Please make sure the API key you provided has access to both environments.'
     }
   } else if (error instanceof Error) {
     errorMessage += error.message
