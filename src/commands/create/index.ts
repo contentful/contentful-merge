@@ -93,6 +93,7 @@ export default class Create extends Command {
       space: flags.space,
       logHandler,
       sequenceKey,
+      host: flags.host,
     })
 
     const context: CreateChangesetContext = {

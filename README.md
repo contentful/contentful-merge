@@ -107,6 +107,7 @@ USAGE
 
 FLAGS
   --cda-token=<value>           (required) CDA token, defaults to env: $CDA_TOKEN
+  --host=<value>                [default: api.contentful.com] Contentful API host
   --output-file=<value>         File path to changeset file
   --request-batch-size=<value>  [default: 1000] Limit for every single request
   --source=<value>              (required) Source environment id

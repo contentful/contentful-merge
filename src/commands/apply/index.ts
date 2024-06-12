@@ -114,6 +114,7 @@ export default class Apply extends Command {
       space: flags.space,
       logHandler,
       sequenceKey,
+      host: flags.host,
     })
 
     const responseCollector = new ResponseStatusCollector()
