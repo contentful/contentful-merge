@@ -109,7 +109,7 @@ export default class Apply extends Command {
 
     const logHandler = createTransformHandler(this.logger)
 
-    const client = await createClient({
+    const client = createClient({
       cmaToken: flags['cma-token'],
       space: flags.space,
       logHandler,
