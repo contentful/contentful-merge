@@ -43,5 +43,6 @@ export const createCreateChangesetContext = (context?: Partial<CreateChangesetCo
     removed: 100,
     changed: 100,
   },
+  allowedOperations: ['add', 'delete', 'update'],
   ...context,
 })
