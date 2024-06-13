@@ -13,7 +13,7 @@ import {
 } from '../../analytics'
 import { createClient } from '../../engine/client'
 import { createChangesetTask } from '../../engine/create-changeset'
-import { CreateChangesetContext } from '../../engine/create-changeset/types'
+import { CreateChangesetContext, Operations } from '../../engine/create-changeset/types'
 import { createTransformHandler } from '../../engine/logger/create-transform-handler'
 import { MemoryLogger } from '../../engine/logger/memory-logger'
 import { writeLog } from '../../engine/logger/write-log'
@@ -42,7 +42,7 @@ export default class Create extends Command {
   }
 
   static examples = [
-    'contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --output-file <output file path>',
+    'contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --output-file <output file path> --query-entries "content_type: <content type id>" --allowed-operations=add --allowed-operations=delete',
   ]
 
   static flags = {
@@ -58,6 +58,18 @@ export default class Create extends Command {
     'request-batch-size': Flags.integer({ description: 'Limit for every single request', default: 1000 }),
     'output-file': Flags.string({ default: undefined, description: 'File path to changeset file', required: false }),
     host: Flags.string({ default: 'api.contentful.com', description: 'Contentful API host', required: false }),
+    'query-entries': Flags.string({
+      default: undefined,
+      description: 'Query parameters for entries based on CDA',
+      required: false,
+      multiple: true,
+    }),
+    'allowed-operations': Flags.string({
+      default: ['add', 'delete', 'update'],
+      description: 'Allowed operations',
+      required: false,
+      multiple: true,
+    }),
   }
 
   private async writeFileLog() {
@@ -99,7 +111,9 @@ export default class Create extends Command {
     const context: CreateChangesetContext = {
       logger: this.logger,
       client,
-      accessToken: flags.token,
+      queryEntries: flags['query-entries'],
+      allowedOperations: flags['allowed-operations'] as Operations[],
+      accessToken: flags['cda-token'],
       spaceId: flags.space,
       sourceEnvironmentId: flags.source,
       targetEnvironmentId: flags.target,
