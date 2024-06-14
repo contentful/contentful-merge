@@ -134,6 +134,7 @@ USAGE
 
 FLAGS
   --cma-token=<value>    (required) CMA token, defaults to env: $CMA_TOKEN
+  --host=<value>                [default: api.contentful.com] Contentful API host
   --environment=<value>  (required) Target environment id
   --file=<value>         (required) File path to changeset file
   --space=<value>        (required) Space id

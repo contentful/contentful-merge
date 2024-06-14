@@ -48,7 +48,6 @@ const FEATURE = 'merge-library'
 const APPLICATION = `contentful-merge/${VERSION}`
 const INTEGRATION = 'cli'
 const USER_AGENT = getUserAgentHeader(SDK, APPLICATION, INTEGRATION, FEATURE)
-let configPath
 
 function getConfigPath() {
   const pathOverride = process.env.CONTENTFUL_CONFIG_FILE
@@ -58,7 +57,7 @@ function getConfigPath() {
   const contentfulrc = '.contentfulrc.json'
   const defaultPath = resolve(homedir(), contentfulrc)
   const nestedConfigPath = findUp.sync(contentfulrc)
-  configPath = nestedConfigPath || defaultPath
+  const configPath = nestedConfigPath || defaultPath
   return configPath
 }
 
