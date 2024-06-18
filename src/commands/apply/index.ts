@@ -60,6 +60,7 @@ export default class Apply extends Command {
       required: false,
       default: false,
     }),
+    host: Flags.string({ default: 'api.contentful.com', description: 'Contentful API host', required: false }),
   }
 
   private async writeFileLog() {
@@ -113,6 +114,7 @@ export default class Apply extends Command {
       space: flags.space,
       logHandler,
       sequenceKey,
+      host: flags.host,
     })
 
     const responseCollector = new ResponseStatusCollector()

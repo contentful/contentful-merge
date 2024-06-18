@@ -108,6 +108,7 @@ USAGE
 
 FLAGS
   --cda-token=<value>           (required) CDA token, defaults to env: $CDA_TOKEN
+  --host=<value>                [default: api.contentful.com] Contentful API host
   --query-entries=<value>       Query parameters for entries based on CDA. You can pass multiple query-entries flags.
   --allowed-operations=<value>  [default: add,delete,update] Allowed operations for changeset. You can pass multiple allowed-operations flags.
   --output-file=<value>         File path to changeset file
@@ -133,6 +134,7 @@ USAGE
 
 FLAGS
   --cma-token=<value>    (required) CMA token, defaults to env: $CMA_TOKEN
+  --host=<value>                [default: api.contentful.com] Contentful API host
   --environment=<value>  (required) Target environment id
   --file=<value>         (required) File path to changeset file
   --space=<value>        (required) Space id
