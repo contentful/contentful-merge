@@ -130,7 +130,7 @@ EXAMPLES
 Apply Changeset
 
 USAGE
-  $ contentful-merge apply --space <value> --environment <value> --cma-token <value> [--file <value>] [--yes]
+  $ contentful-merge apply --space <value> --environment <value> --cma-token <value> --file <value> [--yes]
 
 FLAGS
   --cma-token=<value>    (required) CMA token, defaults to env: $CMA_TOKEN
