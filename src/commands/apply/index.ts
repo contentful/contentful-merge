@@ -22,6 +22,7 @@ import {
   trackApplyCommandStarted,
 } from '../../analytics'
 import { config } from '../../config'
+import cleanStack from 'clean-stack'
 
 initSentry()
 
@@ -59,6 +60,7 @@ export default class Apply extends Command {
       required: false,
       default: false,
     }),
+    host: Flags.string({ default: 'api.contentful.com', description: 'Contentful API host', required: false }),
   }
 
   private async writeFileLog() {
@@ -112,6 +114,7 @@ export default class Apply extends Command {
       space: flags.space,
       logHandler,
       sequenceKey,
+      host: flags.host,
     })
 
     const responseCollector = new ResponseStatusCollector()
@@ -178,6 +181,10 @@ export default class Apply extends Command {
     })
 
     const output = renderErrorOutputForApply(error)
+
+    if (error.stack) {
+      error.stack = cleanStack(error.stack, { pretty: true })
+    }
 
     Sentry.captureException(error, {
       level: detectErrorLevel(error),

@@ -2,7 +2,7 @@ import { expect } from '@oclif/test'
 import { Config } from '@oclif/core'
 import CreateCommand from '../../../../src/commands/create'
 import { fancy } from 'fancy-test'
-import { AxiosError } from 'axios'
+import { AxiosError, AxiosRequestHeaders } from 'axios'
 import {
   ContentModelDivergedError,
   LimitsExceededContext,
@@ -42,7 +42,15 @@ describe('Create Command', () => {
     .stdout()
     .do(() => {
       const mockError = new AxiosError('Not found.')
-      mockError.response = { data: [], status: 404, statusText: 'mock status text', headers: {}, config: {} }
+      mockError.response = {
+        data: [],
+        status: 404,
+        statusText: 'mock status text',
+        headers: {},
+        config: {
+          headers: {} as AxiosRequestHeaders,
+        },
+      }
       mockError.code = 'ERR_BAD_REQUEST'
       cmd.catch(mockError)
     })
@@ -51,6 +59,27 @@ describe('Create Command', () => {
       expect(ctx.stdout).to.contain(
         'An authorisation issue occurred. Please make sure the API key you provided has access to both environments.',
       )
+    })
+
+  fancy
+    .stdout()
+    .do(() => {
+      const mockError = new AxiosError('URI too long.')
+      mockError.response = {
+        data: [],
+        status: 414,
+        statusText: 'mock status text',
+        headers: {},
+        config: {
+          headers: {} as AxiosRequestHeaders,
+        },
+      }
+      mockError.code = 'ERR_BAD_REQUEST'
+      cmd.catch(mockError)
+    })
+    .it('should inform that a request hit the limit (414)', (ctx) => {
+      expect(ctx.stdout).to.contain('Changeset could not be created 💔')
+      expect(ctx.stdout).to.contain('A request was too big. Try to limit the request size with --request-batch-size.')
     })
 
   fancy
