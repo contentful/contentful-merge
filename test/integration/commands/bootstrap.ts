@@ -10,6 +10,7 @@ export type TestContext = {
   spaceId: string
   teardown: () => Promise<void>
   changesetFilePath: string
+  queryEntries?: string
 }
 
 export type ApplyTestContext = {

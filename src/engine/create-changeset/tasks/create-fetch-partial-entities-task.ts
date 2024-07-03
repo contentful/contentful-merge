@@ -17,7 +17,12 @@ type ExecuteParams = {
 function clearQueryEntries(queryEntries?: string[]) {
   if (!queryEntries) return {}
   return queryEntries.reduce((acc, entry) => {
-    const splitInput = entry.split(':')
+    const splitInput = entry.split('=')
+
+    if (splitInput.length !== 2) {
+      return acc
+    }
+
     const key = splitInput[0].trim()
     const value = splitInput[1].trim()
     return { ...acc, [key]: value }

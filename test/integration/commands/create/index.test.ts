@@ -81,4 +81,28 @@ describe('create command', () => {
     .it('fails and informs on 404', (ctx) => {
       expect(ctx.stdout).to.contain('Request failed with status code 404')
     })
+
+  fancy
+    .stdout()
+    .runCreateCommand(() => ({
+      ...testContext,
+      queryEntries: 'content_type=testType',
+    }))
+    .it('should find an entry with query entries parameter set to a valid content type', (ctx) => {
+      expect(ctx.stdout).to.contain('Changeset successfully created 🎉')
+      expect(ctx.stdout).to.contain('1 added entry')
+      expect(ctx.stdout).to.contain('0 updated entries')
+      expect(ctx.stdout).to.contain('0 deleted entries')
+      expect(fs.existsSync(changesetPath)).to.be.true
+    })
+
+  fancy
+    .stdout()
+    .runCreateCommand(() => ({
+      ...testContext,
+      queryEntries: 'content_type=INVALID',
+    }))
+    .it('should not find any entries with query entries parameter set to invalid content type', (ctx) => {
+      expect(ctx.stdout).to.contain('Request failed with status code 400')
+    })
 })
