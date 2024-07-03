@@ -42,7 +42,7 @@ export default class Create extends Command {
   }
 
   static examples = [
-    'contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --output-file <output file path> --query-entries "content_type: <content type id>" --allowed-operations=add --allowed-operations=delete',
+    'contentful-merge create --space "<space id>" --source "<source environment id>" --target "<target environment id>" --cda-token <cda token> --output-file <output file path> --query-entries "content_type=<content type id>" --allowed-operations=add --allowed-operations=delete',
   ]
 
   static flags = {

@@ -81,6 +81,8 @@ export default fancy
             cdaToken || testContext.cdaToken,
             '--output-file',
             testContext.changesetFilePath,
+            '--query-entries',
+            testContext.queryEntries || '',
           ],
           {} as unknown as Config, // Runtime config, but not required for tests.
         )
