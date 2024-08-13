@@ -1,5 +1,5 @@
 import { AddedChangesetItem } from '../../../../src/engine/types'
-import sortEntries from '../../../../src/engine/utils/sort-entries-by-reference'
+import sortEntriesByReference from '../../../../src/engine/utils/sort-entries-by-reference'
 import { expect } from 'chai'
 import { createChangesetItemWithData } from '../../../../src/test/helpers/create-changeset-item-with-data'
 
@@ -43,33 +43,36 @@ describe('sortEntriesByReference', () => {
 
   it('should order based on references if the linked entry is present in the changeset', () => {
     // one link
-    expect(sortEntries([itemWithOneLink, referencedItem, referencedItem1])).to.deep.equal([
+    expect(sortEntriesByReference([itemWithOneLink, referencedItem, referencedItem1])).to.deep.equal([
       referencedItem,
       referencedItem1,
       itemWithOneLink,
     ])
     // multi link
-    expect(sortEntries([itemWithArrayLinks, referencedItem, referencedItem1])).to.deep.equal([
+    expect(sortEntriesByReference([itemWithArrayLinks, referencedItem, referencedItem1])).to.deep.equal([
       referencedItem,
       referencedItem1,
       itemWithArrayLinks,
     ])
     // both
-    expect(sortEntries([itemWithArrayLinks, itemWithOneLink, referencedItem, referencedItem1])).to.deep.equal([
-      referencedItem,
-      referencedItem1,
-      itemWithOneLink,
-      itemWithArrayLinks,
-    ])
+    expect(
+      sortEntriesByReference([itemWithArrayLinks, itemWithOneLink, referencedItem, referencedItem1]),
+    ).to.deep.equal([referencedItem, referencedItem1, itemWithOneLink, itemWithArrayLinks])
   })
 
   it('should not reorder if the linked entry is not present in the changeset', () => {
     // one Link
-    expect(sortEntries([itemWithOneLink, nonReferencedItem])).to.deep.equal([itemWithOneLink, nonReferencedItem])
+    expect(sortEntriesByReference([itemWithOneLink, nonReferencedItem])).to.deep.equal([
+      itemWithOneLink,
+      nonReferencedItem,
+    ])
     // Muli links
-    expect(sortEntries([itemWithArrayLinks, nonReferencedItem])).to.deep.equal([itemWithArrayLinks, nonReferencedItem])
+    expect(sortEntriesByReference([itemWithArrayLinks, nonReferencedItem])).to.deep.equal([
+      itemWithArrayLinks,
+      nonReferencedItem,
+    ])
     //both
-    expect(sortEntries([itemWithArrayLinks, itemWithOneLink, nonReferencedItem])).to.deep.equal([
+    expect(sortEntriesByReference([itemWithArrayLinks, itemWithOneLink, nonReferencedItem])).to.deep.equal([
       itemWithArrayLinks,
       itemWithOneLink,
       nonReferencedItem,
@@ -77,7 +80,7 @@ describe('sortEntriesByReference', () => {
   })
 
   it('should not reorder there are no links in the changeset', () => {
-    expect(sortEntries([nonReferencedItem, referencedItem, referencedItem1])).to.deep.equal([
+    expect(sortEntriesByReference([nonReferencedItem, referencedItem, referencedItem1])).to.deep.equal([
       nonReferencedItem,
       referencedItem,
       referencedItem1,
@@ -86,18 +89,21 @@ describe('sortEntriesByReference', () => {
 
   it('should reorder only entries with links present in the changeset', () => {
     // with links non present in the changeset
-    expect(sortEntries([itemWithNonExistentLinks, referencedItem, referencedItem1, nonReferencedItem])).to.deep.equal([
-      itemWithNonExistentLinks,
-      referencedItem,
-      referencedItem1,
-      nonReferencedItem,
-    ])
+    expect(
+      sortEntriesByReference([itemWithNonExistentLinks, referencedItem, referencedItem1, nonReferencedItem]),
+    ).to.deep.equal([itemWithNonExistentLinks, referencedItem, referencedItem1, nonReferencedItem])
     // With Both links present and not present
     expect(
-      sortEntries([itemWithArrayLinks, referencedItem, referencedItem1, nonReferencedItem, itemWithNonExistentLinks]),
+      sortEntriesByReference([
+        itemWithArrayLinks,
+        referencedItem,
+        referencedItem1,
+        nonReferencedItem,
+        itemWithNonExistentLinks,
+      ]),
     ).to.deep.equal([referencedItem, referencedItem1, nonReferencedItem, itemWithNonExistentLinks, itemWithArrayLinks])
     expect(
-      sortEntries([
+      sortEntriesByReference([
         itemWithArrayLinks,
         itemWithOneLink,
         itemWithNonExistentLinks,

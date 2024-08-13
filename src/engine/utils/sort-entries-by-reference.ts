@@ -6,12 +6,14 @@ import { EntrySkeletonType } from 'contentful/dist/types/types/query'
 type LinksPerEntry = { index: number; linkIndexes: number[] }
 
 /**
+ * This function was inspired by the sortEntries function in contentful-import
+ * https://github.com/contentful/contentful-import/blob/028ba2cf1a0df9415da5f0608adb8a24e0428a98/lib/utils/sort-entries.ts
  * Given a list of entries, this function reorders them so that entries which
  * are linked from other entries always come first in the order. This ensures
  * that when we publish the newly added entries, we are not publishing entries
  * which contain links to other entries that haven't been published yet.
  */
-export default function sortEntries(entries: AddedChangesetItem[]): AddedChangesetItem[] {
+export default function sortEntriesByReference(entries: AddedChangesetItem[]): AddedChangesetItem[] {
   const linkedEntries = getLinkedEntries(entries)
 
   const mergedLinkedEntries = mergeSort(linkedEntries, (a: LinksPerEntry) => {
