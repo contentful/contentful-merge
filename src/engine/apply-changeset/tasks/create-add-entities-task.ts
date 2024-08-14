@@ -6,6 +6,7 @@ import { ApplyChangesetContext } from '../types'
 import { pluralizeEntry } from '../../utils'
 import { isString } from 'lodash'
 import { publishEntity } from '../actions/publish-entity'
+import sortEntriesByReference from '../../utils/sort-entries-by-reference'
 
 export const createAddEntitiesTask = (): ListrTask => {
   return {
@@ -13,7 +14,9 @@ export const createAddEntitiesTask = (): ListrTask => {
     task: async (context: ApplyChangesetContext, task) => {
       const { client, changeset, environmentId, logger, responseCollector } = context
       logger.info('Start createAddEntitiesTask')
-      const entries = changeset.items.filter((item) => item.changeType === 'add') as AddedChangesetItem[]
+      const entries = sortEntriesByReference(
+        changeset.items.filter((item) => item.changeType === 'add') as AddedChangesetItem[],
+      )
       const entityCount = entries.length
 
       task.title = `Adding ${entityCount} ${pluralizeEntry(entityCount)}`
