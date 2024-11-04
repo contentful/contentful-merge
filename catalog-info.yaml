@@ -7,8 +7,8 @@ metadata:
   annotations:
     circleci.com/project-slug: github/contentful/contentful-merge
     github.com/project-slug: contentful/contentful-merge
-    contentful.com/ci-alert-slack: prd-co-dante-bots
+    contentful.com/ci-alert-slack: prd-fusion-bots
 spec:
   type: cli
   lifecycle: experimental
-  owner: group:team-dante
+  owner: group:team-fusion
