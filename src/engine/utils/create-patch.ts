@@ -1,4 +1,4 @@
-import { ContentType, Entry } from 'contentful'
+import { ContentType } from 'contentful'
 import { generateJSONPatch, pathInfo } from 'generate-json-patch'
 import { EntryWithOptionalMetadata } from '../types'
 
@@ -15,9 +15,9 @@ export const createPatch = ({
   return generateJSONPatch(targetEntry, sourceEntry, {
     propertyFilter: function (name: string, context) {
       const { length } = pathInfo(context.path)
-      // ignore sys prop on root level
+      // only create patch for `fields` property
       if (length === 1) {
-        return !['sys', 'metadata'].includes(name)
+        return name === 'fields'
       }
       return true
     },
