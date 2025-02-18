@@ -23,6 +23,7 @@ import {
 } from '../../analytics'
 import { config } from '../../config'
 import cleanStack from 'clean-stack'
+import { trimInput } from '../../command-utils'
 
 initSentry()
 
@@ -46,21 +47,32 @@ export default class Apply extends Command {
   ]
 
   static flags = {
-    space: Flags.string({ default: undefined, description: 'Space id', required: true }),
-    environment: Flags.string({ default: undefined, description: 'Target environment id', required: true }),
+    space: Flags.string({ default: undefined, description: 'Space id', required: true, parse: trimInput }),
+    environment: Flags.string({
+      default: undefined,
+      description: 'Target environment id',
+      required: true,
+      parse: trimInput,
+    }),
     file: Flags.string({ description: 'File path to changeset file', required: true, default: undefined }),
     'cma-token': Flags.string({
       default: undefined,
       description: 'CMA token, defaults to env: $CMA_TOKEN',
       required: true,
       env: 'CMA_TOKEN',
+      parse: trimInput,
     }),
     yes: Flags.boolean({
       description: 'Skips any confirmation before applying the changeset',
       required: false,
       default: false,
     }),
-    host: Flags.string({ default: 'api.contentful.com', description: 'Contentful API host', required: false }),
+    host: Flags.string({
+      default: 'api.contentful.com',
+      description: 'Contentful API host',
+      required: false,
+      parse: trimInput,
+    }),
   }
 
   private async writeFileLog() {
@@ -90,7 +102,7 @@ export default class Apply extends Command {
 
       if (!['Y', 'y'].includes(answer)) {
         this.terminatedByUser = true
-        this.log(chalk.bold.yellow('⚠️  Merge aborted'))
+        this.log(chalk.bold.yellow('⚠️ Merge aborted'))
         return
       }
     }
