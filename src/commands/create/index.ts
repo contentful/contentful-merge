@@ -23,6 +23,7 @@ import { renderErrorOutputForCreate } from '../../engine/utils/render-error-outp
 import { detectErrorLevel, OutputFormatter, renderFilePaths } from '../../engine/utils'
 import { config } from '../../config'
 import cleanStack from 'clean-stack'
+import { trimInput } from '../../command-utils'
 
 initSentry()
 
@@ -46,18 +47,34 @@ export default class Create extends Command {
   ]
 
   static flags = {
-    space: Flags.string({ default: undefined, description: 'Space id', required: true }),
-    source: Flags.string({ default: undefined, description: 'Source environment id', required: true }),
-    target: Flags.string({ default: undefined, description: 'Target environment id', required: true }),
+    space: Flags.string({ default: undefined, description: 'Space id', required: true, parse: trimInput }),
+    source: Flags.string({
+      default: undefined,
+      description: 'Source environment id',
+      required: true,
+      parse: trimInput,
+    }),
+    target: Flags.string({
+      default: undefined,
+      description: 'Target environment id',
+      required: true,
+      parse: trimInput,
+    }),
     'cda-token': Flags.string({
       default: undefined,
       description: 'CDA token, defaults to env: $CDA_TOKEN',
       required: true,
       env: 'CDA_TOKEN',
+      parse: trimInput,
     }),
     'request-batch-size': Flags.integer({ description: 'Limit for every single request', default: 1000 }),
     'output-file': Flags.string({ default: undefined, description: 'File path to changeset file', required: false }),
-    host: Flags.string({ default: 'api.contentful.com', description: 'Contentful API host', required: false }),
+    host: Flags.string({
+      default: 'api.contentful.com',
+      description: 'Contentful API host',
+      required: false,
+      parse: trimInput,
+    }),
     'query-entries': Flags.string({
       default: undefined,
       description: 'Query parameters for entries based on CDA',

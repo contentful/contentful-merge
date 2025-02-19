@@ -13,6 +13,7 @@ import { ApplyChangesetContext } from '../../../../src/engine/apply-changeset/ty
 import { createApplyChangesetContext } from '../../fixtures/apply-changeset-context-fixture'
 import * as client from '../../../../src/engine/client'
 import { createMockClient } from '../../fixtures/create-mock-client'
+import * as analytics from '../../../../src/analytics'
 
 const cmd = new ApplyCommand(
   [],
@@ -125,7 +126,7 @@ describe('Apply Command', () => {
 
   fancy
     .stdout()
-    .stdin('Y\n', 10) // small delay to make sure the stdin is read
+    .stdin('Y\n', 10)
     .do(() =>
       new ApplyCommand(
         [
@@ -145,5 +146,31 @@ describe('Apply Command', () => {
       expect(output.stdout).to.contain('The changeset will be applied with the following constraints:')
       process.stdin.once('data', (data) => expect(data.toString()).to.equal('Y\n'))
       expect(output.stdout).not.to.include('[Skipping confirmation because --yes flag was provided]')
+    })
+
+  fancy
+    .stdout()
+    .stdin('Y\n', 10)
+    .stub(analytics, 'trackApplyCommandStarted', (stub) => stub.returns({})) // small delay to make sure the stdin is read
+    .do(() =>
+      new ApplyCommand(
+        [
+          '--space',
+          ' some-space-id',
+          '--environment',
+          'target-env-id ',
+          '--cma-token',
+          'some-cma-token',
+          '--file',
+          'some-file-path',
+        ],
+        {} as unknown as Config, // Runtime config, but not required for tests.
+      ).run(),
+    )
+    .it('should trim input params', () => {
+      expect((analytics.trackApplyCommandStarted as sinon.SinonStub).getCall(0).args[0]).to.contain({
+        space_key: 'some-space-id',
+        target_environment_key: 'target-env-id',
+      })
     })
 })
