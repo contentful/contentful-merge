@@ -24,7 +24,7 @@
     "@oclif/plugin-plugins": "^5.4.25",
     "@segment/analytics-node": "^2.0.0",
     "@sentry/node": "^7.61.0",
-    "@sentry/profiling-node": "^7.100.1",
+    "@sentry/profiling-node": "^9.5.0",
     "axios": "^1.6.2",
     "chalk": "^4.1.2",
     "contentful": "^10.6.10",
