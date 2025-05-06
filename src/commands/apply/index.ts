@@ -155,15 +155,15 @@ export default class Apply extends Command {
     })
 
     await applyChangesetTask(context).run()
-    transaction?.finish()
     const endTime = performance.now()
-    const duration = ((endTime - startTime) / 1000).toFixed(1)
 
-    Sentry.setTag('added', context.processedEntities.entries.added.length)
-    Sentry.setTag('removed', context.processedEntities.entries.deleted.length)
-    Sentry.setTag('changed', context.processedEntities.entries.updated.length)
-    Sentry.setTag('cmaRequest', client.requestCounts().cma)
-    Sentry.setTag('duration', `${duration}`)
+    Sentry.setMeasurement('added', context.processedEntities.entries.added.length, 'none')
+    Sentry.setMeasurement('removed', context.processedEntities.entries.deleted.length, 'none')
+    Sentry.setMeasurement('changed', context.processedEntities.entries.updated.length, 'none')
+    Sentry.setMeasurement('cmaRequest', client.requestCounts().cma, 'none')
+    Sentry.setMeasurement('duration', endTime - startTime, 'millisecond')
+
+    transaction?.finish()
 
     trackApplyCommandCompleted({
       space_key: flags.space,

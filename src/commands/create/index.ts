@@ -181,21 +181,20 @@ export default class Create extends Command {
 
     await createChangesetTaskInstance.run()
 
-    transaction?.finish()
-
     const endTime = performance.now()
-    const duration = ((endTime - startTime) / 1000).toFixed(1)
     const usedMemory = process.memoryUsage().heapUsed / 1024 / 1024
 
-    Sentry.setTag('added', context.affectedEntities.entries.added.length)
-    Sentry.setTag('removed', context.affectedEntities.entries.removed.length)
-    Sentry.setTag('maybeChanged', context.affectedEntities.entries.maybeChanged.length)
-    Sentry.setTag('changed', context.affectedEntities.entries.changed.length)
-    Sentry.setTag('cdaRequest', client.requestCounts().cda)
-    Sentry.setTag('cmaRequest', client.requestCounts().cma)
-    Sentry.setTag('memory', usedMemory.toFixed(2))
-    Sentry.setTag('duration', `${duration}`)
+    Sentry.setMeasurement('added', context.affectedEntities.entries.added.length, 'none')
+    Sentry.setMeasurement('removed', context.affectedEntities.entries.removed.length, 'none')
+    Sentry.setMeasurement('maybeChanged', context.affectedEntities.entries.maybeChanged.length, 'none')
+    Sentry.setMeasurement('changed', context.affectedEntities.entries.changed.length, 'none')
+    Sentry.setMeasurement('cdaRequest', client.requestCounts().cda, 'none')
+    Sentry.setMeasurement('cmaRequest', client.requestCounts().cma, 'none')
+    Sentry.setMeasurement('memory', usedMemory, 'kilobyte')
+    Sentry.setMeasurement('duration', endTime - startTime, 'millisecond')
     Sentry.setExtra('statistics', context.statistics)
+
+    transaction?.finish()
 
     trackCreateCommandCompleted({
       space_key: flags.space,
