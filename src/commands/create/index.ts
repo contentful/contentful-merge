@@ -190,7 +190,7 @@ export default class Create extends Command {
     Sentry.setMeasurement('changed', context.affectedEntities.entries.changed.length, 'none')
     Sentry.setMeasurement('cdaRequest', client.requestCounts().cda, 'none')
     Sentry.setMeasurement('cmaRequest', client.requestCounts().cma, 'none')
-    Sentry.setMeasurement('memory', usedMemory, 'kilobyte')
+    Sentry.setMeasurement('memory', usedMemory, 'megabyte')
     Sentry.setMeasurement('duration', endTime - startTime, 'millisecond')
     Sentry.setExtra('statistics', context.statistics)
 
