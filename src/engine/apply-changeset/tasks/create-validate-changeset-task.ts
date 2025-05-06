@@ -16,9 +16,9 @@ export const createValidateChangesetTask = (): ListrTask => {
         throw new LimitsExceededForApplyError(context)
       }
 
-      const areLocalesInSynch = await validateLocales(context)
+      const areLocalesInSync = await validateLocales(context)
 
-      if (!areLocalesInSynch) {
+      if (!areLocalesInSync) {
         throw new LocaleMissingForApplyError(context)
       }
 
