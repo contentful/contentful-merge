@@ -42,6 +42,9 @@ function getLinkedEntries(entries: AddedChangesetItem[]): LinksPerEntry[] {
         return getFieldEntriesIndex(field, entries)
       } else if (isEntryArrayLink(field)) {
         return field.map((item: FieldsType) => getFieldEntriesIndex(item, entries))
+      } else if (isRichTextField(field)) {
+        const links = extractLinksFromContent(field)
+        return links.map((item: FieldsType) => getFieldEntriesIndex(item, entries))
       }
     })
 
@@ -63,6 +66,32 @@ function isEntryLink(item: FieldsType): boolean {
 
 function isEntryArrayLink(item: FieldsType): boolean {
   return Array.isArray(item) && item.length > 0 && isEntryLink(item[0])
+}
+
+function isRichTextField(item: FieldsType): boolean {
+  return item.nodeType === 'document'
+}
+
+function extractLinksFromContent({
+  content,
+  data: {
+    sys: { id: sourceId },
+  },
+}: FieldsType) {
+  const links = content.reduce((acc: FieldsType[], field: FieldsType) => {
+    if (['embedded-entry-block', 'embedded-entry-inline', 'entry-hyperlink'].includes(field.nodeType)) {
+      const { id: targetId } = field.data.target.sys
+      if (targetId !== sourceId) {
+        acc.push(field.data.target)
+      }
+    } else if (field.content?.length) {
+      const linksFromContent = extractLinksFromContent(field)
+      acc.push(...linksFromContent)
+    }
+    return acc
+  }, [])
+
+  return links
 }
 
 /**
