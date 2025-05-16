@@ -1,4 +1,4 @@
-import { AddedChangesetItem } from '../types'
+import { AddedChangesetItem, ChangesetEntityLink } from '../types'
 import { FieldsType } from 'contentful'
 
 type LinksPerEntry = { index: number; linkIndexes: number[] }
@@ -43,7 +43,7 @@ function getLinkedEntries(entries: AddedChangesetItem[]): LinksPerEntry[] {
       } else if (isEntryArrayLink(field)) {
         return field.map((item: FieldsType) => getFieldEntriesIndex(item, entries))
       } else if (isRichTextField(field)) {
-        const links = extractLinksFromContent(field)
+        const links = extractLinksFromContent(field, entry.entity)
         return links.map((item: FieldsType) => getFieldEntriesIndex(item, entries))
       }
     })
@@ -72,12 +72,8 @@ function isRichTextField(item: FieldsType): boolean {
   return item.nodeType === 'document'
 }
 
-function extractLinksFromContent({
-  content,
-  data: {
-    sys: { id: sourceId },
-  },
-}: FieldsType) {
+function extractLinksFromContent({ content }: FieldsType, sourceEntity: ChangesetEntityLink['entity']) {
+  const { id: sourceId } = sourceEntity.sys
   const links = content.reduce((acc: FieldsType[], field: FieldsType) => {
     if (['embedded-entry-block', 'embedded-entry-inline', 'entry-hyperlink'].includes(field.nodeType)) {
       const { id: targetId } = field.data.target.sys
@@ -85,7 +81,7 @@ function extractLinksFromContent({
         acc.push(field.data.target)
       }
     } else if (field.content?.length) {
-      const linksFromContent = extractLinksFromContent(field)
+      const linksFromContent = extractLinksFromContent(field, sourceEntity)
       acc.push(...linksFromContent)
     }
     return acc
