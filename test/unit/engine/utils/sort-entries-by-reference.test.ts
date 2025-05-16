@@ -6,6 +6,7 @@ import { createChangesetItemWithData } from '../../../../src/test/helpers/create
 describe('sortEntriesByReference', () => {
   const referencedItem: AddedChangesetItem = createChangesetItemWithData('lesson', 'added-entry')
   const referencedItem1: AddedChangesetItem = createChangesetItemWithData('lesson', 'added-entry1')
+  const referencedItem2: AddedChangesetItem = createChangesetItemWithData('lesson', 'added-entry2')
   const itemWithOneLink: AddedChangesetItem = createChangesetItemWithData('lesson1', 'added-entry-with-one-link', {
     referenceField: {
       'en-US': {
@@ -34,6 +35,68 @@ describe('sortEntriesByReference', () => {
       referenceField: {
         'en-US': {
           sys: { type: 'Link', linkType: 'Entry', id: 'random-entry' },
+        },
+      },
+    },
+  )
+
+  const itemWithRichTextLinks: AddedChangesetItem = createChangesetItemWithData(
+    'lesson4',
+    'added-entry-with-rich-text-link',
+    {
+      richTextField: {
+        'en-US': {
+          nodeType: 'document',
+          data: {},
+          content: [
+            {
+              nodeType: 'embedded-entry-inline',
+              content: [],
+              data: {
+                target: {
+                  sys: {
+                    type: 'Link',
+                    linkType: 'Entry',
+                    id: 'added-entry',
+                  },
+                },
+              },
+            },
+            { nodeType: 'text', marks: [], value: 'some text', data: {} },
+            {
+              nodeType: 'paragraph',
+              content: [
+                { nodeType: 'text', marks: [], value: 'some text', data: {} },
+                {
+                  nodeType: 'embedded-entry-block',
+                  content: [],
+                  data: {
+                    target: {
+                      sys: {
+                        type: 'Link',
+                        linkType: 'Entry',
+                        id: 'added-entry1',
+                      },
+                    },
+                  },
+                },
+                {
+                  nodeType: 'entry-hyperlink',
+                  content: [],
+                  data: {
+                    target: {
+                      sys: {
+                        type: 'Link',
+                        linkType: 'Entry',
+                        id: 'added-entry2',
+                      },
+                    },
+                  },
+                },
+              ],
+              data: {},
+            },
+          ],
         },
       },
     },
@@ -79,7 +142,7 @@ describe('sortEntriesByReference', () => {
     ])
   })
 
-  it('should not reorder there are no links in the changeset', () => {
+  it('should not reorder if there are no links in the changeset', () => {
     expect(sortEntriesByReference([nonReferencedItem, referencedItem, referencedItem1])).to.deep.equal([
       nonReferencedItem,
       referencedItem,
@@ -119,5 +182,11 @@ describe('sortEntriesByReference', () => {
       itemWithOneLink,
       itemWithArrayLinks,
     ])
+  })
+
+  it('should reorder entries linked in rich text fields', () => {
+    expect(
+      sortEntriesByReference([itemWithRichTextLinks, referencedItem, referencedItem1, referencedItem2]),
+    ).to.deep.equal([referencedItem, referencedItem1, referencedItem2, itemWithRichTextLinks])
   })
 })
