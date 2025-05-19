@@ -6,7 +6,7 @@ import fancy from './../register-plugins'
 import { createChangeset } from '../../../../src/engine/utils/create-changeset'
 import { createAddTwoItemsChangeset } from '../fixtures/add-two-items-changeset'
 
-describe('create command', () => {
+describe('apply command', () => {
   const spaceId = process.env.CONTENTFUL_SPACE_ID!
   if (!spaceId) {
     throw new Error('Please provide a `CONTENTFUL_SPACE_ID`')
