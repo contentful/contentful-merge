@@ -1,6 +1,6 @@
 import { ListrTask } from 'listr2'
 import { chunk } from 'lodash'
-import { BaseContext, UpdatedChangesetItem, EntityType, EntryWithOptionalMetadata } from '../../types'
+import { UpdatedChangesetItem, EntityType, EntryWithOptionalMetadata } from '../../types'
 import { createLinkObject } from '../../utils/create-link-object'
 import type { CreateChangesetContext } from '../types'
 import { createPatch } from '../../utils/create-patch'
@@ -8,7 +8,7 @@ import { pluralizeEntry } from '../../utils/pluralize'
 import { ContentType, Entry } from 'contentful'
 
 type GetEntityPatchParams = {
-  context: BaseContext
+  context: CreateChangesetContext
   source: string
   target: string
   entityIds: string[]
@@ -29,8 +29,9 @@ async function getEntityPatches({
 }: GetEntityPatchParams): Promise<UpdatedChangesetItem[]> {
   const {
     client: { cda },
+    requestBatchSize,
   } = context
-  const query = { 'sys.id[in]': entityIds.join(','), locale: '*' }
+  const query = { 'sys.id[in]': entityIds.join(','), locale: '*', limit: requestBatchSize }
 
   const api = cda[entityType]
 
