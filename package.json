@@ -35,7 +35,7 @@
     "listr2": "^8.0.0",
     "lodash": "^4.17.21",
     "p-limit": "^3.1.0",
-    "semantic-release": "^22.0.6",
+    "semantic-release": "^24.2.8",
     "wrap-ansi": "7.0.0"
   },
   "devDependencies": {
