@@ -42,7 +42,7 @@
     "@commitlint/cli": "^19.7.1",
     "@commitlint/config-conventional": "^18.0.0",
     "@contentful/integration-test-utils": "^2.0.1",
-    "@oclif/test": "^3.0.3",
+    "@oclif/test": "^4.1.14",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^11.0.0",
     "@semantic-release/github": "^9.0.4",
