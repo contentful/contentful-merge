@@ -7,7 +7,7 @@ metadata:
   annotations:
     circleci.com/project-slug: github/contentful/contentful-merge
     github.com/project-slug: contentful/contentful-merge
-    contentful.com/ci-alert-slack: prd-fusion-bots
+    contentful.com/ci-alert-slack: prd-content-ops-bots
 spec:
   type: cli
   lifecycle: experimental
