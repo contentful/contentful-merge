@@ -52,7 +52,7 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "^22.10.6",
     "@types/wrap-ansi": "3.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
     "chai": "^4",
     "contentful-management": "^10.39.2",
     "eslint": "^8.46.0",
