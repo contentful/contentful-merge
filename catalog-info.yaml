@@ -11,4 +11,4 @@ metadata:
 spec:
   type: cli
   lifecycle: experimental
-  owner: group:team-fusion
+  owner: group:team-content-operations
