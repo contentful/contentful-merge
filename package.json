@@ -29,7 +29,7 @@
     "chalk": "^4.1.2",
     "contentful": "^11.9.0",
     "contentful-collection": "^0.0.4",
-    "contentful-sdk-core": "^8.1.2",
+    "contentful-sdk-core": "^9.2.1",
     "fast-json-patch": "^3.1.1",
     "generate-json-patch": "^1.1.0",
     "listr2": "^8.0.0",
