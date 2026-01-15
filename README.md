@@ -42,6 +42,7 @@
 
 [Contentful](https://www.contentful.com/) provides content infrastructure for digital teams to power websites, apps, and devices. It offers a central hub for structured content, powerful management and delivery APIs, and a customizable web app that enables developers and content creators to ship their products faster.
 
+
 **Contentful Merge**
 
 The <b>contentful-merge</b> CLI tool allows you to compare and merge entries across environments in a Contentful space. It can be used to create a changeset of all entry differences between two environments, and to apply this changeset to another environment, thereby effectively syncing the content of two environments.
