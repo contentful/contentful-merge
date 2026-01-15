@@ -28,8 +28,8 @@
   <a href="https://www.npmjs.com/package/contentful-merge">
     <img src="https://img.shields.io/npm/v/contentful-merge.svg" alt="npm">
   </a>
-  <a href="https://circleci.com/gh/contentful/contentful-merge/?branch=main">
-    <img src="https://circleci.com/gh/contentful/contentful-merge.svg?style=shield" alt="CircleCI">
+  <a href="https://github.com/contentful/contentful-merge/actions">
+    <img src="https://github.com/contentful/contentful-merge/workflows/CI/badge.svg" alt="GitHub Actions">
   </a>
 
 </p>
@@ -41,6 +41,7 @@
 **Contentful**
 
 [Contentful](https://www.contentful.com/) provides content infrastructure for digital teams to power websites, apps, and devices. It offers a central hub for structured content, powerful management and delivery APIs, and a customizable web app that enables developers and content creators to ship their products faster.
+
 
 **Contentful Merge**
 
