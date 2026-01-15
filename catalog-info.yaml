@@ -5,10 +5,9 @@ metadata:
   description: |
     Contentful command line interface to merge entries across environments.
   annotations:
-    circleci.com/project-slug: github/contentful/contentful-merge
     github.com/project-slug: contentful/contentful-merge
     contentful.com/ci-alert-slack: prd-content-ops-bots
 spec:
   type: cli
   lifecycle: experimental
-  owner: group:team-fusion
+  owner: group:team-content-operations
