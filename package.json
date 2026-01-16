@@ -55,7 +55,7 @@
     "@typescript-eslint/eslint-plugin": "^8.50.1",
     "chai": "^4",
     "contentful-management": "^10.39.2",
-    "eslint": "^9.39.2",
+    "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.0.0",
     "fancy-test": "^3.0.1",
     "husky": "^9.0.6",
