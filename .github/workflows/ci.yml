@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, test-ci-pipelines ]
   pull_request:
     branches: [ main ]
 
@@ -82,15 +82,21 @@ jobs:
       
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run integration tests
-        run: npm run test-integration-with-reports
+        run: |
+          export CONTENTFUL_SPACE_ID=$(echo "$CONTENTFUL_SPACE_ID" | tr -d '[:space:]')
+          export CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN=$(echo "$CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN" | tr -d '[:space:]')
+          npm run test-integration-with-reports
         env:
           CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
           CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
       
       - name: Run e2e tests
-        run: npm run test-e2e-with-reports
+        run: |
+          export CONTENTFUL_SPACE_ID=$(echo "$CONTENTFUL_SPACE_ID" | tr -d '[:space:]')
+          export CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN=$(echo "$CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN" | tr -d '[:space:]')
+          npm run test-e2e-with-reports
         env:
           CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
           CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
