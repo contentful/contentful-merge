@@ -1,7 +1,7 @@
 import { expect } from '@oclif/test'
 import { ApiKey, Space, createClient } from 'contentful-management'
 import fs from 'fs'
-import { ApplyTestContext, createCdaToken, createEnvironments } from './../bootstrap'
+import { ApplyTestContext, CDA_ACCESS_TOKEN_MASTER_FOR_TEST, createCdaToken, createEnvironments } from './../bootstrap'
 import fancy from './../register-plugins'
 import { createChangeset } from '../../../../src/engine/utils/create-changeset'
 import { createAddTwoItemsChangeset } from '../fixtures/add-two-items-changeset'
@@ -69,13 +69,17 @@ describe('apply command', () => {
     fs.writeFileSync(changesetPath, JSON.stringify(changeset, null, 2))
     fs.writeFileSync(changesetPathAddItems, JSON.stringify(addTwoItemsChangeset, null, 2))
 
-    cdaTokenWithOnlyMasterAccess = await createCdaToken(testSpace, ['master'])
+    try {
+      cdaTokenWithOnlyMasterAccess = await testSpace.getApiKey(CDA_ACCESS_TOKEN_MASTER_FOR_TEST)
+    } catch (e) {
+      cdaTokenWithOnlyMasterAccess = await createCdaToken(testSpace, ['master'])
+    }
   })
 
   after(async () => {
     await Promise.all([
       testContext.teardown(),
-      cdaTokenWithOnlyMasterAccess.delete(),
+      cdaTokenWithOnlyMasterAccess.sys.id !== CDA_ACCESS_TOKEN_MASTER_FOR_TEST && cdaTokenWithOnlyMasterAccess.delete(),
       fs.promises.rm(changesetPath, { force: true }),
       fs.promises.rm(changesetPathAddItems, { force: true }),
     ])
