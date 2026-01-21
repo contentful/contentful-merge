@@ -92,7 +92,6 @@
     "prettier": "prettier --config ./.prettierrc --check \"{**/*.js,**/*.ts,**/*.json}\"",
     "prettier-fix": "prettier --config ./.prettierrc --write \"{**/*.js,**/*.ts,**/*.json}\"",
     "prepack": "npm run build && oclif manifest && oclif readme",
-    "prepare": "husky install",
     "test": "npm run test-unit && npm run test-integration && npm run test-e2e",
     "test-integration": "mocha --exit test/integration/**/*.test.ts",
     "test-e2e": "mocha --exit test/e2e/**/*.test.ts",
@@ -117,7 +116,11 @@
   "release": {
     "branches": [
       "main",
-      "test-release",
+      {
+        "name": "test-release",
+        "channel": "beta",
+        "prerelease": true
+      },
       {
         "name": "next",
         "channel": "next",
