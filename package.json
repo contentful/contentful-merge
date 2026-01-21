@@ -121,6 +121,7 @@
   "release": {
     "branches": [
       "main",
+      "test-release",
       {
         "name": "next",
         "channel": "next",
