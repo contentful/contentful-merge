@@ -5,13 +5,16 @@
   "author": "Contentful <opensource@contentful.com>",
   "private": false,
   "bin": {
-    "contentful-merge": "./bin/run",
-    "contentful-merge-dev": "./bin/dev"
+    "contentful-merge": "bin/run",
+    "contentful-merge-dev": "bin/dev"
   },
   "homepage": "https://github.com/contentful/contentful-merge",
   "license": "MIT",
   "main": "dist/index.js",
-  "repository": "contentful/contentful-merge",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/contentful/contentful-merge.git"
+  },
   "files": [
     "/bin",
     "/dist",
