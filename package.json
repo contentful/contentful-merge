@@ -104,7 +104,7 @@
     "test-unit-watch": "npm run test-unit -- -w --watch-files '**/*.ts'",
     "test-unit-with-reports": "npm run test-unit -- --reporter mocha-junit-reporter --reporter-options mochaFile=reports/unit-results.xml",
     "version": "oclif readme && git add README.md",
-    "semantic-release": "shx cp ./dist/config.production.js ./dist/config.js && semantic-release"
+    "semantic-release": "semantic-release"
   },
   "engines": {
     "node": ">=12.0.0"
