@@ -1,14 +1,15 @@
-name: CI
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+name: Run Checks
 
 permissions:
   contents: read
-  actions: read
+
+on:
+  workflow_call:
+    secrets:
+      CONTENTFUL_SPACE_ID:
+        required: true
+      CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN:
+        required: true
 
 jobs:
   lint:
@@ -16,7 +17,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -40,7 +41,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -60,20 +61,12 @@ jobs:
           name: unit-test-results
           path: reports/unit-results.xml
 
-      - name: Cache build artifacts
-        uses: actions/cache/save@v4
-        if: github.ref == 'refs/heads/main'
-        with:
-          path: |
-            dist
-          key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
-
   integration:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -101,11 +94,3 @@ jobs:
         with:
           name: integration-test-results
           path: reports/integration-results.xml
-      
-      - name: Cache build artifacts
-        uses: actions/cache/save@v4
-        if: github.ref == 'refs/heads/main'
-        with:
-          path: |
-            dist
-          key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}

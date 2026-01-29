@@ -1,0 +1,29 @@
+name: CI
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: ['**']
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yaml
+
+  check:
+    needs: build
+    uses: ./.github/workflows/check.yaml
+    secrets:
+      CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
+      CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
+
+  release:
+    if: github.event_name == 'push' && contains(fromJSON('["refs/heads/master", "refs/heads/release-with-main-workflow"]'), github.ref)
+    needs: [build, check]
+    permissions:
+      contents: write
+      id-token: write
+      actions: read
+    uses: ./.github/workflows/release.yaml
+    secrets:
+      VAULT_URL: ${{ secrets.VAULT_URL }}

@@ -122,6 +122,11 @@
     "branches": [
       "main",
       {
+        "name": "release-with-main-workflow",
+        "channel": "beta",
+        "prerelease": true
+      },
+      {
         "name": "next",
         "channel": "next",
         "prerelease": true
