@@ -1,17 +1,20 @@
 {
   "name": "contentful-merge",
-  "version": "0.0.0",
+  "version": "0.0.0-determined-by-semantic-release",
   "description": "Contentful CLI to diff and merge entries across environments",
   "author": "Contentful <opensource@contentful.com>",
   "private": false,
   "bin": {
-    "contentful-merge": "./bin/run",
-    "contentful-merge-dev": "./bin/dev"
+    "contentful-merge": "bin/run",
+    "contentful-merge-dev": "bin/dev"
   },
   "homepage": "https://github.com/contentful/contentful-merge",
   "license": "MIT",
   "main": "dist/index.js",
-  "repository": "contentful/contentful-merge",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/contentful/contentful-merge.git"
+  },
   "files": [
     "/bin",
     "/dist",
@@ -84,6 +87,7 @@
   "scripts": {
     "build": "shx rm -rf dist && tsc -b && shx cp ./dist/config.production.js ./dist/config.js",
     "check-types": "tsc",
+    "clean": "shx rm -rf dist oclif.manifest.json",
     "commitlint": "commitlint",
     "lint": "eslint src --ext '.ts,.js'",
     "lint-fix": "eslint src --ext '.ts,.js' --fix",
@@ -91,7 +95,7 @@
     "postpack": "shx rm -f oclif.manifest.json",
     "prettier": "prettier --config ./.prettierrc --check \"{**/*.js,**/*.ts,**/*.json}\"",
     "prettier-fix": "prettier --config ./.prettierrc --write \"{**/*.js,**/*.ts,**/*.json}\"",
-    "prepack": "npm run build && oclif manifest && oclif readme",
+    "prepack": "npm run clean && npm run build && oclif manifest && oclif readme",
     "prepare": "husky install",
     "test": "npm run test-unit && npm run test-integration && npm run test-e2e",
     "test-integration": "mocha --exit test/integration/**/*.test.ts",
