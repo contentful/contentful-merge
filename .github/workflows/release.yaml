@@ -50,7 +50,6 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
-          registry-url: 'https://registry.npmjs.org'
 
 
       - name: Install latest npm
@@ -72,7 +71,7 @@ jobs:
           echo "npm version: $(npm -v)"
           npm run semantic-release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.vault.outputs.GITHUB_TOKEN }}
 
       - name: Get latest release tag
         id: get-tag
