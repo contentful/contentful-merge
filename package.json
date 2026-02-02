@@ -87,7 +87,6 @@
   "scripts": {
     "build": "shx rm -rf dist && tsc -b && shx cp ./dist/config.production.js ./dist/config.js",
     "check-types": "tsc",
-    "clean": "shx rm -rf dist oclif.manifest.json",
     "commitlint": "commitlint",
     "lint": "eslint src --ext '.ts,.js'",
     "lint-fix": "eslint src --ext '.ts,.js' --fix",
@@ -95,7 +94,7 @@
     "postpack": "shx rm -f oclif.manifest.json",
     "prettier": "prettier --config ./.prettierrc --check \"{**/*.js,**/*.ts,**/*.json}\"",
     "prettier-fix": "prettier --config ./.prettierrc --write \"{**/*.js,**/*.ts,**/*.json}\"",
-    "prepack": "npm run clean && npm run build && oclif manifest && oclif readme",
+    "prepack": "npm run build && oclif manifest && oclif readme",
     "prepare": "husky install",
     "test": "npm run test-unit && npm run test-integration && npm run test-e2e",
     "test-integration": "mocha --exit test/integration/**/*.test.ts",
