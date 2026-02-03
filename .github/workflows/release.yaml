@@ -7,7 +7,7 @@ on:
         required: true
 
 jobs:
-  release:    
+  release:
     runs-on: ubuntu-latest
 
     permissions:
@@ -16,7 +16,7 @@ jobs:
       actions: read
 
     steps:
-      - name: 'Retrieve Secrets from Vault'
+      - name: "Retrieve Secrets from Vault"
         id: vault
         uses: hashicorp/vault-action@v3.4.0
         with:
@@ -38,7 +38,7 @@ jobs:
         run: |
           git config --global user.name 'contentful-automation[bot]'
           git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+contentful-automation[bot]@users.noreply.github.com'
-      
+
       - name: Checkout code
         uses: actions/checkout@v5
         with:
@@ -48,9 +48,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '22'
-          cache: 'npm'
-
+          node-version: "22"
+          cache: "npm"
 
       - name: Install latest npm
         run: npm install -g npm@latest
@@ -72,6 +71,7 @@ jobs:
           npm run semantic-release
         env:
           GITHUB_TOKEN: ${{ steps.vault.outputs.GITHUB_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
 
       - name: Get latest release tag
         id: get-tag
