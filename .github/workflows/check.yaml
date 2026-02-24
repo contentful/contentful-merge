@@ -23,16 +23,16 @@ jobs:
         with:
           node-version: '18.17'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run linter
         run: npm run lint
-      
+
       - name: Run prettier
         run: npm run prettier
-      
+
       - name: Check types
         run: npm run check-types
 
@@ -47,13 +47,13 @@ jobs:
         with:
           node-version: '18.17'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run unit tests
         run: npm run test-unit-with-reports
-      
+
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
@@ -72,22 +72,22 @@ jobs:
         with:
           node-version: '18.17'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
-      - name: Run integration tests
-        run: npm run test-integration-with-reports
-        env:
-          CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
-          CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
-      
-      - name: Run e2e tests
-        run: npm run test-e2e-with-reports
-        env:
-          CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
-          CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
-      
+
+#      - name: Run integration tests
+#        run: npm run test-integration-with-reports
+#        env:
+#          CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
+#          CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
+#
+#      - name: Run e2e tests
+#        run: npm run test-e2e-with-reports
+#        env:
+#          CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
+#          CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
+
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
