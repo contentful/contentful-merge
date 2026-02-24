@@ -61,6 +61,7 @@
     "lint-staged": "^15.0.2",
     "mocha": "^10.2.0",
     "mocha-junit-reporter": "^2.2.1",
+    "npm": "11.7.0",
     "oclif": "^4.17.30",
     "ora": "^8.0.1",
     "prettier": "^3.0.0",
