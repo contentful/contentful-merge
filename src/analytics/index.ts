@@ -2,15 +2,29 @@ import { EventProperties } from '@segment/analytics-core/src/events/interfaces'
 import { Analytics } from '@segment/analytics-node'
 import crypto from 'crypto'
 import * as Sentry from '@sentry/node'
-import { ProfilingIntegration } from '@sentry/profiling-node'
 import { config } from '../config'
 
+function getOptionalSentryProfilingIntegration(): any[] {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { ProfilingIntegration } = require('@sentry/profiling-node') as {
+      ProfilingIntegration: new () => any
+    }
+    return [new ProfilingIntegration()]
+  } catch {
+    // Profiling native bindings are optional and may be unavailable for some Node ABIs.
+    return []
+  }
+}
+
 export function initSentry() {
+  const profilingIntegrations = getOptionalSentryProfilingIntegration()
+
   Sentry.init({
     dsn: 'https://5bc27276ac684a56bab07632be10a455@o2239.ingest.sentry.io/4505312653410304',
     tracesSampleRate: 1.0,
-    profilesSampleRate: 1.0,
-    integrations: [new ProfilingIntegration()],
+    profilesSampleRate: profilingIntegrations.length > 0 ? 1.0 : 0,
+    integrations: profilingIntegrations,
     environment: config.environment,
   })
 }
