@@ -16,17 +16,6 @@ jobs:
       actions: read
 
     steps:
-      # - name: "Retrieve Secrets from Vault"
-      #   id: vault
-      #   uses: hashicorp/vault-action@v3.4.0
-      #   with:
-      #     url: ${{ secrets.VAULT_URL }}
-      #     role: ${{ github.event.repository.name }}-github-action
-      #     method: jwt
-      #     path: github-actions
-      #     exportEnv: false
-      #     secrets: |
-      #       github/token/${{ github.event.repository.name }}-semantic-release token | GITHUB_TOKEN;
       - name: Retrieve Secrets from Vault
         id: vault
         uses: hashicorp/vault-action@v3.4.0

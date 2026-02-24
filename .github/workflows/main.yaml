@@ -18,7 +18,7 @@ jobs:
       CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
 
   release:
-    if: github.event_name == 'push' && contains(fromJSON('["refs/heads/main", "refs/heads/release-with-main-workflow"]'), github.ref)
+    if: github.event_name == 'push' && contains(fromJSON('["refs/heads/main"]'), github.ref)
     needs: [build, check]
     permissions:
       contents: write
