@@ -28,6 +28,8 @@ import { trimInput } from '../../command-utils'
 
 initSentry()
 
+type CommandError = Error & { details?: unknown }
+
 const sequenceKey = crypto.randomUUID()
 
 export default class Apply extends Command {
@@ -181,7 +183,7 @@ export default class Apply extends Command {
     this.log(output)
   }
 
-  async catch(error: any) {
+  async catch(error: CommandError) {
     const { flags } = await this.parse(Apply)
 
     trackApplyCommandFailed({
@@ -208,7 +210,7 @@ export default class Apply extends Command {
     this.log(output)
   }
 
-  protected async finally(): Promise<any> {
+  protected async finally(): Promise<void> {
     if (this.terminatedByUser) return
     await this.writeFileLog()
     this.log(renderFilePaths({ logFilePath: this.logFilePath }))
