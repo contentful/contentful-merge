@@ -4,6 +4,10 @@ import crypto from 'crypto'
 import * as Sentry from '@sentry/node'
 import { config } from '../config'
 
+export function isSentryEnabled() {
+  return process.env.NODE_ENV !== 'test'
+}
+
 function getOptionalSentryProfilingIntegration(): any[] {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -18,6 +22,10 @@ function getOptionalSentryProfilingIntegration(): any[] {
 }
 
 export function initSentry() {
+  if (!isSentryEnabled()) {
+    return
+  }
+
   const profilingIntegrations = getOptionalSentryProfilingIntegration()
 
   Sentry.init({

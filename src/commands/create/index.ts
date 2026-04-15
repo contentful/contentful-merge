@@ -7,6 +7,7 @@ import path from 'node:path'
 import {
   analyticsCloseAndFlush,
   initSentry,
+  isSentryEnabled,
   trackCreateCommandCompleted,
   trackCreateCommandFailed,
   trackCreateCommandStarted,
@@ -238,9 +239,11 @@ export default class Create extends Command {
       error.stack = cleanStack(error.stack, { pretty: true })
     }
 
-    Sentry.captureException(error, {
-      level: detectErrorLevel(error),
-    })
+    if (isSentryEnabled()) {
+      Sentry.captureException(error, {
+        level: detectErrorLevel(error),
+      })
+    }
 
     this.log(output)
   }
@@ -249,6 +252,9 @@ export default class Create extends Command {
     await this.writeFileLog()
     this.log(renderFilePaths({ changesetPath: this.changesetFilePath, logFilePath: this.logFilePath }))
 
-    await Promise.allSettled([Sentry.close(2000), analyticsCloseAndFlush(2000)])
+    await Promise.allSettled([
+      isSentryEnabled() ? Sentry.close(2000) : Promise.resolve(true),
+      analyticsCloseAndFlush(2000),
+    ])
   }
 }

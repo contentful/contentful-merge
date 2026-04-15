@@ -17,6 +17,7 @@ import { collectWarnings, renderWarnings } from '../../engine/apply-changeset/wa
 import {
   analyticsCloseAndFlush,
   initSentry,
+  isSentryEnabled,
   trackApplyCommandCompleted,
   trackApplyCommandFailed,
   trackApplyCommandStarted,
@@ -198,9 +199,11 @@ export default class Apply extends Command {
       error.stack = cleanStack(error.stack, { pretty: true })
     }
 
-    Sentry.captureException(error, {
-      level: detectErrorLevel(error),
-    })
+    if (isSentryEnabled()) {
+      Sentry.captureException(error, {
+        level: detectErrorLevel(error),
+      })
+    }
 
     this.log(output)
   }
@@ -210,6 +213,9 @@ export default class Apply extends Command {
     await this.writeFileLog()
     this.log(renderFilePaths({ logFilePath: this.logFilePath }))
 
-    await Promise.allSettled([Sentry.close(2000), analyticsCloseAndFlush(2000)])
+    await Promise.allSettled([
+      isSentryEnabled() ? Sentry.close(2000) : Promise.resolve(true),
+      analyticsCloseAndFlush(2000),
+    ])
   }
 }
