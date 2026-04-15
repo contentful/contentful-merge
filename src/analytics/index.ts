@@ -2,13 +2,18 @@ import { EventProperties } from '@segment/analytics-core/src/events/interfaces'
 import { Analytics } from '@segment/analytics-node'
 import crypto from 'crypto'
 import * as Sentry from '@sentry/node'
+import type { Integration } from '@sentry/types'
 import { config } from '../config'
 
-function getOptionalSentryProfilingIntegration(): any[] {
+export function isSentryEnabled() {
+  return process.env.NODE_ENV !== 'test'
+}
+
+function getOptionalSentryProfilingIntegration(): Integration[] {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { ProfilingIntegration } = require('@sentry/profiling-node') as {
-      ProfilingIntegration: new () => any
+      ProfilingIntegration: new () => Integration
     }
     return [new ProfilingIntegration()]
   } catch {
@@ -18,6 +23,10 @@ function getOptionalSentryProfilingIntegration(): any[] {
 }
 
 export function initSentry() {
+  if (!isSentryEnabled()) {
+    return
+  }
+
   const profilingIntegrations = getOptionalSentryProfilingIntegration()
 
   Sentry.init({

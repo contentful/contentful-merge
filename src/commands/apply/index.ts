@@ -17,6 +17,7 @@ import { collectWarnings, renderWarnings } from '../../engine/apply-changeset/wa
 import {
   analyticsCloseAndFlush,
   initSentry,
+  isSentryEnabled,
   trackApplyCommandCompleted,
   trackApplyCommandFailed,
   trackApplyCommandStarted,
@@ -26,6 +27,8 @@ import cleanStack from 'clean-stack'
 import { trimInput } from '../../command-utils'
 
 initSentry()
+
+type CommandError = Error & { details?: unknown }
 
 const sequenceKey = crypto.randomUUID()
 
@@ -180,7 +183,7 @@ export default class Apply extends Command {
     this.log(output)
   }
 
-  async catch(error: any) {
+  async catch(error: CommandError) {
     const { flags } = await this.parse(Apply)
 
     trackApplyCommandFailed({
@@ -198,18 +201,23 @@ export default class Apply extends Command {
       error.stack = cleanStack(error.stack, { pretty: true })
     }
 
-    Sentry.captureException(error, {
-      level: detectErrorLevel(error),
-    })
+    if (isSentryEnabled()) {
+      Sentry.captureException(error, {
+        level: detectErrorLevel(error),
+      })
+    }
 
     this.log(output)
   }
 
-  protected async finally(): Promise<any> {
+  protected async finally(): Promise<void> {
     if (this.terminatedByUser) return
     await this.writeFileLog()
     this.log(renderFilePaths({ logFilePath: this.logFilePath }))
 
-    await Promise.allSettled([Sentry.close(2000), analyticsCloseAndFlush(2000)])
+    await Promise.allSettled([
+      isSentryEnabled() ? Sentry.close(2000) : Promise.resolve(true),
+      analyticsCloseAndFlush(2000),
+    ])
   }
 }

@@ -7,6 +7,7 @@ import path from 'node:path'
 import {
   analyticsCloseAndFlush,
   initSentry,
+  isSentryEnabled,
   trackCreateCommandCompleted,
   trackCreateCommandFailed,
   trackCreateCommandStarted,
@@ -26,6 +27,8 @@ import cleanStack from 'clean-stack'
 import { trimInput } from '../../command-utils'
 
 initSentry()
+
+type CommandError = Error & { details?: unknown }
 
 const sequenceKey = crypto.randomUUID()
 
@@ -219,7 +222,7 @@ export default class Create extends Command {
     this.log(output)
   }
 
-  async catch(error: any) {
+  async catch(error: CommandError) {
     const { flags } = await this.parse(Create)
 
     trackCreateCommandFailed({
@@ -238,17 +241,22 @@ export default class Create extends Command {
       error.stack = cleanStack(error.stack, { pretty: true })
     }
 
-    Sentry.captureException(error, {
-      level: detectErrorLevel(error),
-    })
+    if (isSentryEnabled()) {
+      Sentry.captureException(error, {
+        level: detectErrorLevel(error),
+      })
+    }
 
     this.log(output)
   }
 
-  protected async finally(): Promise<any> {
+  protected async finally(): Promise<void> {
     await this.writeFileLog()
     this.log(renderFilePaths({ changesetPath: this.changesetFilePath, logFilePath: this.logFilePath }))
 
-    await Promise.allSettled([Sentry.close(2000), analyticsCloseAndFlush(2000)])
+    await Promise.allSettled([
+      isSentryEnabled() ? Sentry.close(2000) : Promise.resolve(true),
+      analyticsCloseAndFlush(2000),
+    ])
   }
 }
