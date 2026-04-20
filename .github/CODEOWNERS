@@ -1,1 +1,6 @@
 *   @contentful/team-content-operations
+
+# Do not assign anyone to these files otherwise
+# there would be review requests for all dependabot PRs
+package.json
+package-lock.json
