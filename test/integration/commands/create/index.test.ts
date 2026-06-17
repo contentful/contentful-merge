@@ -1,7 +1,7 @@
 import { expect } from '@oclif/test'
 import { ApiKey, Space, createClient } from 'contentful-management'
 import fs from 'fs'
-import { TestContext, createCdaToken, createEnvironments } from './../bootstrap'
+import { CDA_ACCESS_TOKEN_MASTER_FOR_TEST, TestContext, createCdaToken, createEnvironments } from './../bootstrap'
 import fancy from './../register-plugins'
 
 describe('create command', () => {
@@ -27,11 +27,18 @@ describe('create command', () => {
     }
 
     testContext = environmentsContext
-    cdaTokenWithOnlyMasterAccess = await createCdaToken(testSpace, ['master'])
+    try {
+      cdaTokenWithOnlyMasterAccess = await testSpace.getApiKey(CDA_ACCESS_TOKEN_MASTER_FOR_TEST)
+    } catch (e) {
+      cdaTokenWithOnlyMasterAccess = await createCdaToken(testSpace, ['master'])
+    }
   })
 
   after(async () => {
-    await Promise.all([testContext.teardown(), cdaTokenWithOnlyMasterAccess.delete()])
+    await Promise.all([
+      cdaTokenWithOnlyMasterAccess.sys.id !== CDA_ACCESS_TOKEN_MASTER_FOR_TEST && cdaTokenWithOnlyMasterAccess.delete(),
+      testContext.teardown(),
+    ])
   })
 
   afterEach(() => fs.promises.rm(changesetPath, { force: true }))
