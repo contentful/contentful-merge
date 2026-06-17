@@ -22,7 +22,7 @@
     "/oclif.manifest.json"
   ],
   "dependencies": {
-    "@oclif/core": "^3.0.9",
+    "@oclif/core": "^4.11.6",
     "@oclif/plugin-help": "^6.0.4",
     "@oclif/plugin-plugins": "^5.4.25",
     "@segment/analytics-node": "^3.0.0",
@@ -45,7 +45,7 @@
     "@commitlint/cli": "^20.4.1",
     "@commitlint/config-conventional": "^20.4.1",
     "@contentful/integration-test-utils": "^2.0.1",
-    "@oclif/test": "^3.1.14",
+    "@oclif/test": "^4.1.19",
     "@semantic-release/changelog": "^6.0.3",
     "@types/chai": "^5",
     "@types/mocha": "^10.0.1",
