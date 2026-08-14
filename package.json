@@ -42,8 +42,8 @@
     "wrap-ansi": "10.0.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.4.1",
-    "@commitlint/config-conventional": "^20.4.1",
+    "@commitlint/cli": "^21.0.0",
+    "@commitlint/config-conventional": "^21.0.0",
     "@contentful/integration-test-utils": "^2.0.1",
     "@oclif/test": "^3.1.14",
     "@semantic-release/changelog": "^6.0.3",
@@ -61,7 +61,7 @@
     "lint-staged": "^15.0.2",
     "mocha": "^11.7.5",
     "mocha-junit-reporter": "^2.2.1",
-    "npm": "11.17.0",
+    "npm": "11.19.0",
     "oclif": "^4.17.30",
     "ora": "^9.3.0",
     "prettier": "^3.0.0",
