@@ -45,7 +45,7 @@
     "@commitlint/cli": "^21.0.0",
     "@commitlint/config-conventional": "^21.0.0",
     "@contentful/integration-test-utils": "^2.0.1",
-    "@oclif/test": "^3.1.14",
+    "@oclif/test": "^4.0.0",
     "@semantic-release/changelog": "^7.0.0",
     "@types/chai": "^5",
     "@types/mocha": "^10.0.1",
