@@ -54,7 +54,8 @@ integration/e2e tests if you have valid Contentful credentials in your environme
 ## Things to avoid
 
 - Don't add new dependencies without checking they're compatible with the `node >=24 <25` engine constraint.
-- Don't bypass the `--yes` confirmation flow removal in `apply` — it exists to prevent accidental destructive
-  changes to a target environment.
+- Don't remove or bypass the `apply` confirmation prompt — it exists to prevent accidental destructive
+  changes to a target environment. `--yes` is the explicit, user-supplied way to skip it; don't skip it any
+  other way.
 - Don't commit generated files (`dist/`, `oclif.manifest.json`, `npm-shrinkwrap.json`) — they're build/release
   artifacts.

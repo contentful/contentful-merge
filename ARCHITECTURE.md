@@ -29,7 +29,7 @@ Builds a changeset describing the differences between a source and target enviro
    (`src/engine/client`), batched and paginated.
 2. **Compute ids** — entry/content-type ids present in one environment but not the other are classified as
    added/deleted.
-3. **Detect changes** — for ids present in both, `sys.changedAt` is compared first as a cheap filter; entries
+3. **Detect changes** — for ids present in both, `sys.updatedAt` is compared first as a cheap filter; entries
    that differ are then deep-compared and a JSON patch is generated (`fast-json-patch` /
    `generate-json-patch`) to capture the actual field-level diff.
 4. Each step above is a Listr2 task (`tasks/`), run sequentially so later steps can depend on earlier
@@ -47,8 +47,10 @@ Consumes a changeset file and replays it against a target environment via the CM
    usage — `src/engine/validations`).
 2. **Remove**, then **add**, then **change** entities, in that order, via `actions/` (thin wrappers around
    CMA create/update/publish/delete calls).
-3. Non-fatal issues encountered along the way are collected as **warnings** and rendered at the end rather
-   than aborting the run.
+3. Before any of the above runs, the changeset itself is checked for a fixed set of **warnings** (stale
+   creation date, target space/environment mismatch, applying to `master`) and these are rendered up front,
+   ahead of the confirmation prompt — they inform the user rather than aborting the run. Issues that occur
+   while actually applying entities are raised as errors, not warnings.
 
 Both flows use the same Listr2-based task/renderer pattern so progress and errors are displayed
 consistently in the terminal.
