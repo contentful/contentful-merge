@@ -15,6 +15,7 @@
   <a href="#usage">Usage</a> |
   <a href="#commands">Commands</a> |
   <a href="#data-structure">Data structure</a> |
+  <a href="#documentation">Documentation</a> |
   <a href="#faq">FAQ</a> |
   <a href="#feedback">Feedback</a> |
   <a href="#code-of-conduct">Code of Conduct</a> |
@@ -65,8 +66,8 @@ Takes a space id and two environment ids and creates a changeset which details a
 - All requests are batched.
 - In order to identify <b>added</b> and <b>deleted</b> entries, entry ids are compared in both environments.
 - In order to identify <b>updated</b> entries, comparison happens in two steps:
-  The initial step involves identifying potentially diverging entries by examining the `sys.changedAt` property of all entries present in both environments.
-  Subsequently, for all entries with distinct `sys.changedAt` values, a more comprehensive comparison of their payload is performed. If any variations are found, a patch is generated to reflect the differences.
+  The initial step involves identifying potentially diverging entries by examining the `sys.updatedAt` property of all entries present in both environments.
+  Subsequently, for all entries with distinct `sys.updatedAt` values, a more comprehensive comparison of their payload is performed. If any variations are found, a patch is generated to reflect the differences.
 
 > <b>:bulb: Want to merge content types instead of entries? :bulb:</b>
 > We got you covered: Take a look at the [Merge App](https://www.contentful.com/marketplace/app/merge/) to your space, or, if you prefer the command line, check out the [Merge CLI](https://github.com/contentful/contentful-cli/tree/master/docs/merge).
@@ -282,6 +283,13 @@ Further limitations:
 - We only consider published entries during comparison, thus entries that are in draft state will not be compared.
 - Entries when added are immediately published.
 - Locales must be the same in the source and target environment.
+
+## Documentation
+
+- [ARCHITECTURE.md](ARCHITECTURE.md) — how the `create`/`apply` engine is structured.
+- [CONTRIBUTING.md](CONTRIBUTING.md) — local setup and running tests.
+- [AGENTS.md](AGENTS.md) — guidance for AI coding agents working in this repo.
+- [docs/decision-records](docs/decision-records) — architectural decisions and their rationale.
 
 ## FAQ
 
