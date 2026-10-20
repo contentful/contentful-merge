@@ -1,5 +1,5 @@
 import { Config } from '@oclif/core'
-import type { ContentType, Entry, Environment } from 'contentful-management/types'
+import type { ContentType, Entry, Environment } from 'contentful-management'
 import { fancy } from 'fancy-test'
 import CreateCommand from '../../../src/commands/create'
 import ApplyCommand from '../../../src/commands/apply'

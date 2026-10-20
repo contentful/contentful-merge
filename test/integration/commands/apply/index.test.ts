@@ -26,7 +26,7 @@ describe('apply command', () => {
   let testContextTwoAdditions: ApplyTestContext
 
   before(async () => {
-    const client = createClient({ accessToken: cmaToken })
+    const client = createClient({ accessToken: cmaToken }, { type: 'legacy' })
     testSpace = await client.getSpace(spaceId)
     const environmentsContext = await createEnvironments(testSpace)
 

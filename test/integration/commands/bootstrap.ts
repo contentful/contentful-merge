@@ -1,7 +1,6 @@
-import * as testUtils from '@contentful/integration-test-utils'
 import { createClient } from 'contentful'
-import { ApiKey, Environment } from 'contentful-management'
-import { CreateApiKeyProps, Space } from 'contentful-management/types'
+import { ApiKey, CreateApiKeyProps, Environment, Space } from 'contentful-management'
+import { createTestEnvironment } from '../../helpers/create-test-environment'
 
 export type TestContext = {
   sourceEnvironment: Environment
@@ -68,9 +67,9 @@ const teardown = async ({ apiKey, environments }: { apiKey?: ApiKey; environment
 export const createEnvironments = async (testSpace: Space): Promise<TestContext | undefined> => {
   const randomId = Math.floor(Math.random() * 10000).toString() // used to prevent concurrency issues
   console.log('creating source environment...')
-  const sourceEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + '_source_environment')
+  const sourceEnvironment = await createTestEnvironment(testSpace, randomId + '_source_environment')
   console.log('creating target environment...')
-  const targetEnvironment = await testUtils.createTestEnvironment(testSpace, randomId + '_target_environment')
+  const targetEnvironment = await createTestEnvironment(testSpace, randomId + '_target_environment')
   console.log('creating API keys...')
   const apiKey = await createCdaToken(testSpace, [targetEnvironment.sys.id, sourceEnvironment.sys.id])
   console.log('setup finished\n')
@@ -87,7 +86,7 @@ export const createEnvironments = async (testSpace: Space): Promise<TestContext 
 
 export const createEnvironment = async (testSpace: Space) => {
   const randomId = Math.floor(Math.random() * 10000).toString() // used to prevent concurrency issues
-  const environment = await testUtils.createTestEnvironment(testSpace, randomId + 'target_for_apply')
+  const environment = await createTestEnvironment(testSpace, randomId + 'target_for_apply')
   return {
     teardown: () => teardown({ environments: [environment] }),
     environmentId: environment.sys.id,
