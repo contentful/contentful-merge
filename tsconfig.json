@@ -4,6 +4,9 @@
     "declaration": true,
     "importHelpers": true,
     "module": "CommonJS",
+    "paths": {
+      "chalk": ["./node_modules/chalk/source/index.d.ts"]
+    },
     "outDir": "dist",
     "rootDir": "src",
     "strict": true,
