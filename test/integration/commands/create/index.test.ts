@@ -19,7 +19,7 @@ describe('create command', () => {
   let testSpace: Space
   let cdaTokenWithOnlyMasterAccess: ApiKey
   before(async () => {
-    const client = createClient({ accessToken: cmaToken })
+    const client = createClient({ accessToken: cmaToken }, { type: 'legacy' })
     testSpace = await client.getSpace(spaceId)
     const environmentsContext = await createEnvironments(testSpace)
     if (!environmentsContext) {

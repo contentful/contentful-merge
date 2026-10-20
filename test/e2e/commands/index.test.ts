@@ -37,7 +37,7 @@ describe('Command flow - create and apply', () => {
   let createTestContext: TestContext
 
   before(async () => {
-    const client = createClient({ accessToken: cmaToken })
+    const client = createClient({ accessToken: cmaToken }, { type: 'legacy' })
     testSpace = await client.getSpace(spaceId)
     const environmentsContext = await createEnvironments(testSpace)
     if (!environmentsContext) {
