@@ -107,7 +107,7 @@
     "semantic-release": "shx cp ./dist/config.production.js ./dist/config.js && semantic-release"
   },
   "engines": {
-    "node": ">=24.0.0 <25"
+    "node": ">=24.22.1 <25"
   },
   "bugs": "https://github.com/contentful/contentful-merge/issues",
   "keywords": [
