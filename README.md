@@ -74,7 +74,7 @@ Takes a space id and two environment ids and creates a changeset which details a
 
 ## Installation
 
-Prerequisite: node v24
+Prerequisite: node >=24.22.1 <25
 
 ```bash
 npm install -g contentful-merge
@@ -87,7 +87,7 @@ $ npm install -g contentful-merge
 $ contentful-merge COMMAND
 running command...
 $ contentful-merge (--version)
-contentful-merge/0.0.0 darwin-arm64 node-v24.0.0
+contentful-merge/0.0.0 darwin-arm64 node-v24.22.1
 $ contentful-merge --help [COMMAND]
 USAGE
   $ contentful-merge COMMAND
@@ -159,7 +159,7 @@ Display help for contentful-merge.
 Contentful CLI to diff and merge entries across environments
 
 VERSION
-  contentful-merge/0.0.0 darwin-arm64 node-v24.0.0
+  contentful-merge/0.0.0 darwin-arm64 node-v24.22.1
 
 USAGE
   $ contentful-merge [COMMAND]
