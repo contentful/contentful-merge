@@ -11,7 +11,7 @@ export function isSentryEnabled() {
 
 function getOptionalSentryProfilingIntegration(): Integration[] {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { ProfilingIntegration } = require('@sentry/profiling-node') as {
       ProfilingIntegration: new () => Integration
     }
